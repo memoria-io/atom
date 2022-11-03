@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0  http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.memoria</groupId>
+        <artifactId>jbom</artifactId>
+        <version>2022.19.2</version>
+    </parent>
+
+    <!--suppress MavenRedundantGroupId -->
+    <groupId>io.memoria</groupId>
+    <artifactId>atom</artifactId>
+    <version>2022.19.2</version>
+    <packaging>pom</packaging>
+
+    <name>${project.groupId}.${project.artifactId}</name>
+    <description>Java utilities</description>
+    <url>https://memoria.io</url>
+    <organization>
+        <name>memoria.io</name>
+        <url>https://memoria.io</url>
+    </organization>
+
+    <modules>
+        <module>core</module>
+    </modules>
+
+    <properties>
+        <reactor.version>2020.0.23</reactor.version>
+        <vavr.version>0.10.4</vavr.version>
+        <vavr-jackson.version>0.10.3</vavr-jackson.version>
+        <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
+    </properties>
+
+    <distributionManagement>
+        <site>
+            <id>${project.artifactId}-site</id>
+            <url>ftp://memoria.io/</url>
+        </site>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/memoria-io/atom</url>
+        </repository>
+    </distributionManagement>
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/memoria-io/*</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <dependencyManagement>
+        <dependencies>
+
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <!--======================================================================================== -->
+        <!-- Functional Dependencies -->
+        <!--======================================================================================== -->
+        <dependency>
+            <groupId>io.vavr</groupId>
+            <artifactId>vavr</artifactId>
+            <version>${vavr.version}</version>
+        </dependency>
+    </dependencies>
+</project>
