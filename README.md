@@ -1,2 +1,3 @@
 # atom
-Utilities on the atomic level
+
+Core java utilities (to be used by `reactive` and `active` libraries)
