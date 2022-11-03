@@ -27,6 +27,7 @@
         <module>core</module>
         <module>text</module>
         <module>sec</module>
+        <module>web</module>
     </modules>
 
     <properties>
