@@ -25,12 +25,12 @@
 
     <modules>
         <module>core</module>
+        <module>text</module>
+        <module>sec</module>
     </modules>
 
     <properties>
         <reactor.version>2020.0.23</reactor.version>
-        <vavr.version>0.10.4</vavr.version>
-        <vavr-jackson.version>0.10.3</vavr-jackson.version>
         <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
     </properties>
 
@@ -60,17 +60,53 @@
     </repositories>
     <dependencyManagement>
         <dependencies>
-
+            <!--======================================================================================== -->
+            <!-- Security Dependencies -->
+            <!--======================================================================================== -->
+            <dependency>
+                <groupId>de.mkammerer</groupId>
+                <artifactId>argon2-jvm</artifactId>
+                <version>2.11</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jsonwebtoken.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jsonwebtoken.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jsonwebtoken.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <!--======================================================================================== -->
+            <!-- Json Dependencies -->
+            <!--======================================================================================== -->
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>2.13.4</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>io.vavr</groupId>
+                <artifactId>vavr-jackson</artifactId>
+                <version>0.10.3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
-        <!--======================================================================================== -->
-        <!-- Functional Dependencies -->
-        <!--======================================================================================== -->
         <dependency>
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
-            <version>${vavr.version}</version>
+            <version>0.10.4</version>
         </dependency>
     </dependencies>
 </project>

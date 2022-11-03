@@ -7,7 +7,7 @@ class JDK19Test {
   void testRecordPattern() {
     Shape sq = new Square(new Point(3, 1), new Point(1, 3));
     Shape cir = new Circle(new Point(0, 0), 3);
-    assert area(sq) ==4;
+    assert area(sq) == 4;
     assert area(cir) > 9;
   }
 
@@ -23,9 +23,9 @@ class JDK19Test {
 
   private sealed interface Shape {}
 
+  private record Circle(Point center, int radius) implements Shape {}
+
   private record Point(int x, int y) implements Shape {}
 
   private record Square(Point x, Point y) implements Shape {}
-
-  private record Circle(Point center, int radius) implements Shape {}
 }
