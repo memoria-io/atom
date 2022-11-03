@@ -1,4 +1,4 @@
-package io.memoria.reactive.text.jackson.cases.company;
+package io.memoria.atom.text.jackson.cases.company;
 
 import io.vavr.collection.List;
 

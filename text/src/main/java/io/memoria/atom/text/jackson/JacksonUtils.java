@@ -1,4 +1,4 @@
-package io.memoria.reactive.text.jackson;
+package io.memoria.atom.text.jackson;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;

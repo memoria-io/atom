@@ -1,14 +1,14 @@
-package io.memoria.reactive.text.jackson;
+package io.memoria.atom.text.jackson;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.memoria.atom.core.text.Json;
 import io.memoria.atom.core.text.TextException;
-import io.memoria.atom.core.text.Yaml;
 import io.vavr.API;
 import io.vavr.Predicates;
 import io.vavr.control.Try;
 
-public record YamlJackson(ObjectMapper mapper) implements Yaml {
+public record JsonJackson(ObjectMapper mapper) implements Json {
 
   @Override
   @SuppressWarnings("unchecked")

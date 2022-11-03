@@ -1,12 +1,12 @@
-package io.memoria.reactive.text.jackson;
+package io.memoria.atom.text.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.memoria.atom.core.file.ConfigFileOps;
 import io.memoria.atom.core.text.Json;
 import io.memoria.atom.core.text.Yaml;
-import io.memoria.reactive.text.jackson.cases.company.Employee;
-import io.memoria.reactive.text.jackson.cases.company.Engineer;
-import io.memoria.reactive.text.jackson.cases.company.Manager;
+import io.memoria.atom.text.jackson.cases.company.Employee;
+import io.memoria.atom.text.jackson.cases.company.Engineer;
+import io.memoria.atom.text.jackson.cases.company.Manager;
 
 public class TestDeps {
   public static final ConfigFileOps CONFIG_FILE_OPS;

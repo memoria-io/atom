@@ -1,4 +1,4 @@
-package io.memoria.reactive.text.jackson;
+package io.memoria.atom.text.jackson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static io.memoria.reactive.text.jackson.TestDeps.prettyJson;
+import static io.memoria.atom.text.jackson.TestDeps.prettyJson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**

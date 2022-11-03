@@ -1,8 +1,8 @@
-package io.memoria.reactive.text.jackson;
+package io.memoria.atom.text.jackson;
 
 import io.memoria.atom.core.file.ResourceFileOps;
-import io.memoria.reactive.text.jackson.cases.company.Engineer;
-import io.memoria.reactive.text.jackson.cases.company.Manager;
+import io.memoria.atom.text.jackson.cases.company.Engineer;
+import io.memoria.atom.text.jackson.cases.company.Manager;
 import io.vavr.collection.List;
 
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package io.memoria.reactive.text.jackson.cases.config;
+package io.memoria.atom.text.jackson.cases.config;
 
 import java.util.List;
 

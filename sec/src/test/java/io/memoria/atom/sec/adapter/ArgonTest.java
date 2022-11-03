@@ -1,4 +1,4 @@
-package io.memoria.reactive.sec.adapter;
+package io.memoria.atom.sec.adapter;
 
 import io.memoria.atom.core.sec.Hasher;
 import io.memoria.atom.core.sec.Verifier;
