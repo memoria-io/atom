@@ -25,6 +25,7 @@
 
     <modules>
         <module>core</module>
+        <module>eventsourcing</module>
         <module>text</module>
         <module>sec</module>
         <module>web</module>
