@@ -1,7 +1,7 @@
 package io.memoria.atom.eventsourcing.rule;
 
-import io.memoria.active.eventsourcing.Command;
-import io.memoria.active.eventsourcing.Event;
+import io.memoria.atom.eventsourcing.Command;
+import io.memoria.atom.eventsourcing.Event;
 import io.vavr.Function1;
 import io.vavr.control.Option;
 

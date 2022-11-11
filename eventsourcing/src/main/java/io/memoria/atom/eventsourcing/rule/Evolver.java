@@ -1,7 +1,7 @@
 package io.memoria.atom.eventsourcing.rule;
 
-import io.memoria.active.eventsourcing.Event;
-import io.memoria.active.eventsourcing.State;
+import io.memoria.atom.eventsourcing.Event;
+import io.memoria.atom.eventsourcing.State;
 import io.vavr.Function2;
 
 @FunctionalInterface
