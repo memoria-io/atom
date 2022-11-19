@@ -4,30 +4,26 @@ import io.memoria.atom.eventsourcing.Command;
 import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.eventsourcing.State;
 
-/**
- * Eventsourcing Exception
- */
 public interface ESException {
-
-  class CorruptedStream extends IllegalArgumentException implements ESException {
-    private static final String msg = "CorruptedStream operation: %s on current state: %s, this should never happen";
-
-    private CorruptedStream(State state, Event event) {
-      super(msg.formatted(state.getClass().getSimpleName(), event.getClass().getSimpleName()));
+  class InvalidCommand extends IllegalArgumentException implements ESException {
+    private InvalidCommand(String stateName, String commandName) {
+      super("Invalid command (%s) for the state (%s)".formatted(commandName, stateName));
     }
 
-    public static CorruptedStream of(State state, Event event) {
-      return new CorruptedStream(state, event);
+    public static InvalidCommand create(State state, Command command) {
+      return new InvalidCommand(state.getClass().getSimpleName(), command.getClass().getSimpleName());
     }
   }
 
-  class InvalidStream extends Exception implements ESException {
-    private InvalidStream(Command command) {
-      super("Invalid stream, stateID doesn't match assigned partition: %s ".formatted(command));
+  class InvalidEvent extends IllegalArgumentException implements ESException {
+    private static final String msg = "Invalid evolution of: %s on current state: %s, this should never happen";
+
+    private InvalidEvent(State state, Event event) {
+      super(msg.formatted(state.getClass().getSimpleName(), event.getClass().getSimpleName()));
     }
 
-    public static InvalidStream create(Command command) {
-      return new InvalidStream(command);
+    public static InvalidEvent of(State state, Event event) {
+      return new InvalidEvent(state, event);
     }
   }
 }
