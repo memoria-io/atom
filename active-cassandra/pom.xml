@@ -9,24 +9,27 @@
         <version>19.3.0.8</version>
     </parent>
     <groupId>io.memoria.atom</groupId>
-    <artifactId>es-active-kafka</artifactId>
+    <artifactId>active-cassandra</artifactId>
     <version>19.3.0.8</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
-    <description>kafka Module</description>
+    <description>cassandra Module</description>
     <dependencies>
         <!--======================================================================================== -->
         <!-- Modules Dependencies -->
         <!--======================================================================================== -->
         <dependency>
             <groupId>io.memoria.atom</groupId>
-            <artifactId>es-active</artifactId>
+            <artifactId>active</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
+            <groupId>com.datastax.oss</groupId>
+            <artifactId>java-driver-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.datastax.oss</groupId>
+            <artifactId>java-driver-query-builder</artifactId>
         </dependency>
     </dependencies>
 </project>

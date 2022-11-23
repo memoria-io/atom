@@ -8,28 +8,20 @@
         <artifactId>atom</artifactId>
         <version>19.3.0.8</version>
     </parent>
-    <groupId>io.memoria.atom</groupId>
-    <artifactId>es-active-cassandra</artifactId>
+    <groupId>io.memoria.active</groupId>
+    <artifactId>reactive</artifactId>
     <version>19.3.0.8</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
-    <description>cassandra Module</description>
+    <description>Eventsourcing reactive Module</description>
     <dependencies>
         <!--======================================================================================== -->
         <!-- Modules Dependencies -->
         <!--======================================================================================== -->
         <dependency>
             <groupId>io.memoria.atom</groupId>
-            <artifactId>es-active</artifactId>
+            <artifactId>core</artifactId>
             <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.datastax.oss</groupId>
-            <artifactId>java-driver-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.datastax.oss</groupId>
-            <artifactId>java-driver-query-builder</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -9,11 +9,11 @@
         <version>19.3.0.8</version>
     </parent>
     <groupId>io.memoria.atom</groupId>
-    <artifactId>es-active</artifactId>
+    <artifactId>active</artifactId>
     <version>19.3.0.8</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
-    <description>Virtual thread Eventsourcing Module</description>
+    <description>Virtual thread based Module</description>
     <dependencies>
         <!--======================================================================================== -->
         <!-- Modules Dependencies -->

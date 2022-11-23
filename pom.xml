@@ -25,10 +25,10 @@
 
     <modules>
         <module>core</module>
-        <module>es-active</module>
-        <module>es-active-cassandra</module>
-        <module>es-active-kafka</module>
-        <module>es-reactive</module>
+        <module>active</module>
+        <module>active-cassandra</module>
+        <module>active-kafka</module>
+        <module>reactive</module>
         <module>text</module>
         <module>sec</module>
         <module>web</module>

@@ -8,20 +8,25 @@
         <artifactId>atom</artifactId>
         <version>19.3.0.8</version>
     </parent>
-    <groupId>io.memoria.active</groupId>
-    <artifactId>es-reactive</artifactId>
+    <groupId>io.memoria.atom</groupId>
+    <artifactId>active-kafka</artifactId>
     <version>19.3.0.8</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
-    <description>Eventsourcing reactive Module</description>
+    <description>kafka Module</description>
     <dependencies>
         <!--======================================================================================== -->
         <!-- Modules Dependencies -->
         <!--======================================================================================== -->
         <dependency>
             <groupId>io.memoria.atom</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>active</artifactId>
             <version>${project.parent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
         </dependency>
     </dependencies>
 </project>
