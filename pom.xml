@@ -25,13 +25,19 @@
 
     <modules>
         <module>core</module>
-        <module>eventsourcing</module>
+        <module>es-active</module>
+        <module>es-active-cassandra</module>
+        <module>es-active-kafka</module>
+        <module>es-reactive</module>
         <module>text</module>
         <module>sec</module>
         <module>web</module>
     </modules>
 
     <properties>
+        <atom.version>19.3.0.7</atom.version>
+        <cassandra.version>4.15.0</cassandra.version>
+        <kafka.version>3.3.1</kafka.version>
         <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
     </properties>
 
@@ -85,6 +91,27 @@
                 <artifactId>jjwt-jackson</artifactId>
                 <version>${jsonwebtoken.version}</version>
                 <scope>runtime</scope>
+            </dependency>
+            <!--======================================================================================== -->
+            <!-- Cassandra Dependencies -->
+            <!--======================================================================================== -->
+            <dependency>
+                <groupId>com.datastax.oss</groupId>
+                <artifactId>java-driver-core</artifactId>
+                <version>${cassandra.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.datastax.oss</groupId>
+                <artifactId>java-driver-query-builder</artifactId>
+                <version>${cassandra.version}</version>
+            </dependency>
+            <!--======================================================================================== -->
+            <!-- kafka Dependencies -->
+            <!--======================================================================================== -->
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka.version}</version>
             </dependency>
             <!--======================================================================================== -->
             <!-- Json Dependencies -->
