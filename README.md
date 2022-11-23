@@ -1,3 +1,106 @@
 # atom
 
-Core java utilities (to be used by `reactive` and `active` libraries)
+[![Release](https://github.com/memoria-io/atom/workflows/Release/badge.svg)](https://github.com/memoria-io/atom/actions?query=workflow%3ARelease)
+[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/memoria-io/atom?label=Version&logo=github)](https://github.com/orgs/memoria-io/packages?repo_name=atom)
+[![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/memoria-io/atom/latest?logoColor=github)](https://github.com/memoria-io/atom/commits/master)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+
+> هذا العلم والعمل وقف للّه تعالي اسأل اللّه ان يرزقنا الاخلاص فالقول والعمل
+>
+> This work and knowledge is for the sake of Allah, may Allah grant us sincerity in what we say or do.
+
+## Introduction
+
+* Atom is a collection of utility classes, it has two main submodules `active` and `reactive`
+* Current JDK used is `Java 19`.
+
+## Active module
+
+Active modules uses the blocking virtual threading available starting jdk 19 preview.
+
+## Reactive module
+
+`reactive` relies heavily
+on [Reactive Streams](https://www.reactive-streams.org/) and uses [Project-Reactor](https://projectreactor.io/),
+[Reactor Netty](https://github.com/reactor/reactor-netty), it also uses functional paradigms and collections
+from [Vavr](https://www.vavr.io/).
+
+## Core Features
+
+* Vavr + Reactor Functional utilities
+* Reactor Netty utility functions
+* Reactive CQRS and Eventsourcing utilities (beta stage)
+* Reactive functional in-memory generic cruds (for tests, not for production)
+* Jackson Adapter (Json & Yaml) utilities
+* FileOps reader utility
+* ResourceFileOps utility
+* ConfigFileOps is a module for reading yaml configuration files (depends on Jackson Adapter)
+    * Allows nesting of files using a marker e.g `include: sub_file.yaml` would replace this line with content
+      of `sub_file.yaml`
+    * Reading as a system property if not found as environment variable or else the default value if it was supplied:
+        * `path: ${JAVA_HOME}`
+        * `myVar: ${SOME_VAR:-defaultValue}`
+
+## TODOs
+
+* [x] Event Sourcing
+    * [x] State decider, evolver, Stream pipeline
+    * [x] Sagas decider, Stream pipeline
+    * [x] id safety with typed classed (StateId, CommandId, EventId)
+    * [x] Events reduction
+        * If using reduction the event reducer should map all states to creation event
+        * Init states can't have creation events.
+    * [x] Stream sharding to be used later for scaling
+        * [x] Tests
+        * Due to sharding (reading from **multiple** src event streams) the whole cluster should be down first before
+          executing sharding, so that oldStreams are not receiving new events, while being ingested, they should be in
+          read
+          only state
+* [x] Streaming
+    * [x] Stream api for usage in event sourcing
+    * [ ] Stream api for messaging patterns
+* [ ] Increase test coverage to >85%
+
+## Release notes
+
+* Current versioning scheme `jbom_jdk_version.breaking_major.patch`
+
+## Usage
+
+All modules depend on Core. There are currently no other inter-dependencies between them.
+
+**Disclaimer:**
+> `reactive` is on edge, it's a work in progress and a pragmatic learning effort, so feel free to create issues or PRs.
+
+```xml
+
+<project>
+    <properties>
+        <reactive.version>...</reactive.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.memoria.reactive</groupId>
+            <artifactId>core</artifactId>
+            <version>${reactive.version}</version>
+        </dependency>
+
+        <dependency>
+            <!-- replace module_name with your preferred module -->
+            <groupId>io.memoria.reactive</groupId>
+            <artifactId>module_name</artifactId>
+            <version>${reactive.version}</version>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+## Contribution
+
+You can just do pull requests, and I will check them asap.
+
+## Related Articles
+
+* [Error handling using Reactor and VAVR](https://marmoush.com/2019/11/12/Error-Handling.html)
+* [Why I stopped using getters and setters](https://marmoush.com/2019/12/13/stopped-using-getters-and-setters.html)
