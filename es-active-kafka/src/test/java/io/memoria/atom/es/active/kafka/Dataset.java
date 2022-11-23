@@ -1,4 +1,4 @@
-package io.memoria.atom.es.active.kafka.client;
+package io.memoria.atom.es.active.kafka;
 
 import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;

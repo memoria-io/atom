@@ -2,10 +2,10 @@ package io.memoria.atom.es.active.kafka;
 
 import io.memoria.atom.core.eventsourcing.Command;
 import io.memoria.atom.core.text.TextTransformer;
+import io.memoria.atom.es.active.kafka.client.KafkaClient;
+import io.memoria.atom.es.active.kafka.client.Msg;
 import io.memoria.atom.es.active.repo.CommandRepo;
-import io.memoria.atom.es.active.repo.Msg;
 import io.vavr.control.Try;
-import org.apache.kafka.clients.KafkaClient;
 
 import java.util.stream.Stream;
 

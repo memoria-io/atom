@@ -1,6 +1,6 @@
 package io.memoria.atom.es.active.kafka.infra;
 
-import io.memoria.atom.es.active.kafka.infra.KafkaUtils;
+import io.memoria.atom.es.active.kafka.Dataset;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

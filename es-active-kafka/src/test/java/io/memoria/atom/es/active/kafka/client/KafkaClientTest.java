@@ -1,6 +1,6 @@
 package io.memoria.atom.es.active.kafka.client;
 
-import io.memoria.atom.es.active.Dataset;
+import io.memoria.atom.es.active.kafka.Dataset;
 import io.vavr.collection.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
