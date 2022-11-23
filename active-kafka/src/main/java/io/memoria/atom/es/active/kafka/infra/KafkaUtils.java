@@ -14,6 +14,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class KafkaUtils {
+  private KafkaUtils() {}
+
   public static Stream<ConsumerRecord<String, String>> stream(KafkaConsumer<String, String> consumer,
                                                               String topic,
                                                               int partition,
@@ -37,6 +39,4 @@ public class KafkaUtils {
     consumer.seekToEnd(tpCol);
     return consumer.position(tp);
   }
-
-  private KafkaUtils() {}
 }

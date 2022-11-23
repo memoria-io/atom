@@ -1,14 +1,14 @@
 package io.memoria.atom.es.active.banking;
 
-import io.memoria.atom.es.active.banking.command.HandleInboundTransfer;
-import io.memoria.atom.es.active.banking.command.MarkAsSuccessful;
+import io.memoria.atom.core.eventsourcing.rule.Saga;
 import io.memoria.atom.es.active.banking.command.AccountCommand;
+import io.memoria.atom.es.active.banking.command.HandleInboundTransfer;
 import io.memoria.atom.es.active.banking.command.MarkAsRejected;
+import io.memoria.atom.es.active.banking.command.MarkAsSuccessful;
 import io.memoria.atom.es.active.banking.event.InboundTransferAccepted;
 import io.memoria.atom.es.active.banking.event.InboundTransferRejected;
 import io.memoria.atom.es.active.banking.event.TransferCreated;
 import io.memoria.atom.es.active.banking.event.UserEvent;
-import io.memoria.atom.core.eventsourcing.rule.Saga;
 import io.vavr.control.Option;
 
 public record AccountSaga() implements Saga<UserEvent, AccountCommand> {

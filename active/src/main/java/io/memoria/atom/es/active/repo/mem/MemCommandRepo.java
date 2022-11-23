@@ -1,7 +1,7 @@
 package io.memoria.atom.es.active.repo.mem;
 
-import io.memoria.atom.es.active.repo.CommandRepo;
 import io.memoria.atom.core.eventsourcing.Command;
+import io.memoria.atom.es.active.repo.CommandRepo;
 import io.vavr.control.Try;
 
 import java.util.List;

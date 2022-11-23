@@ -10,6 +10,8 @@ import org.apache.kafka.common.serialization.StringSerializer;
 public class Dataset {
   private static final String SERVERS = "localhost:9092";
 
+  private Dataset() {}
+
   public static Map<String, Object> producerConfigs() {
     return HashMap.of(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
                       SERVERS,
@@ -37,6 +39,4 @@ public class Dataset {
                       ConsumerConfig.GROUP_ID_CONFIG,
                       "some_group_id1");
   }
-
-  private Dataset() {}
 }

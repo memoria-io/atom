@@ -39,6 +39,7 @@
         <cassandra.version>4.15.0</cassandra.version>
         <kafka.version>3.3.1</kafka.version>
         <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
+        <reactor.version>2020.0.23</reactor.version>
     </properties>
 
     <distributionManagement>
@@ -112,6 +113,25 @@
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>
                 <version>${kafka.version}</version>
+            </dependency>
+
+            <!-- ===============================================================   -->
+            <!-- Nats Dependencies                                                 -->
+            <!-- ===============================================================   -->
+            <dependency>
+                <groupId>io.nats</groupId>
+                <artifactId>jnats</artifactId>
+                <version>2.14.0</version>
+            </dependency>
+            <!--======================================================================================== -->
+            <!-- Reactive Dependencies -->
+            <!--======================================================================================== -->
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-bom</artifactId>
+                <version>${reactor.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <!--======================================================================================== -->
             <!-- Json Dependencies -->

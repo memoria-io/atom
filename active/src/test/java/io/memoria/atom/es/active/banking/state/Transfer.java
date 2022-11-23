@@ -1,7 +1,7 @@
 package io.memoria.atom.es.active.banking.state;
 
-import io.memoria.atom.core.id.Id;
 import io.memoria.atom.core.eventsourcing.StateId;
+import io.memoria.atom.core.id.Id;
 
 import java.io.Serializable;
 

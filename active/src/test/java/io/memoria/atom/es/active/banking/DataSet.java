@@ -1,12 +1,12 @@
 package io.memoria.atom.es.active.banking;
 
+import io.memoria.atom.core.eventsourcing.StateId;
+import io.memoria.atom.core.id.Id;
 import io.memoria.atom.es.active.banking.command.AccountCommand;
 import io.memoria.atom.es.active.banking.command.CloseAccount;
 import io.memoria.atom.es.active.banking.command.CreateAccount;
 import io.memoria.atom.es.active.banking.command.CreateTransfer;
 import io.memoria.atom.es.active.banking.state.Transfer;
-import io.memoria.atom.core.id.Id;
-import io.memoria.atom.core.eventsourcing.StateId;
 import io.vavr.collection.List;
 
 import java.util.Random;

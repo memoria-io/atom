@@ -10,6 +10,8 @@ import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
 
 class EventRowSts {
 
+  private EventRowSts() {}
+
   public static SimpleStatement push(String keyspace, String table, EventRow row) {
     return QueryBuilder.insertInto(keyspace, table)
                        .value(EventRow.stateIdCol, literal(row.stateId().value()))
@@ -55,6 +57,4 @@ class EventRowSts {
                         .withColumn(EventRow.eventCol, EventRow.eventColType)
                         .build();
   }
-
-  private EventRowSts() {}
 }

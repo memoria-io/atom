@@ -1,9 +1,9 @@
 package io.memoria.atom.es.active.repo.mem;
 
-import io.memoria.atom.es.active.repo.EventRepo;
 import io.memoria.atom.core.eventsourcing.Event;
 import io.memoria.atom.core.eventsourcing.Shardable;
 import io.memoria.atom.core.eventsourcing.StateId;
+import io.memoria.atom.es.active.repo.EventRepo;
 import io.vavr.control.Try;
 
 import java.util.List;

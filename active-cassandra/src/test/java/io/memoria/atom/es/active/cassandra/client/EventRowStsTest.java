@@ -24,11 +24,6 @@ class EventRowStsTest {
   private static final CqlSession session = SessionUtils.session(TestUtils.getClientConfig()).build();
   private static final int COUNT = 100;
 
-  @BeforeAll
-  static void beforeAll() {
-    System.out.println("EventRowStsTest: StateId:" + STATE_ID);
-  }
-
   @Test
   @Order(1)
   void testConnection() {
@@ -82,6 +77,11 @@ class EventRowStsTest {
     var rows = ExecUtils.execSelect(session, st);
     // Then
     assert rows.count() == COUNT;
+  }
+
+  @BeforeAll
+  static void beforeAll() {
+    System.out.println("EventRowStsTest: StateId:" + STATE_ID);
   }
 
   private static EventRow createRow(int i) {

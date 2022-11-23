@@ -1,12 +1,12 @@
 package io.memoria.atom.es.active.pipeline;
 
-import io.memoria.atom.es.active.exception.PipelineException.MismatchingStateId;
-import io.memoria.atom.es.active.repo.CommandRepo;
-import io.memoria.atom.es.active.repo.EventRepo;
 import io.memoria.atom.core.eventsourcing.Command;
 import io.memoria.atom.core.eventsourcing.CommandId;
 import io.memoria.atom.core.eventsourcing.Event;
 import io.memoria.atom.core.eventsourcing.State;
+import io.memoria.atom.es.active.exception.PipelineException.MismatchingStateId;
+import io.memoria.atom.es.active.repo.CommandRepo;
+import io.memoria.atom.es.active.repo.EventRepo;
 import io.vavr.control.Try;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

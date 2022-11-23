@@ -1,5 +1,6 @@
 package io.memoria.atom.es.active.banking;
 
+import io.memoria.atom.core.eventsourcing.StateId;
 import io.memoria.atom.es.active.banking.command.AccountCommand;
 import io.memoria.atom.es.active.banking.command.CloseAccount;
 import io.memoria.atom.es.active.banking.command.CreateAccount;
@@ -12,7 +13,6 @@ import io.memoria.atom.es.active.repo.CommandRepo;
 import io.memoria.atom.es.active.repo.EventRepo;
 import io.memoria.atom.es.active.repo.mem.MemCommandRepo;
 import io.memoria.atom.es.active.repo.mem.MemEventRepo;
-import io.memoria.atom.core.eventsourcing.StateId;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 

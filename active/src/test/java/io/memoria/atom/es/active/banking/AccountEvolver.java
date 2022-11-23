@@ -1,5 +1,7 @@
 package io.memoria.atom.es.active.banking;
 
+import io.memoria.atom.core.eventsourcing.exception.ESException.InvalidEvent;
+import io.memoria.atom.core.eventsourcing.rule.Evolver;
 import io.memoria.atom.es.active.banking.event.AccountClosed;
 import io.memoria.atom.es.active.banking.event.AccountCreated;
 import io.memoria.atom.es.active.banking.event.InboundTransferAccepted;
@@ -12,8 +14,6 @@ import io.memoria.atom.es.active.banking.state.ActiveAccount;
 import io.memoria.atom.es.active.banking.state.ClosedAccount;
 import io.memoria.atom.es.active.banking.state.User;
 import io.memoria.atom.es.active.banking.state.Visitor;
-import io.memoria.atom.core.eventsourcing.exception.ESException.InvalidEvent;
-import io.memoria.atom.core.eventsourcing.rule.Evolver;
 
 public record AccountEvolver() implements Evolver<User, UserEvent> {
   @Override

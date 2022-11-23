@@ -21,11 +21,6 @@ class QueryClientTest {
   private static final QueryClient client = new QueryClient(getClientConfig());
   private static final int COUNT = 100;
 
-  @BeforeAll
-  static void beforeAll() {
-    System.out.println("QueryClientTest: StateId:" + STATE_ID);
-  }
-
   @Test
   @Order(1)
   void createKeyspace() {
@@ -60,5 +55,10 @@ class QueryClientTest {
     var count = client.get(TestUtils.KEYSPACE, TABLE, STATE_ID).count();
     // Then
     assert count == COUNT;
+  }
+
+  @BeforeAll
+  static void beforeAll() {
+    System.out.println("QueryClientTest: StateId:" + STATE_ID);
   }
 }

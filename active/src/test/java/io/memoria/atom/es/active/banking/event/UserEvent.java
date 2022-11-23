@@ -3,7 +3,8 @@ package io.memoria.atom.es.active.banking.event;
 import io.memoria.atom.core.eventsourcing.Event;
 
 public sealed interface UserEvent extends Event permits AccountClosed,
-                                                        AccountCreated, OutboundTransferRejected,
+                                                        AccountCreated,
+                                                        OutboundTransferRejected,
                                                         OutboundTransferAccepted,
                                                         TransferCreated,
                                                         InboundTransferAccepted,

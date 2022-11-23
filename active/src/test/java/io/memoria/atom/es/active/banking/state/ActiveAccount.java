@@ -1,11 +1,11 @@
 package io.memoria.atom.es.active.banking.state;
 
+import io.memoria.atom.core.eventsourcing.StateId;
 import io.memoria.atom.es.active.banking.event.InboundTransferAccepted;
 import io.memoria.atom.es.active.banking.event.InboundTransferRejected;
-import io.memoria.atom.es.active.banking.event.OutboundTransferRejected;
 import io.memoria.atom.es.active.banking.event.OutboundTransferAccepted;
+import io.memoria.atom.es.active.banking.event.OutboundTransferRejected;
 import io.memoria.atom.es.active.banking.event.TransferCreated;
-import io.memoria.atom.core.eventsourcing.StateId;
 
 public record ActiveAccount(StateId stateId, String name, int balance, int ongoingTransactions) implements User {
   public boolean isClosable() {

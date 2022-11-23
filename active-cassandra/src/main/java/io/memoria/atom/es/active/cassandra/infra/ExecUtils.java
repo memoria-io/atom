@@ -9,6 +9,8 @@ import java.util.stream.StreamSupport;
 
 public class ExecUtils {
 
+  private ExecUtils() {}
+
   public static Stream<Row> execSelect(CqlSession session, SimpleStatement st) {
     var rs = session.execute(st);
     return StreamSupport.stream(rs.spliterator(), false);
@@ -17,6 +19,4 @@ public class ExecUtils {
   public static boolean exec(CqlSession session, SimpleStatement st) {
     return session.execute(st).wasApplied();
   }
-
-  private ExecUtils() {}
 }

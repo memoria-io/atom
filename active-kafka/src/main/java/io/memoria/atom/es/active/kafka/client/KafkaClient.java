@@ -1,10 +1,11 @@
 package io.memoria.atom.es.active.kafka.client;
 
+import io.memoria.atom.es.active.kafka.infra.KafkaUtils;
 import io.vavr.collection.Map;
 import io.vavr.control.Try;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import io.memoria.atom.es.active.kafka.infra.KafkaUtils;
+
 import java.time.Duration;
 import java.util.stream.Stream;
 
