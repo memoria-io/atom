@@ -29,6 +29,8 @@
         <module>active-cassandra</module>
         <module>active-kafka</module>
         <module>reactive</module>
+        <module>reactive-kafka</module>
+        <module>reactive-nats</module>
         <module>text</module>
         <module>sec</module>
         <module>web</module>

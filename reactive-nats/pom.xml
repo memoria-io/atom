@@ -9,18 +9,18 @@
         <version>19.3.0.8</version>
     </parent>
     <groupId>io.memoria.atom</groupId>
-    <artifactId>reactive</artifactId>
+    <artifactId>reactive-nats</artifactId>
     <version>19.3.0.8</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
-    <description>Eventsourcing reactive Module</description>
+    <description>nats Module</description>
     <dependencies>
         <!--======================================================================================== -->
         <!-- Modules Dependencies -->
         <!--======================================================================================== -->
         <dependency>
             <groupId>io.memoria.atom</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>reactive</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <!--======================================================================================== -->
@@ -28,12 +28,15 @@
         <!--======================================================================================== -->
         <dependency>
             <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <!-- ===============================================================   -->
+        <!-- Nats Dependencies                                                 -->
+        <!-- ===============================================================   -->
+        <dependency>
+            <groupId>io.nats</groupId>
+            <artifactId>jnats</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -9,7 +9,7 @@ services:
       CASSANDRA_AUTHENTICATOR: AllowAllAuthenticator
       CASSANDRA_AUTHORIZER: AllowAllAuthorizer
   kafka:
-    image: memoriaio/kafka-docker:2022.19.0
+    image: memoriaio/kafka-docker:19.0.1
     ports:
       - "9092:9092"
       - "9093:9093"
