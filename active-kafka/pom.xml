@@ -23,7 +23,9 @@
             <artifactId>active</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-
+        <!--======================================================================================== -->
+        <!-- Kafka Dependencies -->
+        <!--======================================================================================== -->
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>

@@ -23,6 +23,9 @@
             <artifactId>active</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <!--======================================================================================== -->
+        <!-- Cassandra Dependencies -->
+        <!--======================================================================================== -->
         <dependency>
             <groupId>com.datastax.oss</groupId>
             <artifactId>java-driver-core</artifactId>
