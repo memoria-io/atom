@@ -1,7 +1,7 @@
 package io.memoria.atom.active.eventsourcing.kafka;
 
 import io.memoria.atom.active.eventsourcing.kafka.infra.KafkaUtils;
-import io.memoria.atom.active.eventsourcing.repo.CommandRepo;
+import io.memoria.atom.active.eventsourcing.repo.CommandStream;
 import io.memoria.atom.core.eventsourcing.Command;
 import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.collection.Map;
@@ -14,7 +14,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import java.time.Duration;
 import java.util.stream.Stream;
 
-public class KafkaCommandRepo<C extends Command> implements CommandRepo<C> {
+public class KafkaCommandStream<C extends Command> implements CommandStream<C> {
   private final String topic;
   private final int streamPartition;
   private final int totalPartitions;
@@ -25,14 +25,14 @@ public class KafkaCommandRepo<C extends Command> implements CommandRepo<C> {
   private final KafkaProducer<String, String> producer;
   private final KafkaConsumer<String, String> consumer;
 
-  public KafkaCommandRepo(String topic,
-                          int partition,
-                          int totalPartitions,
-                          Class<C> cClass,
-                          TextTransformer transformer,
-                          Duration pollDuration,
-                          Map<String, Object> producerConfig,
-                          Map<String, Object> consumerConfig) {
+  public KafkaCommandStream(String topic,
+                            int partition,
+                            int totalPartitions,
+                            Class<C> cClass,
+                            TextTransformer transformer,
+                            Duration pollDuration,
+                            Map<String, Object> producerConfig,
+                            Map<String, Object> consumerConfig) {
     this.topic = topic;
     this.streamPartition = partition;
     this.totalPartitions = totalPartitions;

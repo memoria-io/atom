@@ -1,6 +1,6 @@
 package io.memoria.atom.active.eventsourcing.pipeline;
 
-import io.memoria.atom.active.eventsourcing.repo.CommandRepo;
+import io.memoria.atom.active.eventsourcing.repo.CommandStream;
 import io.memoria.atom.active.eventsourcing.repo.EventRepo;
 import io.memoria.atom.core.eventsourcing.Command;
 import io.memoria.atom.core.eventsourcing.Event;
@@ -18,24 +18,24 @@ public class Dispatcher<S extends State, C extends Command, E extends Event> {
   private static final Logger log = LogManager.getLogger(Dispatcher.class.getSimpleName());
 
   private final Domain<S, C, E> domain;
-  private final CommandRepo<C> commandRepo;
+  private final CommandStream<C> commandStream;
   private final EventRepo<E> EventRepo;
   private final Map<StateId, Pipeline<S, C, E>> pipelines;
 
-  public Dispatcher(Domain<S, C, E> domain, CommandRepo<C> commandRepo, EventRepo<E> EventRepo) {
+  public Dispatcher(Domain<S, C, E> domain, CommandStream<C> commandStream, EventRepo<E> EventRepo) {
     this.domain = domain;
-    this.commandRepo = commandRepo;
+    this.commandStream = commandStream;
     this.EventRepo = EventRepo;
     this.pipelines = new ConcurrentHashMap<>();
   }
 
   public Stream<Try<Boolean>> dispatch() {
-    return commandRepo.stream().map(cmdTry -> cmdTry.flatMap(this::handle));
+    return commandStream.stream().map(cmdTry -> cmdTry.flatMap(this::handle));
   }
 
   private Try<Boolean> handle(C cmd) {
     pipelines.computeIfAbsent(cmd.stateId(), s -> {
-      var pipeline = new StatePipeline<>(domain, commandRepo, EventRepo);
+      var pipeline = new StatePipeline<>(domain, commandStream, EventRepo);
       Thread.startVirtualThread(() -> pipeline.stream().forEach(this::execute));
       return pipeline;
     });

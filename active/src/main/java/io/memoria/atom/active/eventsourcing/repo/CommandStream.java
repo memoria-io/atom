@@ -5,7 +5,7 @@ import io.vavr.control.Try;
 
 import java.util.stream.Stream;
 
-public interface CommandRepo<C extends Command> {
+public interface CommandStream<C extends Command> {
   Stream<Try<C>> stream();
 
   Try<C> push(C cmd);

@@ -16,11 +16,11 @@ import java.time.Duration;
 import java.util.Random;
 
 @TestMethodOrder(OrderAnnotation.class)
-class KafkaCommandRepoTest {
+class KafkaCommandStreamTest {
   private static final Random r = new Random();
   private static final String topic = "some_topic_" + r.nextInt();
+  private static final KafkaCommandStream<GreetingCmd> client = createRepo();
   private static final int partition = 0;
-  private static final KafkaCommandRepo<GreetingCmd> client = createRepo();
   private static final int msgCount = 100;
 
   @Test
@@ -38,7 +38,7 @@ class KafkaCommandRepoTest {
   @Order(2)
   void stream() {
     // Given
-    new Thread(() -> createMessages(msgCount, msgCount + 10).forEach(KafkaCommandRepoTest::delayedSend)).start();
+    new Thread(() -> createMessages(msgCount, msgCount + 10).forEach(KafkaCommandStreamTest::delayedSend)).start();
     // Then
     client.stream()
           .map(Try::get)
@@ -60,15 +60,15 @@ class KafkaCommandRepoTest {
     }
   }
 
-  private static KafkaCommandRepo<GreetingCmd> createRepo() {
-    return new KafkaCommandRepo<>(topic,
-                                  partition,
-                                  1,
-                                  GreetingCmd.class,
-                                  new SerializableTransformer(),
-                                  Duration.ofMillis(100),
-                                  Dataset.producerConfigs(),
-                                  Dataset.consumerConfigs());
+  private static KafkaCommandStream<GreetingCmd> createRepo() {
+    return new KafkaCommandStream<>(topic,
+                                    partition,
+                                    1,
+                                    GreetingCmd.class,
+                                    new SerializableTransformer(),
+                                    Duration.ofMillis(100),
+                                    Dataset.producerConfigs(),
+                                    Dataset.consumerConfigs());
   }
 
   private record GreetingCmd(CommandId commandId, StateId stateId, String message) implements Command {

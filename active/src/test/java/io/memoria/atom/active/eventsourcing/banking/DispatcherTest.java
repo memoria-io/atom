@@ -8,9 +8,9 @@ import io.memoria.atom.active.eventsourcing.banking.state.User;
 import io.memoria.atom.active.eventsourcing.banking.state.Visitor;
 import io.memoria.atom.active.eventsourcing.pipeline.Dispatcher;
 import io.memoria.atom.active.eventsourcing.pipeline.Domain;
-import io.memoria.atom.active.eventsourcing.repo.CommandRepo;
+import io.memoria.atom.active.eventsourcing.repo.CommandStream;
 import io.memoria.atom.active.eventsourcing.repo.EventRepo;
-import io.memoria.atom.active.eventsourcing.repo.mem.MemCommandRepo;
+import io.memoria.atom.active.eventsourcing.repo.mem.MemCommandStream;
 import io.memoria.atom.active.eventsourcing.repo.mem.MemEventRepo;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.vavr.control.Try;
@@ -22,16 +22,16 @@ import java.util.stream.Stream;
 class DispatcherTest {
   private static final AtomicInteger latch = new AtomicInteger(12);
 
-  private final CommandRepo<AccountCommand> commandRepo;
+  private final CommandStream<AccountCommand> commandStream;
   private final EventRepo<UserEvent> EventRepo;
   private final Dispatcher<User, AccountCommand, UserEvent> dispatcher;
 
   DispatcherTest() {
     var domain = new Domain<>(new Visitor(), new AccountDecider(), new AccountSaga(), new AccountEvolver());
 
-    commandRepo = new MemCommandRepo<>(0, 1);
+    commandStream = new MemCommandStream<>(0, 1);
     EventRepo = new MemEventRepo<>(1);
-    dispatcher = new Dispatcher<>(domain, commandRepo, EventRepo);
+    dispatcher = new Dispatcher<>(domain, commandStream, EventRepo);
   }
 
   @Test
@@ -53,7 +53,7 @@ class DispatcherTest {
                                             closeJanAccount,
                                             sendThirdMoney);
 
-    cmds.map(commandRepo::push).forEach(Try::get);
+    cmds.map(commandStream::push).forEach(Try::get);
     // Then
     dispatcher.dispatch().takeWhile(s -> latch.decrementAndGet() > 0).forEach(Try::get);
     //    eventRepo.stream(bobId).map(Try::get).forEach(System.out::println);

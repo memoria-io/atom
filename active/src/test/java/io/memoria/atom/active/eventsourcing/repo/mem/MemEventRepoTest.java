@@ -24,7 +24,7 @@ class MemEventRepoTest {
 
   @AfterEach
   void afterEach() {
-    repo.topic.get(partition).msgs().clear();
+    repo.topic.get(partition).clear();
   }
 
   @Test

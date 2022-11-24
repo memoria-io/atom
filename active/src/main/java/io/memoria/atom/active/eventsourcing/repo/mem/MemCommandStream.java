@@ -1,30 +1,31 @@
 package io.memoria.atom.active.eventsourcing.repo.mem;
 
-import io.memoria.atom.active.eventsourcing.repo.CommandRepo;
+import io.memoria.atom.active.eventsourcing.repo.CommandStream;
 import io.memoria.atom.core.eventsourcing.Command;
 import io.vavr.control.Try;
 
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class MemCommandRepo<C extends Command> implements CommandRepo<C> {
-  public final List<MemCommandPartition<C>> topic;
+public class MemCommandStream<C extends Command> implements CommandStream<C> {
+  public final List<LinkedBlockingDeque<C>> topic;
   private final int partition;
 
-  public MemCommandRepo(int partition, List<MemCommandPartition<C>> topic) {
+  public MemCommandStream(int partition, List<LinkedBlockingDeque<C>> topic) {
     this.topic = topic;
     this.partition = partition;
   }
 
-  public MemCommandRepo(int partition, int totalPartitions) {
-    this.topic = IntStream.range(0, totalPartitions).mapToObj(i -> new MemCommandPartition<C>()).toList();
+  public MemCommandStream(int partition, int totalPartitions) {
+    this.topic = IntStream.range(0, totalPartitions).mapToObj(i -> new LinkedBlockingDeque<C>()).toList();
     this.partition = partition;
   }
 
   @Override
   public Stream<Try<C>> stream() {
-    var q = topic.get(partition).msgs();
+    var q = topic.get(partition);
     return Stream.generate(() -> {
       try {
         return Try.success(q.take());
@@ -38,7 +39,7 @@ public class MemCommandRepo<C extends Command> implements CommandRepo<C> {
   public Try<C> push(C cmd) {
     return Try.of(() -> {
       int partition = cmd.partition(topic.size());
-      topic.get(partition).msgs().offer(cmd);
+      topic.get(partition).offer(cmd);
       return cmd;
     });
   }

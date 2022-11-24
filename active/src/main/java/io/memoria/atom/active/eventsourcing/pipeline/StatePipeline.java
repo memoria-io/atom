@@ -1,7 +1,7 @@
 package io.memoria.atom.active.eventsourcing.pipeline;
 
 import io.memoria.atom.active.eventsourcing.exception.PipelineException.MismatchingStateId;
-import io.memoria.atom.active.eventsourcing.repo.CommandRepo;
+import io.memoria.atom.active.eventsourcing.repo.CommandStream;
 import io.memoria.atom.active.eventsourcing.repo.EventRepo;
 import io.memoria.atom.core.eventsourcing.Command;
 import io.memoria.atom.core.eventsourcing.CommandId;
@@ -26,10 +26,10 @@ public class StatePipeline<S extends State, C extends Command, E extends Event> 
   private final Set<CommandId> processed;
   private final BlockingDeque<C> cmdQueue;
   // Infra
-  private final CommandRepo<C> cmdRepo;
+  private final CommandStream<C> cmdRepo;
   private final EventRepo<E> eventRepo;
 
-  public StatePipeline(Domain<S, C, E> domain, CommandRepo<C> cmdRepo, EventRepo<E> eventRepo) {
+  public StatePipeline(Domain<S, C, E> domain, CommandStream<C> cmdRepo, EventRepo<E> eventRepo) {
     this.domain = domain;
     // In memory
     this.state = domain.initState();
