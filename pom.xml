@@ -6,13 +6,13 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>jbom</artifactId>
-        <version>0.19.0</version>
+        <version>19.0.1</version>
     </parent>
 
     <!--suppress MavenRedundantGroupId -->
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>19.0.0.2</version>
+    <version>19.0.0</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
@@ -38,7 +38,6 @@
     </modules>
 
     <properties>
-        <atom.version>19.3.0.7</atom.version>
         <cassandra.version>4.15.0</cassandra.version>
         <kafka.version>3.3.1</kafka.version>
         <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
