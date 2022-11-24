@@ -10,7 +10,11 @@ import java.util.stream.Stream;
 class QueryClient {
   private final CqlSession session;
 
-  public QueryClient(ClientConfig config) {
+  QueryClient(CqlSession session) {
+    this.session = session;
+  }
+
+  QueryClient(ClientConfig config) {
     this.session = SessionUtils.session(config).build();
   }
 

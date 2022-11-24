@@ -1,5 +1,6 @@
 package io.memoria.atom.active.eventsourcing.cassandra;
 
+import com.datastax.oss.driver.api.core.CqlSession;
 import io.memoria.atom.active.eventsourcing.repo.EventMsg;
 import io.memoria.atom.active.eventsourcing.repo.EventRepo;
 import io.memoria.atom.core.eventsourcing.StateId;
@@ -12,10 +13,16 @@ public class CassandraEventRepo implements EventRepo {
   private final String topic;
   private final QueryClient client;
 
-  public CassandraEventRepo(String keyspace, String topic, QueryClient client) {
+  public CassandraEventRepo(String keyspace, String topic, CqlSession cqlSession) {
     this.keyspace = keyspace;
     this.topic = topic;
-    this.client = client;
+    this.client = new QueryClient(cqlSession);
+  }
+
+  public CassandraEventRepo(String keyspace, String topic, ClientConfig clientConfig) {
+    this.keyspace = keyspace;
+    this.topic = topic;
+    this.client = new QueryClient(clientConfig);
   }
 
   @Override
