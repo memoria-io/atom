@@ -1,35 +1,34 @@
 package io.memoria.atom.active.eventsourcing.repo.mem;
 
+import io.memoria.atom.active.eventsourcing.repo.EventMsg;
 import io.memoria.atom.active.eventsourcing.repo.EventRepo;
-import io.memoria.atom.core.eventsourcing.Event;
-import io.memoria.atom.core.eventsourcing.Shardable;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.vavr.control.Try;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.Map;
 import java.util.stream.Stream;
 
-public class MemEventRepo<E extends Event> implements EventRepo<E> {
-  public final List<ArrayList<E>> topic;
+public class MemEventRepo implements EventRepo {
+  private final Map<String, List<EventMsg>> topics = new HashMap<>();
 
-  public MemEventRepo(int totalPartitions) {
-    this.topic = IntStream.range(0, totalPartitions).mapToObj(i -> new ArrayList<E>()).toList();
+  public MemEventRepo(String... topicNames) {
+    Arrays.stream(topicNames).forEach(name -> this.topics.put(name, new ArrayList<>()));
   }
 
   @Override
-  public Stream<Try<E>> getAll(StateId stateId) {
-    var partition = Shardable.partition(stateId, topic.size());
-    return topic.get(partition).stream().filter(msg -> msg.stateId().equals(stateId)).map(m -> Try.of(() -> m));
+  public Stream<EventMsg> getAll(String topic, StateId stateId) {
+    return this.topics.get(topic).stream().filter(msg -> msg.stateId().equals(stateId));
   }
 
   @Override
-  public Try<E> append(E event) {
+  public Try<Integer> append(EventMsg event) {
     return Try.of(() -> {
-      int partition = event.partition(topic.size());
-      topic.get(partition).add(event);
-      return event;
+      topics.get(event.topic()).add(event);
+      return event.seqId();
     });
   }
 }

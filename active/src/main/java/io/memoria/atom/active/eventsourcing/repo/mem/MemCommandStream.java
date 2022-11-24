@@ -1,46 +1,48 @@
 package io.memoria.atom.active.eventsourcing.repo.mem;
 
+import io.memoria.atom.active.eventsourcing.repo.CmdMsg;
 import io.memoria.atom.active.eventsourcing.repo.CommandStream;
-import io.memoria.atom.core.eventsourcing.Command;
 import io.vavr.control.Try;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class MemCommandStream<C extends Command> implements CommandStream<C> {
-  public final List<LinkedBlockingDeque<C>> topic;
-  private final int partition;
+public class MemCommandStream implements CommandStream {
+  private final Map<String, List<LinkedBlockingDeque<CmdMsg>>> topics = new HashMap<>();
 
-  public MemCommandStream(int partition, List<LinkedBlockingDeque<C>> topic) {
-    this.topic = topic;
-    this.partition = partition;
+  public MemCommandStream(Map<String, Integer> topicPartitions) {
+    topicPartitions.forEach((key, value) -> this.topics.put(key, createTopic(value)));
   }
 
-  public MemCommandStream(int partition, int totalPartitions) {
-    this.topic = IntStream.range(0, totalPartitions).mapToObj(i -> new LinkedBlockingDeque<C>()).toList();
-    this.partition = partition;
+  public MemCommandStream(String topic, int totalPartitions) {
+    this(Map.of(topic, totalPartitions));
   }
 
   @Override
-  public Stream<Try<C>> stream() {
-    var q = topic.get(partition);
+  public Try<CmdMsg> pub(CmdMsg cmd) {
+    return Try.of(() -> {
+      topics.get(cmd.topic()).get(cmd.partition()).offer(cmd);
+      return cmd;
+    });
+  }
+
+  @Override
+  public Stream<CmdMsg> sub(String topic, int partition) {
+    var q = topics.get(topic).get(partition);
     return Stream.generate(() -> {
       try {
-        return Try.success(q.take());
+        return q.take();
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
     });
   }
 
-  @Override
-  public Try<C> send(C cmd) {
-    return Try.of(() -> {
-      int partition = cmd.partition(topic.size());
-      topic.get(partition).offer(cmd);
-      return cmd;
-    });
+  private static List<LinkedBlockingDeque<CmdMsg>> createTopic(int e) {
+    return IntStream.range(0, e).mapToObj(i -> new LinkedBlockingDeque<CmdMsg>()).toList();
   }
 }

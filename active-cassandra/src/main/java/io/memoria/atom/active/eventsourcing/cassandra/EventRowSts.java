@@ -4,7 +4,6 @@ import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import com.datastax.oss.driver.api.core.metadata.schema.ClusteringOrder;
 import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
 import com.datastax.oss.driver.api.querybuilder.SchemaBuilder;
-import io.memoria.atom.core.eventsourcing.StateId;
 
 import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
 
@@ -14,29 +13,29 @@ class EventRowSts {
 
   public static SimpleStatement push(String keyspace, String table, EventRow row) {
     return QueryBuilder.insertInto(keyspace, table)
-                       .value(EventRow.stateIdCol, literal(row.stateId().value()))
+                       .value(EventRow.stateIdCol, literal(row.stateId()))
                        .value(EventRow.seqCol, literal(row.seqId()))
-                       .value(EventRow.eventCol, literal(row.event()))
+                       .value(EventRow.eventCol, literal(row.value()))
                        .value(EventRow.createdAtCol, literal(row.createdAt()))
                        .ifNotExists()
                        .build();
   }
 
-  public static SimpleStatement getLastSeqId(String keyspace, String table, StateId stateId) {
+  public static SimpleStatement getLastSeqId(String keyspace, String table, String stateId) {
     return QueryBuilder.selectFrom(keyspace, table)
                        .all()
                        .orderBy(EventRow.seqCol, ClusteringOrder.DESC)
                        .limit(1)
                        .whereColumn(EventRow.stateIdCol)
-                       .isEqualTo(literal(stateId.value()))
+                       .isEqualTo(literal(stateId))
                        .build();
   }
 
-  public static SimpleStatement get(String keyspace, String table, StateId stateId) {
+  public static SimpleStatement get(String keyspace, String table, String stateId) {
     return QueryBuilder.selectFrom(keyspace, table)
                        .all()
                        .whereColumn(EventRow.stateIdCol)
-                       .isEqualTo(literal(stateId.value()))
+                       .isEqualTo(literal(stateId))
                        .build();
   }
 
@@ -53,8 +52,8 @@ class EventRowSts {
                         .ifNotExists()
                         .withPartitionKey(EventRow.stateIdCol, EventRow.stateIdColType)
                         .withClusteringColumn(EventRow.seqCol, EventRow.seqColType)
-                        .withColumn(EventRow.createdAtCol, EventRow.createAtColType)
                         .withColumn(EventRow.eventCol, EventRow.eventColType)
+                        .withColumn(EventRow.createdAtCol, EventRow.createAtColType)
                         .build();
   }
 }

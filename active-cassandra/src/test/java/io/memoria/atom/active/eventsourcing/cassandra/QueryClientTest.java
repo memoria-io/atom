@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static io.memoria.atom.active.eventsourcing.cassandra.TestUtils.KEYSPACE;
@@ -16,7 +17,7 @@ import static io.memoria.atom.active.eventsourcing.cassandra.TestUtils.getClient
 @TestMethodOrder(OrderAnnotation.class)
 class QueryClientTest {
   private static final String TABLE = QueryClientTest.class.getSimpleName() + "_events";
-  private static final StateId STATE_ID = StateId.randomUUID();
+  private static final String STATE_ID = StateId.randomUUID().value();
   private static final AdminClient admin = new AdminClient(getClientConfig());
   private static final QueryClient client = new QueryClient(getClientConfig());
   private static final int COUNT = 100;
@@ -43,9 +44,10 @@ class QueryClientTest {
   @Order(3)
   void push() {
     // When
-    var rows = IntStream.range(0, COUNT).mapToObj(i -> client.push(KEYSPACE, TABLE, STATE_ID, "someEvent_" + i));
+    var rows = IntStream.range(0, COUNT).mapToObj(i -> client.push(KEYSPACE, TABLE, STATE_ID, i, "someEvent_" + i));
+    AtomicInteger idx = new AtomicInteger(0);
     // Then
-    rows.forEach(Assertions::assertTrue);
+    rows.forEach(i -> Assertions.assertEquals(i.get(), idx.getAndIncrement()));
   }
 
   @Test

@@ -1,9 +1,9 @@
 package io.memoria.atom.active.eventsourcing.banking;
 
-import io.memoria.atom.active.eventsourcing.banking.command.AccountCommand;
 import io.memoria.atom.active.eventsourcing.banking.command.CloseAccount;
 import io.memoria.atom.active.eventsourcing.banking.command.CreateAccount;
 import io.memoria.atom.active.eventsourcing.banking.command.CreateTransfer;
+import io.memoria.atom.active.eventsourcing.banking.command.UserCommand;
 import io.memoria.atom.active.eventsourcing.banking.state.Transfer;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.memoria.atom.core.id.Id;
@@ -26,15 +26,15 @@ class DataSet {
     return "new_name_" + i;
   }
 
-  static List<AccountCommand> createAccounts(int nAccounts, int balance) {
+  static List<UserCommand> createAccounts(int nAccounts, int balance) {
     return List.range(0, nAccounts).map(i -> CreateAccount.of(createId(i), createName(i), balance));
   }
 
-  static List<AccountCommand> randomClosure(int nAccounts) {
+  static List<UserCommand> randomClosure(int nAccounts) {
     return shuffledIds(nAccounts).map(CloseAccount::of);
   }
 
-  static List<AccountCommand> randomOutBounds(int nAccounts, int maxAmount) {
+  static List<UserCommand> randomOutBounds(int nAccounts, int maxAmount) {
     var accounts = shuffledIds(nAccounts);
     var from = accounts.subSequence(0, nAccounts / 2);
     var to = accounts.subSequence(nAccounts / 2, nAccounts);
@@ -42,7 +42,7 @@ class DataSet {
     return List.range(0, nAccounts / 2).map(i -> createTransfer(from.get(i), to.get(i), amounts.get(i)));
   }
 
-  static AccountCommand createTransfer(StateId sender, StateId receiver, int amount) {
+  static UserCommand createTransfer(StateId sender, StateId receiver, int amount) {
     var transaction = new Transfer(Id.of(), sender, receiver, amount);
     return CreateTransfer.of(transaction);
   }

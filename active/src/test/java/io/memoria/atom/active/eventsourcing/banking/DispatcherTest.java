@@ -1,18 +1,22 @@
 package io.memoria.atom.active.eventsourcing.banking;
 
-import io.memoria.atom.active.eventsourcing.banking.command.AccountCommand;
 import io.memoria.atom.active.eventsourcing.banking.command.CloseAccount;
 import io.memoria.atom.active.eventsourcing.banking.command.CreateAccount;
+import io.memoria.atom.active.eventsourcing.banking.command.UserCommand;
 import io.memoria.atom.active.eventsourcing.banking.event.UserEvent;
 import io.memoria.atom.active.eventsourcing.banking.state.User;
 import io.memoria.atom.active.eventsourcing.banking.state.Visitor;
 import io.memoria.atom.active.eventsourcing.pipeline.Dispatcher;
 import io.memoria.atom.active.eventsourcing.pipeline.Domain;
+import io.memoria.atom.active.eventsourcing.pipeline.Route;
+import io.memoria.atom.active.eventsourcing.repo.CmdMsg;
 import io.memoria.atom.active.eventsourcing.repo.CommandStream;
 import io.memoria.atom.active.eventsourcing.repo.EventRepo;
 import io.memoria.atom.active.eventsourcing.repo.mem.MemCommandStream;
 import io.memoria.atom.active.eventsourcing.repo.mem.MemEventRepo;
 import io.memoria.atom.core.eventsourcing.StateId;
+import io.memoria.atom.core.text.SerializableTransformer;
+import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 
@@ -21,17 +25,24 @@ import java.util.stream.Stream;
 
 class DispatcherTest {
   private static final AtomicInteger latch = new AtomicInteger(12);
-
-  private final CommandStream<AccountCommand> commandStream;
-  private final EventRepo<UserEvent> EventRepo;
-  private final Dispatcher<User, AccountCommand, UserEvent> dispatcher;
+  private static final Route route = new Route("cmdTopic", 0, 1, "eventTopic");
+  private static final TextTransformer transformer = new SerializableTransformer();
+  private final CommandStream commandStream;
+  private final EventRepo EventRepo;
+  private final Dispatcher<User, UserCommand, UserEvent> dispatcher;
 
   DispatcherTest() {
-    var domain = new Domain<>(new Visitor(), new AccountDecider(), new AccountSaga(), new AccountEvolver());
+    var domain = new Domain<>(User.class,
+                              UserCommand.class,
+                              UserEvent.class,
+                              new Visitor(),
+                              new AccountDecider(),
+                              new AccountSaga(),
+                              new AccountEvolver());
 
-    commandStream = new MemCommandStream<>(0, 1);
-    EventRepo = new MemEventRepo<>(1);
-    dispatcher = new Dispatcher<>(domain, commandStream, EventRepo);
+    commandStream = new MemCommandStream(route.cmdTopic(), route.totalCmdPartitions());
+    EventRepo = new MemEventRepo(route.eventTopic());
+    dispatcher = new Dispatcher<>(domain, route, commandStream, EventRepo, transformer);
   }
 
   @Test
@@ -46,14 +57,14 @@ class DispatcherTest {
     var sendThirdMoney = DataSet.createTransfer(bobId, janId, 25);
     var closeJanAccount = CloseAccount.of(janId);
     // When
-    Stream<AccountCommand> cmds = Stream.of(createBob,
-                                            createJan,
-                                            sendMoneyFromBobToJan,
-                                            sendSecondMoney,
-                                            closeJanAccount,
-                                            sendThirdMoney);
+    Stream<UserCommand> cmds = Stream.of(createBob,
+                                         createJan,
+                                         sendMoneyFromBobToJan,
+                                         sendSecondMoney,
+                                         closeJanAccount,
+                                         sendThirdMoney);
 
-    cmds.map(commandStream::send).forEach(Try::get);
+    cmds.map(c -> commandStream.pub(toMessage(c))).forEach(Try::get);
     // Then
     dispatcher.dispatch().takeWhile(s -> latch.decrementAndGet() > 0).forEach(Try::get);
     //    eventRepo.stream(bobId).map(Try::get).forEach(System.out::println);
@@ -63,6 +74,12 @@ class DispatcherTest {
     //    var accounts = this.pipeline.run(commandStreamRepo.stream()).toList();
     //    Assertions.assertInstanceOf(Acc.class, accounts.get(0));
     //    Assertions.assertInstanceOf(ClosedAccount.class, accounts.get(1));
+  }
+
+  private CmdMsg toMessage(UserCommand c) {
+    var value = transformer.serialize(c).get();
+    int partition = c.partition(route.totalCmdPartitions());
+    return CmdMsg.create(route.cmdTopic(), partition, c.commandId().value(), value);
   }
   //
   //  @Test
