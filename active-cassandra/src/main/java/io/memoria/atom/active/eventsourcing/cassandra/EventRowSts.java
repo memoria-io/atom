@@ -15,7 +15,7 @@ class EventRowSts {
     return QueryBuilder.insertInto(keyspace, table)
                        .value(EventRow.stateIdCol, literal(row.stateId()))
                        .value(EventRow.seqCol, literal(row.seqId()))
-                       .value(EventRow.eventCol, literal(row.value()))
+                       .value(EventRow.eventCol, literal(row.event()))
                        .value(EventRow.createdAtCol, literal(row.createdAt()))
                        .ifNotExists()
                        .build();

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Objects;
 
-record EventRow(String stateId, int seqId, String value, long createdAt) {
+record EventRow(String stateId, int seqId, String event, long createdAt) {
   // StateId
   static final String stateIdCol = "state_id";
   static final DataType stateIdColType = DataTypes.TEXT;
@@ -16,7 +16,7 @@ record EventRow(String stateId, int seqId, String value, long createdAt) {
   static final String seqCol = "seq_id";
   static final DataType seqColType = DataTypes.INT;
   // Value
-  static final String eventCol = "value";
+  static final String eventCol = "event";
   static final DataType eventColType = DataTypes.TEXT;
   // CreatedAt
   static final String createdAtCol = "created_at";

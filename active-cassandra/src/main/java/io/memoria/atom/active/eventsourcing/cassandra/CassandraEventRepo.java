@@ -30,6 +30,6 @@ public class CassandraEventRepo implements EventRepo {
   }
 
   private EventMsg toEventMsg(String topic, EventRow row) {
-    return EventMsg.create(topic, StateId.of(row.stateId()), row.seqId(), row.value());
+    return EventMsg.create(topic, StateId.of(row.stateId()), row.seqId(), row.event());
   }
 }
