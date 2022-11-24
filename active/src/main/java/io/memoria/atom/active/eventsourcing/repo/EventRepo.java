@@ -7,7 +7,7 @@ import io.vavr.control.Try;
 import java.util.stream.Stream;
 
 public interface EventRepo<E extends Event> {
-  Stream<Try<E>> get(StateId stateId);
+  Stream<Try<E>> getAll(StateId stateId);
 
-  Try<E> push(E event);
+  Try<E> append(E event);
 }

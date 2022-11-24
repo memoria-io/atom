@@ -8,5 +8,5 @@ import java.util.stream.Stream;
 public interface CommandStream<C extends Command> {
   Stream<Try<C>> stream();
 
-  Try<C> push(C cmd);
+  Try<C> send(C cmd);
 }

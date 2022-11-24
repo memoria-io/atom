@@ -29,12 +29,12 @@ public class CassandraEventRepo<E extends Event> implements EventRepo<E> {
   }
 
   @Override
-  public Stream<Try<E>> get(StateId stateId) {
+  public Stream<Try<E>> getAll(StateId stateId) {
     return client.get(keyspace, topic, stateId).map(this::toEvent);
   }
 
   @Override
-  public Try<E> push(E event) {
+  public Try<E> append(E event) {
     return transformer.serialize(event)
                       .map(str -> client.push(keyspace, topic, event.stateId(), str))
                       .flatMap(b -> handle(event, b));

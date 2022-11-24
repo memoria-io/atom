@@ -33,7 +33,7 @@ class MemEventRepoTest {
     // Given
     var events = createMsgs(S0).appendAll(createMsgs(S1));
     // Then
-    events.map(repo::push).forEach(Try::get);
+    events.map(repo::append).forEach(Try::get);
   }
 
   @Test
@@ -42,10 +42,10 @@ class MemEventRepoTest {
     // Given
     var events = createMsgs(S0).appendAll(createMsgs(S1));
     // When
-    events.map(repo::push).forEach(Try::get);
+    events.map(repo::append).forEach(Try::get);
     // Then
-    assertEquals(1000, repo.get(S0).toList().size());
-    assertEquals(1000, repo.get(S1).toList().size());
+    assertEquals(1000, repo.getAll(S0).toList().size());
+    assertEquals(1000, repo.getAll(S1).toList().size());
   }
 
   private List<Event> createMsgs(StateId stateId) {

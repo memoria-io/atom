@@ -29,7 +29,7 @@ class KafkaCommandStreamTest {
     // Given
     var msgs = createMessages(0, msgCount);
     // When
-    var result = msgs.map(client::push);
+    var result = msgs.map(client::send);
     // Then
     result.forEach(tr -> Assertions.assertTrue(tr.isSuccess()));
   }
@@ -54,7 +54,7 @@ class KafkaCommandStreamTest {
   private static void delayedSend(GreetingCmd msg) {
     try {
       Thread.sleep(100);
-      client.push(msg);
+      client.send(msg);
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }

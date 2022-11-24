@@ -68,16 +68,16 @@ public class StatePipeline<S extends State, C extends Command, E extends Event> 
 
   public Try<S> decide(C cmd) {
     if (state.equals(domain.initState())) {
-      eventRepo.get(cmd.stateId()).forEach(tr -> tr.map(this::evolve));
+      eventRepo.getAll(cmd.stateId()).forEach(tr -> tr.map(this::evolve));
     }
-    return domain.decider().apply(state, cmd).flatMap(this::saga).flatMap(eventRepo::push).map(this::evolve);
+    return domain.decider().apply(state, cmd).flatMap(this::saga).flatMap(eventRepo::append).map(this::evolve);
   }
 
   public Try<E> saga(E e) {
     var sagaCmd = domain.saga().apply(e);
     if (sagaCmd.isDefined()) {
       C cmd = sagaCmd.get();
-      return cmdRepo.push(cmd).map(c -> e);
+      return cmdRepo.send(cmd).map(c -> e);
     } else {
       return Try.success(e);
     }

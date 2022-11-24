@@ -36,7 +36,7 @@ public class MemCommandStream<C extends Command> implements CommandStream<C> {
   }
 
   @Override
-  public Try<C> push(C cmd) {
+  public Try<C> send(C cmd) {
     return Try.of(() -> {
       int partition = cmd.partition(topic.size());
       topic.get(partition).offer(cmd);

@@ -53,7 +53,7 @@ class DispatcherTest {
                                             closeJanAccount,
                                             sendThirdMoney);
 
-    cmds.map(commandStream::push).forEach(Try::get);
+    cmds.map(commandStream::send).forEach(Try::get);
     // Then
     dispatcher.dispatch().takeWhile(s -> latch.decrementAndGet() > 0).forEach(Try::get);
     //    eventRepo.stream(bobId).map(Try::get).forEach(System.out::println);

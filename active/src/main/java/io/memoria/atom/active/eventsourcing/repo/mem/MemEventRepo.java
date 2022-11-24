@@ -19,13 +19,13 @@ public class MemEventRepo<E extends Event> implements EventRepo<E> {
   }
 
   @Override
-  public Stream<Try<E>> get(StateId stateId) {
+  public Stream<Try<E>> getAll(StateId stateId) {
     var partition = Shardable.partition(stateId, topic.size());
     return topic.get(partition).stream().filter(msg -> msg.stateId().equals(stateId)).map(m -> Try.of(() -> m));
   }
 
   @Override
-  public Try<E> push(E event) {
+  public Try<E> append(E event) {
     return Try.of(() -> {
       int partition = event.partition(topic.size());
       topic.get(partition).add(event);

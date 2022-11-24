@@ -49,7 +49,7 @@ public class KafkaCommandStream<C extends Command> implements CommandStream<C> {
   }
 
   @Override
-  public Try<C> push(C cmd) {
+  public Try<C> send(C cmd) {
     return toRecord(cmd).flatMap(c -> Try.of(() -> KafkaUtils.send(producer, c))).map(meta -> cmd);
   }
 
