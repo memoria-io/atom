@@ -5,8 +5,8 @@ import com.datastax.oss.driver.api.core.CqlSession;
 public class AdminClient {
   private final CqlSession cqlSession;
 
-  public AdminClient(ClientConfig config) {
-    this.cqlSession = SessionUtils.session(config).build();
+  public AdminClient(CqlSession cqlSession) {
+    this.cqlSession = cqlSession;
   }
 
   public boolean createKeyspace(String keyspace, int replication) {

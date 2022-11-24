@@ -19,12 +19,6 @@ public class CassandraEventRepo implements EventRepo {
     this.client = new QueryClient(cqlSession);
   }
 
-  public CassandraEventRepo(String keyspace, String topic, ClientConfig clientConfig) {
-    this.keyspace = keyspace;
-    this.topic = topic;
-    this.client = new QueryClient(clientConfig);
-  }
-
   @Override
   public Stream<EventMsg> getAll(String topic, StateId stateId) {
     return client.get(keyspace, topic, stateId.value()).map(row -> toEventMsg(topic, row));

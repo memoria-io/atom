@@ -14,10 +14,6 @@ class QueryClient {
     this.session = session;
   }
 
-  QueryClient(ClientConfig config) {
-    this.session = SessionUtils.session(config).build();
-  }
-
   public Stream<EventRow> get(String keyspace, String table, String stateId) {
     var st = EventRowSts.get(keyspace, table, stateId);
     return ExecUtils.execSelect(session, st).map(EventRow::from);
