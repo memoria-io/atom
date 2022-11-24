@@ -10,12 +10,10 @@ import java.util.stream.Stream;
 
 public class CassandraEventRepo implements EventRepo {
   private final String keyspace;
-  private final String topic;
   private final QueryClient client;
 
-  public CassandraEventRepo(String keyspace, String topic, CqlSession cqlSession) {
+  public CassandraEventRepo(String keyspace, CqlSession cqlSession) {
     this.keyspace = keyspace;
-    this.topic = topic;
     this.client = new QueryClient(cqlSession);
   }
 
@@ -25,8 +23,8 @@ public class CassandraEventRepo implements EventRepo {
   }
 
   @Override
-  public Try<Integer> append(EventMsg event) {
-    return client.push(keyspace, topic, event.stateId().value(), event.seqId(), event.value());
+  public Try<Integer> append(EventMsg eventMsg) {
+    return client.push(keyspace, eventMsg.topic(), eventMsg.stateId().value(), eventMsg.seqId(), eventMsg.value());
 
   }
 
