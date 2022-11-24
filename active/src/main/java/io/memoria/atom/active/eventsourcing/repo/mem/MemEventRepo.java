@@ -15,6 +15,10 @@ import java.util.stream.Stream;
 public class MemEventRepo implements EventRepo {
   private final Map<String, List<EventMsg>> topics = new HashMap<>();
 
+  public MemEventRepo(List<String> topicNames) {
+    topicNames.forEach(name -> this.topics.put(name, new ArrayList<>()));
+  }
+
   public MemEventRepo(String... topicNames) {
     Arrays.stream(topicNames).forEach(name -> this.topics.put(name, new ArrayList<>()));
   }
