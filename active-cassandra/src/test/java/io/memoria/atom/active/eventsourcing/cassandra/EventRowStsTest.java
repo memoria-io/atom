@@ -21,7 +21,7 @@ import static io.memoria.atom.active.eventsourcing.cassandra.TestUtils.KEYSPACE;
 class EventRowStsTest {
   private static final String TABLE = EventRowStsTest.class.getSimpleName() + "_events";
   private static final String STATE_ID = StateId.randomUUID().value();
-  private static final CqlSession session = SessionUtils.session(TestUtils.getClientConfig()).build();
+  private static final CqlSession session = TestUtils.CqlSession();
   private static final int COUNT = 100;
 
   @Test

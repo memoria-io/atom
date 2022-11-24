@@ -1,5 +1,6 @@
 package io.memoria.atom.active.eventsourcing.cassandra;
 
+import com.datastax.oss.driver.api.core.CqlSession;
 import io.memoria.atom.core.eventsourcing.StateId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,14 +13,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static io.memoria.atom.active.eventsourcing.cassandra.TestUtils.KEYSPACE;
-import static io.memoria.atom.active.eventsourcing.cassandra.TestUtils.getClientConfig;
 
 @TestMethodOrder(OrderAnnotation.class)
 class QueryClientTest {
   private static final String TABLE = QueryClientTest.class.getSimpleName() + "_events";
   private static final String STATE_ID = StateId.randomUUID().value();
-  private static final AdminClient admin = new AdminClient(getClientConfig());
-  private static final QueryClient client = new QueryClient(getClientConfig());
+  private static final CqlSession session = TestUtils.CqlSession();
+  private static final AdminClient admin = new AdminClient(session);
+  private static final QueryClient client = new QueryClient(session);
   private static final int COUNT = 100;
 
   @Test
