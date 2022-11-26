@@ -1,9 +1,6 @@
 package io.memoria.atom.active.eventsourcing.banking;
 
-import io.memoria.atom.active.eventsourcing.banking.command.CloseAccount;
-import io.memoria.atom.active.eventsourcing.banking.command.CreateAccount;
-import io.memoria.atom.active.eventsourcing.banking.command.CreateTransfer;
-import io.memoria.atom.active.eventsourcing.banking.command.UserCommand;
+import io.memoria.atom.active.eventsourcing.banking.command.*;
 import io.memoria.atom.active.eventsourcing.banking.state.Transfer;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.memoria.atom.core.id.Id;

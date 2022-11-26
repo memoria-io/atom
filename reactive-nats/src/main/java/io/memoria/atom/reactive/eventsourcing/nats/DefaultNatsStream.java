@@ -1,11 +1,7 @@
 package io.memoria.atom.reactive.eventsourcing.nats;
 
 import io.memoria.reactive.eventsourcing.repo.Msg;
-import io.nats.client.Connection;
-import io.nats.client.JetStream;
-import io.nats.client.JetStreamSubscription;
-import io.nats.client.Message;
-import io.nats.client.Nats;
+import io.nats.client.*;
 import io.nats.client.api.StreamInfo;
 import io.vavr.control.Try;
 import org.slf4j.Logger;

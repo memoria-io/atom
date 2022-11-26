@@ -2,26 +2,9 @@ package io.memoria.reactive.eventsourcing.banking;
 
 import io.memoria.atom.core.eventsourcing.rule.Decider;
 import io.memoria.reactive.eventsourcing.Utils;
-import io.memoria.reactive.eventsourcing.banking.command.AccountCommand;
-import io.memoria.reactive.eventsourcing.banking.command.ChangeName;
-import io.memoria.reactive.eventsourcing.banking.command.CloseAccount;
-import io.memoria.reactive.eventsourcing.banking.command.ConfirmDebit;
-import io.memoria.reactive.eventsourcing.banking.command.CreateAccount;
-import io.memoria.reactive.eventsourcing.banking.command.Credit;
-import io.memoria.reactive.eventsourcing.banking.command.Debit;
-import io.memoria.reactive.eventsourcing.banking.event.AccountClosed;
-import io.memoria.reactive.eventsourcing.banking.event.AccountCreated;
-import io.memoria.reactive.eventsourcing.banking.event.AccountEvent;
-import io.memoria.reactive.eventsourcing.banking.event.ClosureRejected;
-import io.memoria.reactive.eventsourcing.banking.event.CreditRejected;
-import io.memoria.reactive.eventsourcing.banking.event.Credited;
-import io.memoria.reactive.eventsourcing.banking.event.DebitConfirmed;
-import io.memoria.reactive.eventsourcing.banking.event.Debited;
-import io.memoria.reactive.eventsourcing.banking.event.NameChanged;
-import io.memoria.reactive.eventsourcing.banking.state.Acc;
-import io.memoria.reactive.eventsourcing.banking.state.Account;
-import io.memoria.reactive.eventsourcing.banking.state.ClosedAccount;
-import io.memoria.reactive.eventsourcing.banking.state.Visitor;
+import io.memoria.reactive.eventsourcing.banking.command.*;
+import io.memoria.reactive.eventsourcing.banking.event.*;
+import io.memoria.reactive.eventsourcing.banking.state.*;
 import io.vavr.control.Try;
 
 public record AccountDecider() implements Decider<Account, AccountCommand, AccountEvent> {

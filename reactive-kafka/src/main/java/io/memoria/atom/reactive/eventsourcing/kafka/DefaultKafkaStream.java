@@ -10,10 +10,7 @@ import reactor.core.publisher.Mono;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
 import reactor.kafka.receiver.ReceiverRecord;
-import reactor.kafka.sender.KafkaSender;
-import reactor.kafka.sender.SenderOptions;
-import reactor.kafka.sender.SenderRecord;
-import reactor.kafka.sender.SenderResult;
+import reactor.kafka.sender.*;
 
 import java.util.function.Supplier;
 

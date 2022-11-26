@@ -10,9 +10,9 @@ import io.memoria.atom.active.eventsourcing.pipeline.Dispatcher;
 import io.memoria.atom.active.eventsourcing.pipeline.Domain;
 import io.memoria.atom.active.eventsourcing.pipeline.Route;
 import io.memoria.atom.active.eventsourcing.repo.CmdMsg;
-import io.memoria.atom.active.eventsourcing.repo.CommandStream;
+import io.memoria.atom.active.eventsourcing.repo.CmdStream;
 import io.memoria.atom.active.eventsourcing.repo.EventRepo;
-import io.memoria.atom.active.eventsourcing.repo.mem.MemCommandStream;
+import io.memoria.atom.active.eventsourcing.repo.mem.MemCmdStream;
 import io.memoria.atom.active.eventsourcing.repo.mem.MemEventRepo;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.memoria.atom.core.text.SerializableTransformer;
@@ -27,7 +27,7 @@ class DispatcherTest {
   private static final AtomicInteger latch = new AtomicInteger(12);
   private static final Route route = new Route("cmdTopic", 0, 1, "eventTopic");
   private static final TextTransformer transformer = new SerializableTransformer();
-  private final CommandStream commandStream;
+  private final CmdStream cmdStream;
   private final EventRepo EventRepo;
   private final Dispatcher<User, UserCommand, UserEvent> dispatcher;
 
@@ -40,9 +40,9 @@ class DispatcherTest {
                               new AccountSaga(),
                               new AccountEvolver());
 
-    commandStream = new MemCommandStream(route.cmdTopic(), route.totalCmdPartitions());
+    cmdStream = new MemCmdStream(route.cmdTopic(), route.totalCmdPartitions());
     EventRepo = new MemEventRepo(route.eventTopic());
-    dispatcher = new Dispatcher<>(domain, route, commandStream, EventRepo, transformer);
+    dispatcher = new Dispatcher<>(domain, route, cmdStream, EventRepo, transformer);
   }
 
   @Test
@@ -64,7 +64,7 @@ class DispatcherTest {
                                          closeJanAccount,
                                          sendThirdMoney);
 
-    cmds.map(c -> commandStream.pub(toMessage(c))).forEach(Try::get);
+    cmds.map(c -> cmdStream.pub(toMessage(c))).forEach(Try::get);
     // Then
     dispatcher.dispatch().takeWhile(s -> latch.decrementAndGet() > 0).forEach(Try::get);
     //    eventRepo.stream(bobId).map(Try::get).forEach(System.out::println);

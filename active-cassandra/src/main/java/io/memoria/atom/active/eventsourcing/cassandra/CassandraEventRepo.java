@@ -8,6 +8,9 @@ import io.vavr.control.Try;
 
 import java.util.stream.Stream;
 
+/**
+ * EventRepo's secondary/driven adapter of cassandra
+ */
 public class CassandraEventRepo implements EventRepo {
   private final String keyspace;
   private final QueryClient client;

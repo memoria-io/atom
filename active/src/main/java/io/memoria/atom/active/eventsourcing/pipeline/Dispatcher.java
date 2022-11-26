@@ -1,12 +1,9 @@
 package io.memoria.atom.active.eventsourcing.pipeline;
 
 import io.memoria.atom.active.eventsourcing.repo.CmdMsg;
-import io.memoria.atom.active.eventsourcing.repo.CommandStream;
+import io.memoria.atom.active.eventsourcing.repo.CmdStream;
 import io.memoria.atom.active.eventsourcing.repo.EventRepo;
-import io.memoria.atom.core.eventsourcing.Command;
-import io.memoria.atom.core.eventsourcing.Event;
-import io.memoria.atom.core.eventsourcing.State;
-import io.memoria.atom.core.eventsourcing.StateId;
+import io.memoria.atom.core.eventsourcing.*;
 import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
 import org.apache.logging.log4j.LogManager;
@@ -21,26 +18,26 @@ public class Dispatcher<S extends State, C extends Command, E extends Event> {
 
   private final Domain<S, C, E> domain;
   private final Route route;
-  private final CommandStream commandStream;
+  private final CmdStream cmdStream;
   private final EventRepo EventRepo;
   private final TextTransformer transformer;
   private final Map<StateId, Pipeline<S, C>> pipelines;
 
   public Dispatcher(Domain<S, C, E> domain,
                     Route route,
-                    CommandStream commandStream,
+                    CmdStream cmdStream,
                     EventRepo EventRepo,
                     TextTransformer transformer) {
     this.domain = domain;
     this.route = route;
-    this.commandStream = commandStream;
+    this.cmdStream = cmdStream;
     this.EventRepo = EventRepo;
     this.transformer = transformer;
     this.pipelines = new ConcurrentHashMap<>();
   }
 
   public Stream<Try<Boolean>> dispatch() {
-    return commandStream.sub(route.cmdTopic(), route.cmdPartition()).map(this::handle);
+    return cmdStream.sub(route.cmdTopic(), route.cmdPartition()).map(this::handle);
   }
 
   private Try<Boolean> handle(CmdMsg cmdMsg) {
@@ -49,7 +46,7 @@ public class Dispatcher<S extends State, C extends Command, E extends Event> {
       return Try.failure(cmdTry.getCause());
     var cmd = cmdTry.get();
     pipelines.computeIfAbsent(cmd.stateId(), s -> {
-      var pipeline = new StatePipeline<>(domain, route, commandStream, EventRepo, transformer);
+      var pipeline = new StatePipeline<>(domain, route, cmdStream, EventRepo, transformer);
       Thread.startVirtualThread(() -> pipeline.stream().forEach(this::execute));
       return pipeline;
     });

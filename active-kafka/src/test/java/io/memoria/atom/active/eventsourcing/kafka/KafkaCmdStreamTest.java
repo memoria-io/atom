@@ -2,20 +2,17 @@ package io.memoria.atom.active.eventsourcing.kafka;
 
 import io.memoria.atom.active.eventsourcing.repo.CmdMsg;
 import io.vavr.collection.List;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import java.time.Duration;
 import java.util.Random;
 
 @TestMethodOrder(OrderAnnotation.class)
-class KafkaCommandStreamTest {
+class KafkaCmdStreamTest {
   private static final Random r = new Random();
   private static final String topic = "some_topic_" + r.nextInt();
-  private static final KafkaCommandStream client = createRepo();
+  private static final KafkaCmdStream client = createRepo();
   private static final int partition = 0;
   private static final int msgCount = 100;
 
@@ -34,7 +31,7 @@ class KafkaCommandStreamTest {
   @Order(2)
   void stream() {
     // Given
-    new Thread(() -> createMessages(msgCount, msgCount + 10).forEach(KafkaCommandStreamTest::delayedSend)).start();
+    new Thread(() -> createMessages(msgCount, msgCount + 10).forEach(KafkaCmdStreamTest::delayedSend)).start();
     // Then
     client.sub(topic, partition)
           .takeWhile(cmd -> !cmd.key().equals("109"))
@@ -54,7 +51,7 @@ class KafkaCommandStreamTest {
     }
   }
 
-  private static KafkaCommandStream createRepo() {
-    return new KafkaCommandStream(Duration.ofMillis(100), Dataset.producerConfigs(), Dataset.consumerConfigs());
+  private static KafkaCmdStream createRepo() {
+    return new KafkaCmdStream(Duration.ofMillis(100), Dataset.producerConfigs(), Dataset.consumerConfigs());
   }
 }

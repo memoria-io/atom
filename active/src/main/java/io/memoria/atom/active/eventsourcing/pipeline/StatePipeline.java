@@ -1,14 +1,8 @@
 package io.memoria.atom.active.eventsourcing.pipeline;
 
 import io.memoria.atom.active.eventsourcing.exception.PipelineException.MismatchingStateId;
-import io.memoria.atom.active.eventsourcing.repo.CmdMsg;
-import io.memoria.atom.active.eventsourcing.repo.CommandStream;
-import io.memoria.atom.active.eventsourcing.repo.EventMsg;
-import io.memoria.atom.active.eventsourcing.repo.EventRepo;
-import io.memoria.atom.core.eventsourcing.Command;
-import io.memoria.atom.core.eventsourcing.CommandId;
-import io.memoria.atom.core.eventsourcing.Event;
-import io.memoria.atom.core.eventsourcing.State;
+import io.memoria.atom.active.eventsourcing.repo.*;
+import io.memoria.atom.core.eventsourcing.*;
 import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
 import org.apache.logging.log4j.LogManager;
@@ -32,13 +26,13 @@ public class StatePipeline<S extends State, C extends Command, E extends Event> 
   private final AtomicInteger eventSeqId;
   // Infra
   private final Route route;
-  private final CommandStream cmdRepo;
+  private final CmdStream cmdRepo;
   private final EventRepo eventRepo;
   private final TextTransformer transformer;
 
   public StatePipeline(Domain<S, C, E> domain,
                        Route route,
-                       CommandStream cmdRepo,
+                       CmdStream cmdRepo,
                        EventRepo eventRepo,
                        TextTransformer transformer) {
     this.domain = domain;

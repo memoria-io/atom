@@ -2,12 +2,8 @@ package io.memoria.atom.active.eventsourcing.cassandra;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 import io.memoria.atom.core.eventsourcing.StateId;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -19,7 +15,6 @@ class QueryClientTest {
   private static final String TABLE = QueryClientTest.class.getSimpleName() + "_events";
   private static final String STATE_ID = StateId.randomUUID().value();
   private static final CqlSession session = TestUtils.CqlSession();
-  private static final AdminClient admin = new AdminClient(session);
   private static final QueryClient client = new QueryClient(session);
   private static final int COUNT = 100;
 
@@ -27,7 +22,7 @@ class QueryClientTest {
   @Order(1)
   void createKeyspace() {
     // When
-    var isCreated = admin.createKeyspace(KEYSPACE, 1);
+    var isCreated = TestUtils.createKeyspace(session, KEYSPACE, 1);
     // Then
     assert isCreated;
   }
@@ -36,7 +31,7 @@ class QueryClientTest {
   @Order(2)
   void createTable() {
     // When
-    var isCreated = admin.createEventsTable(KEYSPACE, TABLE);
+    var isCreated = TestUtils.createEventsTable(session, KEYSPACE, TABLE);
     // Then
     assert isCreated;
   }

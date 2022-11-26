@@ -1,25 +1,9 @@
 package io.memoria.atom.active.eventsourcing.banking;
 
 import io.memoria.atom.active.eventsourcing.Utils;
-import io.memoria.atom.active.eventsourcing.banking.command.CloseAccount;
-import io.memoria.atom.active.eventsourcing.banking.command.CreateAccount;
-import io.memoria.atom.active.eventsourcing.banking.command.CreateTransfer;
-import io.memoria.atom.active.eventsourcing.banking.command.HandleInboundTransfer;
-import io.memoria.atom.active.eventsourcing.banking.command.MarkAsRejected;
-import io.memoria.atom.active.eventsourcing.banking.command.MarkAsSuccessful;
-import io.memoria.atom.active.eventsourcing.banking.command.UserCommand;
-import io.memoria.atom.active.eventsourcing.banking.event.AccountClosed;
-import io.memoria.atom.active.eventsourcing.banking.event.AccountCreated;
-import io.memoria.atom.active.eventsourcing.banking.event.InboundTransferAccepted;
-import io.memoria.atom.active.eventsourcing.banking.event.InboundTransferRejected;
-import io.memoria.atom.active.eventsourcing.banking.event.OutboundTransferAccepted;
-import io.memoria.atom.active.eventsourcing.banking.event.OutboundTransferRejected;
-import io.memoria.atom.active.eventsourcing.banking.event.TransferCreated;
-import io.memoria.atom.active.eventsourcing.banking.event.UserEvent;
-import io.memoria.atom.active.eventsourcing.banking.state.ActiveAccount;
-import io.memoria.atom.active.eventsourcing.banking.state.ClosedAccount;
-import io.memoria.atom.active.eventsourcing.banking.state.User;
-import io.memoria.atom.active.eventsourcing.banking.state.Visitor;
+import io.memoria.atom.active.eventsourcing.banking.command.*;
+import io.memoria.atom.active.eventsourcing.banking.event.*;
+import io.memoria.atom.active.eventsourcing.banking.state.*;
 import io.memoria.atom.core.eventsourcing.rule.Decider;
 import io.vavr.control.Try;
 

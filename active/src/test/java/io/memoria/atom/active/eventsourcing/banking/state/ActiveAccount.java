@@ -1,10 +1,6 @@
 package io.memoria.atom.active.eventsourcing.banking.state;
 
-import io.memoria.atom.active.eventsourcing.banking.event.InboundTransferAccepted;
-import io.memoria.atom.active.eventsourcing.banking.event.InboundTransferRejected;
-import io.memoria.atom.active.eventsourcing.banking.event.OutboundTransferAccepted;
-import io.memoria.atom.active.eventsourcing.banking.event.OutboundTransferRejected;
-import io.memoria.atom.active.eventsourcing.banking.event.TransferCreated;
+import io.memoria.atom.active.eventsourcing.banking.event.*;
 import io.memoria.atom.core.eventsourcing.StateId;
 
 public record ActiveAccount(StateId stateId, String name, int balance, int ongoingTransactions) implements User {

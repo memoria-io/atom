@@ -4,10 +4,7 @@ import io.memoria.atom.core.eventsourcing.rule.Saga;
 import io.memoria.reactive.eventsourcing.banking.command.AccountCommand;
 import io.memoria.reactive.eventsourcing.banking.command.ConfirmDebit;
 import io.memoria.reactive.eventsourcing.banking.command.Credit;
-import io.memoria.reactive.eventsourcing.banking.event.AccountEvent;
-import io.memoria.reactive.eventsourcing.banking.event.CreditRejected;
-import io.memoria.reactive.eventsourcing.banking.event.Credited;
-import io.memoria.reactive.eventsourcing.banking.event.Debited;
+import io.memoria.reactive.eventsourcing.banking.event.*;
 import io.vavr.control.Option;
 
 public record AccountSaga() implements Saga<AccountEvent, AccountCommand> {

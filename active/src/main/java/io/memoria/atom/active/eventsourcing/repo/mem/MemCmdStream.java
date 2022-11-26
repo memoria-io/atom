@@ -1,7 +1,7 @@
 package io.memoria.atom.active.eventsourcing.repo.mem;
 
 import io.memoria.atom.active.eventsourcing.repo.CmdMsg;
-import io.memoria.atom.active.eventsourcing.repo.CommandStream;
+import io.memoria.atom.active.eventsourcing.repo.CmdStream;
 import io.vavr.control.Try;
 
 import java.util.HashMap;
@@ -11,14 +11,14 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class MemCommandStream implements CommandStream {
+public class MemCmdStream implements CmdStream {
   private final Map<String, List<LinkedBlockingDeque<CmdMsg>>> topics = new HashMap<>();
 
-  public MemCommandStream(Map<String, Integer> topicPartitions) {
+  public MemCmdStream(Map<String, Integer> topicPartitions) {
     topicPartitions.forEach((key, value) -> this.topics.put(key, createTopic(value)));
   }
 
-  public MemCommandStream(String topic, int totalPartitions) {
+  public MemCmdStream(String topic, int totalPartitions) {
     this(Map.of(topic, totalPartitions));
   }
 

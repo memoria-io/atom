@@ -19,4 +19,14 @@ public class TestUtils {
     var sock = InetSocketAddress.createUnresolved(ip, port);
     return CqlSession.builder().withLocalDatacenter(datacenter).addContactPoint(sock);
   }
+
+  public static boolean createKeyspace(CqlSession cqlSession, String keyspace, int replication) {
+    var st = EventRowSts.createEventsKeyspace(keyspace, replication);
+    return cqlSession.execute(st).wasApplied();
+  }
+
+  public static boolean createEventsTable(CqlSession cqlSession, String keyspace, String table) {
+    var st = EventRowSts.createEventsTable(keyspace, table);
+    return cqlSession.execute(st).wasApplied();
+  }
 }

@@ -1,16 +1,8 @@
 package io.memoria.reactive.eventsourcing.banking;
 
 import io.memoria.atom.core.eventsourcing.rule.Evolver;
-import io.memoria.reactive.eventsourcing.banking.event.AccountClosed;
-import io.memoria.reactive.eventsourcing.banking.event.AccountCreated;
-import io.memoria.reactive.eventsourcing.banking.event.AccountEvent;
-import io.memoria.reactive.eventsourcing.banking.event.Credited;
-import io.memoria.reactive.eventsourcing.banking.event.DebitConfirmed;
-import io.memoria.reactive.eventsourcing.banking.event.Debited;
-import io.memoria.reactive.eventsourcing.banking.state.Acc;
-import io.memoria.reactive.eventsourcing.banking.state.Account;
-import io.memoria.reactive.eventsourcing.banking.state.ClosedAccount;
-import io.memoria.reactive.eventsourcing.banking.state.Visitor;
+import io.memoria.reactive.eventsourcing.banking.event.*;
+import io.memoria.reactive.eventsourcing.banking.state.*;
 
 @SuppressWarnings("SwitchStatementWithTooFewBranches")
 public record AccountEvolver() implements Evolver<Account, AccountEvent> {

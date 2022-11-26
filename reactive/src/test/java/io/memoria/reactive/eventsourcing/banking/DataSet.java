@@ -2,11 +2,7 @@ package io.memoria.reactive.eventsourcing.banking;
 
 import io.memoria.atom.core.eventsourcing.CommandId;
 import io.memoria.atom.core.eventsourcing.StateId;
-import io.memoria.reactive.eventsourcing.banking.command.AccountCommand;
-import io.memoria.reactive.eventsourcing.banking.command.ChangeName;
-import io.memoria.reactive.eventsourcing.banking.command.CloseAccount;
-import io.memoria.reactive.eventsourcing.banking.command.CreateAccount;
-import io.memoria.reactive.eventsourcing.banking.command.Debit;
+import io.memoria.reactive.eventsourcing.banking.command.*;
 import io.vavr.collection.List;
 import reactor.core.publisher.Flux;
 

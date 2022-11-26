@@ -3,10 +3,7 @@ package io.memoria.atom.core.file;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
