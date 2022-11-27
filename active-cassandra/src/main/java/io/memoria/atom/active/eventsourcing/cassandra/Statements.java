@@ -7,9 +7,9 @@ import com.datastax.oss.driver.api.querybuilder.SchemaBuilder;
 
 import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
 
-class EventRowSts {
+class Statements {
 
-  private EventRowSts() {}
+  private Statements() {}
 
   public static SimpleStatement push(String keyspace, String table, EventRow row) {
     return QueryBuilder.insertInto(keyspace, table)

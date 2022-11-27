@@ -1,6 +1,7 @@
 package io.memoria.atom.active.eventsourcing.cassandra;
 
 import com.datastax.oss.driver.api.core.CqlSession;
+import io.memoria.atom.active.eventsourcing.repo.EventMsg;
 import io.memoria.atom.core.eventsourcing.StateId;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -11,18 +12,19 @@ import java.util.stream.IntStream;
 import static io.memoria.atom.active.eventsourcing.cassandra.TestUtils.KEYSPACE;
 
 @TestMethodOrder(OrderAnnotation.class)
-class QueryClientTest {
-  private static final String TABLE = QueryClientTest.class.getSimpleName() + "_events";
-  private static final String STATE_ID = StateId.randomUUID().value();
+class CassandraEventRepoTest {
+  private static final String TOPIC = CassandraEventRepoTest.class.getSimpleName() + "_events";
+  private static final StateId STATE_ID = StateId.randomUUID();
   private static final CqlSession session = TestUtils.CqlSession();
-  private static final QueryClient client = new QueryClient(session);
+  private static final CassandraEventRepoAdmin admin = new CassandraEventRepoAdmin(session);
+  private static final CassandraEventRepo repo = new CassandraEventRepo(KEYSPACE, session);
   private static final int COUNT = 100;
 
   @Test
   @Order(1)
   void createKeyspace() {
     // When
-    var isCreated = TestUtils.createKeyspace(session, KEYSPACE, 1);
+    var isCreated = admin.createKeyspace(KEYSPACE, 1);
     // Then
     assert isCreated;
   }
@@ -31,7 +33,7 @@ class QueryClientTest {
   @Order(2)
   void createTable() {
     // When
-    var isCreated = TestUtils.createEventsTable(session, KEYSPACE, TABLE);
+    var isCreated = admin.createTopicTable(KEYSPACE, TOPIC);
     // Then
     assert isCreated;
   }
@@ -40,7 +42,7 @@ class QueryClientTest {
   @Order(3)
   void push() {
     // When
-    var rows = IntStream.range(0, COUNT).mapToObj(i -> client.push(KEYSPACE, TABLE, STATE_ID, i, "someEvent_" + i));
+    var rows = IntStream.range(0, COUNT).mapToObj(this::createMsg).map(repo::append);
     AtomicInteger idx = new AtomicInteger(0);
     // Then
     rows.forEach(i -> Assertions.assertEquals(i.get(), idx.getAndIncrement()));
@@ -50,9 +52,13 @@ class QueryClientTest {
   @Order(4)
   void get() {
     // When
-    var count = client.get(TestUtils.KEYSPACE, TABLE, STATE_ID).count();
+    var count = repo.getAll(TOPIC, STATE_ID).count();
     // Then
     assert count == COUNT;
+  }
+
+  private EventMsg createMsg(int i) {
+    return EventMsg.create(TOPIC, STATE_ID, i, "%d:message".formatted(i));
   }
 
   @BeforeAll

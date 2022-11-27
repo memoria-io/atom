@@ -3,19 +3,19 @@ package io.memoria.atom.active.eventsourcing.cassandra;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
-import io.memoria.atom.active.eventsourcing.cassandra.infra.ExecUtils;
 import io.memoria.atom.core.eventsourcing.StateId;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 
 import java.util.Objects;
 import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 import static io.memoria.atom.active.eventsourcing.cassandra.TestUtils.KEYSPACE;
 
 @TestMethodOrder(OrderAnnotation.class)
-class EventRowStsTest {
-  private static final String TABLE = EventRowStsTest.class.getSimpleName() + "_events";
+class StatementsTest {
+  private static final String TABLE = StatementsTest.class.getSimpleName() + "_events";
   private static final String STATE_ID = StateId.randomUUID().value();
   private static final CqlSession session = TestUtils.CqlSession();
   private static final int COUNT = 100;
@@ -35,9 +35,9 @@ class EventRowStsTest {
   @Order(2)
   void createKeyspace() {
     // Given
-    var st = EventRowSts.createEventsKeyspace(KEYSPACE, 1);
+    var st = Statements.createEventsKeyspace(KEYSPACE, 1);
     // When
-    var isCreated = ExecUtils.exec(session, st);
+    var isCreated = session.execute(st).wasApplied();
     // Then
     assert isCreated;
   }
@@ -46,9 +46,9 @@ class EventRowStsTest {
   @Order(3)
   void createTable() {
     // Given
-    var st = EventRowSts.createEventsTable(KEYSPACE, TABLE);
+    var st = Statements.createEventsTable(KEYSPACE, TABLE);
     // When
-    var isCreated = ExecUtils.exec(session, st);
+    var isCreated = session.execute(st).wasApplied();
     // Then
     assert isCreated;
   }
@@ -57,9 +57,9 @@ class EventRowStsTest {
   @Order(4)
   void push() {
     // Given
-    var statements = IntStream.range(0, COUNT).mapToObj(i -> EventRowSts.push(KEYSPACE, TABLE, createRow(i)));
+    var statements = IntStream.range(0, COUNT).mapToObj(i -> Statements.push(KEYSPACE, TABLE, createRow(i)));
     // When
-    var isCreated = statements.map(st -> ExecUtils.exec(session, st));
+    var isCreated = statements.map(st -> session.execute(st).wasApplied());
     // Then
     isCreated.forEach(Assertions::assertTrue);
   }
@@ -68,9 +68,10 @@ class EventRowStsTest {
   @Order(5)
   void get() {
     // Given
-    var st = EventRowSts.get(KEYSPACE, TABLE, STATE_ID);
+    var st = Statements.get(KEYSPACE, TABLE, STATE_ID);
     // When
-    var rows = ExecUtils.execSelect(session, st);
+    var rs = session.execute(st);
+    var rows = StreamSupport.stream(rs.spliterator(), false);
     // Then
     assert rows.count() == COUNT;
   }
