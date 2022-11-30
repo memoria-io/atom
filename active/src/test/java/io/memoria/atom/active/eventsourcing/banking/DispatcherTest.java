@@ -6,17 +6,10 @@ import io.memoria.atom.active.eventsourcing.banking.command.UserCommand;
 import io.memoria.atom.active.eventsourcing.banking.event.UserEvent;
 import io.memoria.atom.active.eventsourcing.banking.state.User;
 import io.memoria.atom.active.eventsourcing.banking.state.Visitor;
-import io.memoria.atom.active.eventsourcing.pipeline.Dispatcher;
-import io.memoria.atom.active.eventsourcing.pipeline.Domain;
-import io.memoria.atom.active.eventsourcing.pipeline.Route;
-import io.memoria.atom.active.eventsourcing.repo.CmdMsg;
-import io.memoria.atom.active.eventsourcing.repo.CmdStream;
-import io.memoria.atom.active.eventsourcing.repo.EventRepo;
-import io.memoria.atom.active.eventsourcing.repo.mem.MemCmdStream;
-import io.memoria.atom.active.eventsourcing.repo.mem.MemEventRepo;
+import io.memoria.atom.active.eventsourcing.pipeline.*;
+import io.memoria.atom.active.eventsourcing.pipeline.mem.MemCommandStream;
+import io.memoria.atom.active.eventsourcing.pipeline.mem.MemEventRepo;
 import io.memoria.atom.core.eventsourcing.StateId;
-import io.memoria.atom.core.text.SerializableTransformer;
-import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 
@@ -26,23 +19,16 @@ import java.util.stream.Stream;
 class DispatcherTest {
   private static final AtomicInteger latch = new AtomicInteger(12);
   private static final Route route = new Route("cmdTopic", 0, 1, "eventTopic");
-  private static final TextTransformer transformer = new SerializableTransformer();
-  private final CmdStream cmdStream;
-  private final EventRepo EventRepo;
+  private final CommandStream<UserCommand> commandStream;
+  private final EventRepo<UserEvent> eventRepo;
   private final Dispatcher<User, UserCommand, UserEvent> dispatcher;
 
   DispatcherTest() {
-    var domain = new Domain<>(User.class,
-                              UserCommand.class,
-                              UserEvent.class,
-                              new Visitor(),
-                              new AccountDecider(),
-                              new AccountSaga(),
-                              new AccountEvolver());
+    var domain = new Domain<>(new Visitor(), new AccountDecider(), new AccountSaga(), new AccountEvolver());
 
-    cmdStream = new MemCmdStream(route.cmdTopic(), route.totalCmdPartitions());
-    EventRepo = new MemEventRepo(route.eventTopic());
-    dispatcher = new Dispatcher<>(domain, route, cmdStream, EventRepo, transformer);
+    commandStream = new MemCommandStream<>(route.cmdTopic(), route.totalCmdPartitions());
+    eventRepo = new MemEventRepo<>(route.eventTopic());
+    dispatcher = new Dispatcher<>(domain, route, commandStream, eventRepo);
   }
 
   @Test
@@ -64,7 +50,7 @@ class DispatcherTest {
                                          closeJanAccount,
                                          sendThirdMoney);
 
-    cmds.map(c -> cmdStream.pub(toMessage(c))).forEach(Try::get);
+    cmds.map(c -> commandStream.pub(route.cmdTopic(), route.cmdPartition(), c)).forEach(Try::get);
     // Then
     dispatcher.dispatch().takeWhile(s -> latch.decrementAndGet() > 0).forEach(Try::get);
     //    eventRepo.stream(bobId).map(Try::get).forEach(System.out::println);
@@ -76,11 +62,6 @@ class DispatcherTest {
     //    Assertions.assertInstanceOf(ClosedAccount.class, accounts.get(1));
   }
 
-  private CmdMsg toMessage(UserCommand c) {
-    var value = transformer.serialize(c).get();
-    int partition = c.partition(route.totalCmdPartitions());
-    return CmdMsg.create(route.cmdTopic(), partition, c.commandId().value(), value);
-  }
   //
   //  @Test
   //  void complex() {

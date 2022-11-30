@@ -1,4 +1,4 @@
-package io.memoria.atom.active.eventsourcing.repo;
+package io.memoria.atom.active.eventsourcing.infra.event;
 
 import io.memoria.atom.core.eventsourcing.StateId;
 

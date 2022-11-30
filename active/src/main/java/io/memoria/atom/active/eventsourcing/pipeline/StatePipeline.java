@@ -1,9 +1,7 @@
 package io.memoria.atom.active.eventsourcing.pipeline;
 
 import io.memoria.atom.active.eventsourcing.exception.PipelineException.MismatchingStateId;
-import io.memoria.atom.active.eventsourcing.repo.*;
 import io.memoria.atom.core.eventsourcing.*;
-import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,15 +24,10 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
   private final AtomicInteger eventSeqId;
   // Infra
   private final Route route;
-  private final CmdStream cmdRepo;
-  private final EventRepo eventRepo;
-  private final TextTransformer transformer;
+  private final CommandStream<C> commandStream;
+  private final EventRepo<E> eventRepo;
 
-  public StatePipeline(Domain<S, C, E> domain,
-                       Route route,
-                       CmdStream cmdRepo,
-                       EventRepo eventRepo,
-                       TextTransformer transformer) {
+  public StatePipeline(Domain<S, C, E> domain, Route route, CommandStream<C> commandStream, EventRepo<E> eventRepo) {
     this.domain = domain;
     // In memory
     this.state = domain.initState();
@@ -43,9 +36,8 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
     this.cmdQueue = new LinkedBlockingDeque<>();
     this.eventSeqId = new AtomicInteger();
     // Infra
-    this.cmdRepo = cmdRepo;
+    this.commandStream = commandStream;
     this.eventRepo = eventRepo;
-    this.transformer = transformer;
   }
 
   @Override
@@ -76,9 +68,7 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
 
   public Try<S> decide(C cmd) {
     if (state.equals(domain.initState())) {
-      eventRepo.getAll(route.eventTopic(), cmd.stateId())
-               .map(m -> transformer.deserialize(m.value(), domain.eClass()))
-               .forEach(tr -> tr.map(this::evolve));
+      eventRepo.getAll(route.eventTopic(), cmd.stateId()).forEach(tr -> tr.map(this::evolve));
     }
     return domain.decider().apply(state, cmd).flatMap(this::saga).flatMap(this::append).map(this::evolve);
   }
@@ -87,7 +77,8 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
     var sagaCmd = domain.saga().apply(e);
     if (sagaCmd.isDefined()) {
       C cmd = sagaCmd.get();
-      return toMessage(cmd).flatMap(cmdRepo::pub).map(c -> e);
+      var newPartition = cmd.partition(route.totalCmdPartitions());
+      return commandStream.pub(route.cmdTopic(), newPartition, cmd).map(c -> e);
     } else {
       return Try.success(e);
     }
@@ -105,24 +96,7 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
   }
 
   private Try<E> append(E e) {
-    return toMessage(e).map(eventRepo::append).map(m -> e);
-  }
-
-  private Try<EventMsg> toMessage(E e) {
-    return transformer.serialize(e).map(v -> toMsg(e, v));
-  }
-
-  private Try<CmdMsg> toMessage(C c) {
-    return transformer.serialize(c).map(v -> toMsg(c, v));
-  }
-
-  private CmdMsg toMsg(C c, String v) {
-    var newPartition = c.partition(route.totalCmdPartitions());
-    return CmdMsg.create(route.cmdTopic(), newPartition, c.commandId().value(), v);
-  }
-
-  private EventMsg toMsg(E e, String v) {
-    return EventMsg.create(route.eventTopic(), e.stateId(), eventSeqId.get(), v);
+    return eventRepo.append(route.eventTopic(), this.eventSeqId.get(), e).map(i -> e);
   }
 
   private C take() {

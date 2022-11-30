@@ -4,8 +4,8 @@ import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import io.memoria.atom.active.eventsourcing.cassandra.exception.CassandraEventRepoException.FailedAppend;
-import io.memoria.atom.active.eventsourcing.repo.EventMsg;
-import io.memoria.atom.active.eventsourcing.repo.EventRepo;
+import io.memoria.atom.active.eventsourcing.infra.event.EventMsg;
+import io.memoria.atom.active.eventsourcing.infra.event.EventMsgRepo;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.vavr.control.Try;
 
@@ -15,11 +15,11 @@ import java.util.stream.StreamSupport;
 /**
  * EventRepo's secondary/driven adapter of cassandra
  */
-public class CassandraEventRepo implements EventRepo {
+public class CassandraEventMsgRepo implements EventMsgRepo {
   private final String keyspace;
   private final CqlSession session;
 
-  public CassandraEventRepo(String keyspace, CqlSession session) {
+  public CassandraEventMsgRepo(String keyspace, CqlSession session) {
     this.keyspace = keyspace;
     this.session = session;
   }

@@ -1,6 +1,6 @@
 package io.memoria.atom.active.eventsourcing.kafka;
 
-import io.memoria.atom.active.eventsourcing.repo.CmdMsg;
+import io.memoria.atom.active.eventsourcing.infra.cmd.CmdMsg;
 import io.vavr.collection.List;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -9,10 +9,10 @@ import java.time.Duration;
 import java.util.Random;
 
 @TestMethodOrder(OrderAnnotation.class)
-class KafkaCmdStreamTest {
+class KafkaCmdMsgStreamTest {
   private static final Random r = new Random();
   private static final String topic = "some_topic_" + r.nextInt();
-  private static final KafkaCmdStream client = createRepo();
+  private static final KafkaCmdMsgStream client = createRepo();
   private static final int partition = 0;
   private static final int msgCount = 100;
 
@@ -31,7 +31,7 @@ class KafkaCmdStreamTest {
   @Order(2)
   void stream() {
     // Given
-    new Thread(() -> createMessages(msgCount, msgCount + 10).forEach(KafkaCmdStreamTest::delayedSend)).start();
+    new Thread(() -> createMessages(msgCount, msgCount + 10).forEach(KafkaCmdMsgStreamTest::delayedSend)).start();
     // Then
     client.sub(topic, partition)
           .takeWhile(cmd -> !cmd.key().equals("109"))
@@ -51,7 +51,7 @@ class KafkaCmdStreamTest {
     }
   }
 
-  private static KafkaCmdStream createRepo() {
-    return new KafkaCmdStream(Duration.ofMillis(100), Dataset.producerConfigs(), Dataset.consumerConfigs());
+  private static KafkaCmdMsgStream createRepo() {
+    return new KafkaCmdMsgStream(Duration.ofMillis(100), Dataset.producerConfigs(), Dataset.consumerConfigs());
   }
 }
