@@ -79,7 +79,7 @@ from [Vavr](https://www.vavr.io/).
 
 ## Release notes
 
-* Current versioning scheme `jbom_jdk_version.breaking_major.patch`
+* Current versioning scheme `jdk_version.major.minor` once stable, a patch version will be added.
 
 ## Contribution
 
