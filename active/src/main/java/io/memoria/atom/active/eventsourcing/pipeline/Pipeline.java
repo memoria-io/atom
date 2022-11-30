@@ -6,7 +6,7 @@ import io.vavr.control.Try;
 
 import java.util.stream.Stream;
 
-public interface Pipeline<S extends State, C extends Command> {
+interface Pipeline<S extends State, C extends Command> {
   Try<Boolean> offer(C cmd);
 
   Stream<Try<S>> stream();

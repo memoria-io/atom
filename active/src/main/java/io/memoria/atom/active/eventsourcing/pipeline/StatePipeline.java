@@ -15,7 +15,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-public class StatePipeline<S extends State, C extends Command, E extends Event> implements Pipeline<S, C> {
+class StatePipeline<S extends State, C extends Command, E extends Event> implements Pipeline<S, C> {
   private static final Logger log = LogManager.getLogger(StatePipeline.class.getSimpleName());
   // Business Rules
   private final Domain<S, C, E> domain;
