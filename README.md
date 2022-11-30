@@ -11,12 +11,23 @@
 
 ## Introduction
 
-* Atom is a collection of utility classes, it has two main submodules `active` and `reactive`
+* Atom is a collection of utilities for web, and event based applications. 
 * Current JDK used is `Java 19`.
+
+![](docs/atom.jpg)
+
+## Core module
+
+Core module has basic set of utilities:
+
+* Basic Eventsourcing functional interfaces
+* ConfigFileOps, and ResourceFileOps (similar to Typesafe HOCOON library)
+* TextTransformer base interfaces
+* other
 
 ## Active module
 
-Active modules uses the blocking virtual threading available starting jdk 19 preview.
+Active module and submodules use the blocking virtual threading available starting jdk 19 preview.
 
 ## Reactive module
 
@@ -25,11 +36,13 @@ on [Reactive Streams](https://www.reactive-streams.org/) and uses [Project-React
 [Reactor Netty](https://github.com/reactor/reactor-netty), it also uses functional paradigms and collections
 from [Vavr](https://www.vavr.io/).
 
-## Core Features
+## Features
 
+* Eventsourcing sdk in two flavours active, and reactive
+* Kafka, Nats, Cassandra adapters
+* Virtual threading
 * Vavr + Reactor Functional utilities
 * Reactor Netty utility functions
-* Reactive CQRS and Eventsourcing utilities (beta stage)
 * Reactive functional in-memory generic cruds (for tests, not for production)
 * Jackson Adapter (Json & Yaml) utilities
 * FileOps reader utility
