@@ -4,9 +4,10 @@ import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import io.memoria.atom.active.eventsourcing.cassandra.exception.CassandraEventRepoException.FailedAppend;
-import io.memoria.atom.active.eventsourcing.infra.event.EventMsg;
-import io.memoria.atom.active.eventsourcing.infra.event.EventMsgRepo;
+import io.memoria.atom.active.eventsourcing.pipeline.EventRepo;
+import io.memoria.atom.core.eventsourcing.Event;
 import io.memoria.atom.core.eventsourcing.StateId;
+import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
 
 import java.util.stream.Stream;
@@ -15,27 +16,27 @@ import java.util.stream.StreamSupport;
 /**
  * EventRepo's secondary/driven adapter of cassandra
  */
-public class CassandraEventMsgRepo implements EventMsgRepo {
+public class CassandraEventRepo<E extends Event> implements EventRepo<E> {
   private final String keyspace;
   private final CqlSession session;
+  private final TextTransformer transformer;
+  private final Class<E> eClass;
 
-  public CassandraEventMsgRepo(String keyspace, CqlSession session) {
+  public CassandraEventRepo(String keyspace, CqlSession session, TextTransformer transformer, Class<E> eClass) {
     this.keyspace = keyspace;
     this.session = session;
+    this.transformer = transformer;
+    this.eClass = eClass;
   }
 
   @Override
-  public Stream<EventMsg> getAll(String topic, StateId stateId) {
-    return get(keyspace, topic, stateId.value()).map(row -> toEventMsg(topic, row));
+  public Stream<Try<E>> getAll(String topic, StateId stateId) {
+    return get(keyspace, topic, stateId.value()).map(row -> transformer.deserialize(row.event(), eClass));
   }
 
   @Override
-  public Try<Integer> append(EventMsg eventMsg) {
-    return push(keyspace, eventMsg.topic(), eventMsg.stateId().value(), eventMsg.seqId(), eventMsg.value());
-  }
-
-  private EventMsg toEventMsg(String topic, EventRow row) {
-    return EventMsg.create(topic, StateId.of(row.stateId()), row.seqId(), row.event());
+  public Try<Integer> append(String topic, int seqId, E e) {
+    return transformer.serialize(e).flatMap(v -> push(keyspace, topic, e.stateId().value(), seqId, v));
   }
 
   private Stream<EventRow> get(String keyspace, String table, String stateId) {

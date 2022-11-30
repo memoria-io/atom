@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>atom</artifactId>
-        <version>19.6.0</version>
+        <version>19.7.0</version>
     </parent>
 
     <groupId>io.memoria.atom</groupId>
     <artifactId>sec</artifactId>
-    <version>19.6.0</version>
+    <version>19.7.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
