@@ -11,8 +11,12 @@
 
 ## Introduction
 
-* Atom is a collection of utilities for web, and event based applications. 
+* Atom is a collection of utilities for web, and event based applications.
 * Current JDK used is `Java 19`.
+
+**Disclaimer:**
+> `atom` is on edge, it's a work in progress and a pragmatic learning effort, so feel free to create issues or PRs.
+
 
 ![](docs/atom.jpg)
 
@@ -71,43 +75,11 @@ from [Vavr](https://www.vavr.io/).
           only state
 * [x] Streaming
     * [x] Stream api for usage in event sourcing
-    * [ ] Stream api for messaging patterns
 * [ ] Increase test coverage to >85%
 
 ## Release notes
 
 * Current versioning scheme `jbom_jdk_version.breaking_major.patch`
-
-## Usage
-
-All modules depend on Core. There are currently no other inter-dependencies between them.
-
-**Disclaimer:**
-> `reactive` is on edge, it's a work in progress and a pragmatic learning effort, so feel free to create issues or PRs.
-
-```xml
-
-<project>
-    <properties>
-        <reactive.version>...</reactive.version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>io.memoria.reactive</groupId>
-            <artifactId>core</artifactId>
-            <version>${reactive.version}</version>
-        </dependency>
-
-        <dependency>
-            <!-- replace module_name with your preferred module -->
-            <groupId>io.memoria.reactive</groupId>
-            <artifactId>module_name</artifactId>
-            <version>${reactive.version}</version>
-        </dependency>
-    </dependencies>
-</project>
-```
 
 ## Contribution
 
