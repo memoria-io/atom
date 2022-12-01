@@ -52,7 +52,7 @@ class DispatcherTest {
 
     cmds.map(c -> commandStream.pub(route.cmdTopic(), route.cmdPartition(), c)).forEach(Try::get);
     // Then
-    dispatcher.ingest().takeWhile(s -> latch.decrementAndGet() > 0).forEach(Try::get);
+    dispatcher.handle().takeWhile(s -> latch.decrementAndGet() > 0).forEach(Try::get);
     //    eventRepo.stream(bobId).map(Try::get).forEach(System.out::println);
     //    Thread.sleep(1000);
     //    Thread.currentThread().join();
