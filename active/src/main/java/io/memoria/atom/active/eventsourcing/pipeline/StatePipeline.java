@@ -2,9 +2,8 @@ package io.memoria.atom.active.eventsourcing.pipeline;
 
 import io.memoria.atom.active.eventsourcing.exception.PipelineException.MismatchingStateId;
 import io.memoria.atom.core.eventsourcing.*;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,8 +12,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-class StatePipeline<S extends State, C extends Command, E extends Event> implements Pipeline<S, C> {
-  private static final Logger log = LogManager.getLogger(StatePipeline.class.getSimpleName());
+class StatePipeline<S extends State, C extends Command, E extends Event> implements Pipeline<S, C, E> {
   // Business Rules
   private final Domain<S, C, E> domain;
   // In memory
@@ -43,34 +41,29 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
   @Override
   public Try<Boolean> offer(C cmd) {
     if (isValidCommand(cmd)) {
-      log.info(cmd);
       return Try.success(this.cmdQueue.offer(cmd));
     } else {
       var e = MismatchingStateId.create(cmd.stateId(), state.stateId());
-      log.error(e);
       return Try.failure(e);
     }
   }
 
   @Override
-  public Stream<Try<S>> stream() {
-    return Stream.generate(this::take).map(this::handle);
+  public Stream<Try<E>> stream() {
+    return Stream.generate(this::take).map(this::handle).filter(Option::isDefined).map(Option::get);
   }
 
-  public Try<S> handle(C cmd) {
+  public Option<Try<E>> handle(C cmd) {
     if (processed.contains(cmd.commandId())) {
       // No change, command has already been processed
-      return Try.success(state);
+      return Option.none();
     } else {
-      return decide(cmd);
+      if (state.equals(domain.initState())) {
+        eventRepo.getAll(route.eventTopic(), cmd.stateId()).forEach(tr -> tr.map(this::evolve));
+      }
+      var e = domain.decider().apply(state, cmd).flatMap(this::saga).flatMap(this::append).map(this::evolve);
+      return Option.some(e);
     }
-  }
-
-  public Try<S> decide(C cmd) {
-    if (state.equals(domain.initState())) {
-      eventRepo.getAll(route.eventTopic(), cmd.stateId()).forEach(tr -> tr.map(this::evolve));
-    }
-    return domain.decider().apply(state, cmd).flatMap(this::saga).flatMap(this::append).map(this::evolve);
   }
 
   public Try<E> saga(E e) {
@@ -84,11 +77,11 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
     }
   }
 
-  public S evolve(E e) {
+  public E evolve(E e) {
     this.state = domain.evolver().apply(this.state, e);
     this.processed.add(e.commandId());
     this.eventSeqId.incrementAndGet();
-    return this.state;
+    return e;
   }
 
   public boolean isValidCommand(C cmd) {
