@@ -1,4 +1,4 @@
-package io.memoria.atom.core.vavr;
+package io.memoria.atom.core.utils;
 
 import io.vavr.API;
 import io.vavr.Predicates;
@@ -8,8 +8,8 @@ import io.vavr.control.Try;
 
 import java.util.function.BiFunction;
 
-public final class VavrUtils {
-  private VavrUtils() {}
+public final class Vavrs {
+  private Vavrs() {}
 
   public static <V> BiFunction<V, Throwable, Try<V>> handle() {
     return (v, t) -> (t == null) ? Try.success(v) : Try.failure(t);

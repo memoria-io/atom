@@ -16,7 +16,7 @@ import static io.memoria.reactive.core.vavr.ReactorVavrUtils.toFlux;
 import static io.memoria.reactive.core.vavr.ReactorVavrUtils.toMono;
 import static io.memoria.reactive.core.vavr.ReactorVavrUtils.toVoidMono;
 
-class ReactorVavrUtilsTest {
+class ReactorVavrsTest {
 
   @Test
   void booleanToMono() {

@@ -39,9 +39,9 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
   }
 
   @Override
-  public Try<Boolean> offer(C cmd) {
+  public Try<Void> append(C cmd) {
     if (isValidCommand(cmd)) {
-      return Try.success(this.cmdQueue.offer(cmd));
+      return Try.run(() -> this.cmdQueue.putLast(cmd));
     } else {
       var e = MismatchingStateId.create(cmd.stateId(), state.stateId());
       return Try.failure(e);
