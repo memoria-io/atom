@@ -16,7 +16,7 @@ public class Dispatcher<S extends State, C extends Command, E extends Event> {
   private final Route route;
   private final CommandStream<C> commandStream;
   private final EventRepo<E> eventRepo;
-  private final Map<StateId, Pipeline<S, C, E>> pipelines;
+  private final Map<StateId, Pipeline<C, E>> pipelines;
 
   public Dispatcher(Domain<S, C, E> domain, Route route, CommandStream<C> commandStream, EventRepo<E> eventRepo) {
     this.domain = domain;

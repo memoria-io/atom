@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-class StatePipeline<S extends State, C extends Command, E extends Event> implements Pipeline<S, C, E> {
+class StatePipeline<S extends State, C extends Command, E extends Event> implements Pipeline<C, E> {
   // Business Rules
   private final Domain<S, C, E> domain;
   // In memory

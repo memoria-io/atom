@@ -7,12 +7,12 @@ import io.vavr.control.Try;
 
 import java.util.stream.Stream;
 
-public interface Pipeline<S extends State, C extends Command, E extends Event> {
+public interface Pipeline<C extends Command, E extends Event> {
   Try<Void> append(C cmd);
 
   Stream<Try<E>> stream();
 
-  static <S extends State, C extends Command, E extends Event> Pipeline<S, C, E> create(Domain<S, C, E> domain,
+  static <S extends State, C extends Command, E extends Event> Pipeline<C, E> create(Domain<S, C, E> domain,
                                                                                         Route route,
                                                                                         CommandStream<C> commandStream,
                                                                                         EventRepo<E> eventRepo) {
