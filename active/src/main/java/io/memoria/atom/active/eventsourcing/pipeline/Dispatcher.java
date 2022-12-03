@@ -26,7 +26,7 @@ public class Dispatcher<S extends State, C extends Command, E extends Event> {
     this.pipelines = new ConcurrentHashMap<>();
   }
 
-  public Stream<Try<C>> handle() {
+  public Stream<Try<C>> run() {
     return commandStream.sub(route.cmdTopic(), route.cmdPartition()).map(cTry -> cTry.flatMap(this::append));
   }
 
