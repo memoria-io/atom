@@ -5,7 +5,7 @@ import com.datastax.oss.driver.api.core.CqlSession;
 public class CassandraEventRepoAdmin {
   private final CqlSession session;
 
-  CassandraEventRepoAdmin(CqlSession session) {
+  public CassandraEventRepoAdmin(CqlSession session) {
     this.session = session;
   }
 
