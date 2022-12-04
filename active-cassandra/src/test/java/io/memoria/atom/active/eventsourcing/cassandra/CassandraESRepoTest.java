@@ -16,7 +16,7 @@ class CassandraESRepoTest {
   private static final String TOPIC = CassandraESRepoTest.class.getSimpleName() + "_events";
   private static final String STATE_ID = StateId.randomUUID().value();
   private static final CqlSession session = TestUtils.CqlSession();
-  private static final CassandraEventRepoAdmin admin = new CassandraEventRepoAdmin(session);
+  private static final CassandraESRepoAdmin admin = new CassandraESRepoAdmin(session);
   private static final CassandraESRepo repo = new CassandraESRepo(KEYSPACE, session);
   private static final int COUNT = 100;
 

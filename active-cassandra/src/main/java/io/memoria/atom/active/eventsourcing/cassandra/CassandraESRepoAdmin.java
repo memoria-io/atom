@@ -2,10 +2,10 @@ package io.memoria.atom.active.eventsourcing.cassandra;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 
-public class CassandraEventRepoAdmin {
+public class CassandraESRepoAdmin {
   private final CqlSession session;
 
-  public CassandraEventRepoAdmin(CqlSession session) {
+  public CassandraESRepoAdmin(CqlSession session) {
     this.session = session;
   }
 
