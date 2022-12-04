@@ -4,10 +4,8 @@ import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import io.memoria.atom.active.eventsourcing.cassandra.exception.CassandraEventRepoException.FailedAppend;
-import io.memoria.atom.active.eventsourcing.pipeline.EventRepo;
-import io.memoria.atom.core.eventsourcing.Event;
-import io.memoria.atom.core.eventsourcing.StateId;
-import io.memoria.atom.core.text.TextTransformer;
+import io.memoria.atom.active.eventsourcing.repo.ESRepo;
+import io.memoria.atom.active.eventsourcing.repo.ESRepoRow;
 import io.vavr.control.Try;
 
 import java.util.stream.Stream;
@@ -16,39 +14,39 @@ import java.util.stream.StreamSupport;
 /**
  * EventRepo's secondary/driven adapter of cassandra
  */
-public class CassandraEventRepo<E extends Event> implements EventRepo<E> {
+public class CassandraESRepo implements ESRepo {
   private final String keyspace;
   private final CqlSession session;
-  private final TextTransformer transformer;
-  private final Class<E> eClass;
 
-  public CassandraEventRepo(String keyspace, CqlSession session, TextTransformer transformer, Class<E> eClass) {
+  public CassandraESRepo(String keyspace, CqlSession session) {
     this.keyspace = keyspace;
     this.session = session;
-    this.transformer = transformer;
-    this.eClass = eClass;
   }
 
   @Override
-  public Stream<Try<E>> getAll(String topic, StateId stateId) {
-    return get(keyspace, topic, stateId.value()).map(row -> transformer.deserialize(row.event(), eClass));
+  public Stream<ESRepoRow> getAll(String table, String stateId) {
+    return get(keyspace, table, stateId).map(cassandraRow -> toESRepoRow(table, cassandraRow));
   }
 
   @Override
-  public Try<Integer> append(String topic, int seqId, E e) {
-    return transformer.serialize(e).flatMap(v -> push(keyspace, topic, e.stateId().value(), seqId, v));
+  public Try<ESRepoRow> append(ESRepoRow r) {
+    return push(keyspace, r.table(), r.stateId(), r.seqId(), r.value()).map(i -> r);
   }
 
-  private Stream<EventRow> get(String keyspace, String table, String stateId) {
+  private ESRepoRow toESRepoRow(String table, CassandraRow r) {
+    return new ESRepoRow(table, r.stateId(), r.seqId(), r.payload());
+  }
+
+  private Stream<CassandraRow> get(String keyspace, String table, String stateId) {
     var st = Statements.get(keyspace, table, stateId);
-    return execSelect(session, st).map(EventRow::from);
+    return execSelect(session, st).map(CassandraRow::from);
   }
 
   private Try<Integer> push(String keyspace, String table, String stateId, int seqId, String event) {
     var lastRowSt = Statements.getLastSeqId(keyspace, table, stateId);
     var firstOpt = execSelect(session, lastRowSt).findFirst();
     if (firstOpt.isPresent()) {
-      var lastSeqId = EventRow.from(firstOpt.get()).seqId();
+      var lastSeqId = CassandraRow.from(firstOpt.get()).seqId();
       if (seqId == lastSeqId + 1) {
         return pushMsg(keyspace, table, stateId, seqId, event);
       } else {
@@ -60,7 +58,7 @@ public class CassandraEventRepo<E extends Event> implements EventRepo<E> {
   }
 
   private Try<Integer> pushMsg(String keyspace, String table, String stateId, int seqId, String event) {
-    var eventRow = new EventRow(stateId, seqId, event);
+    var eventRow = new CassandraRow(stateId, seqId, event);
     var st = Statements.push(keyspace, table, eventRow);
     if (session.execute(st).wasApplied()) {
       return Try.success(seqId);

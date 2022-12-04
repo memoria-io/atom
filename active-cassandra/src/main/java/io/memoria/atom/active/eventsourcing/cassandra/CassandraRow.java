@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Objects;
 
-record EventRow(String stateId, int seqId, String event, long createdAt) {
+record CassandraRow(String stateId, int seqId, String payload, long createdAt) {
   // StateId
   static final String stateIdCol = "state_id";
   static final DataType stateIdColType = DataTypes.TEXT;
@@ -16,26 +16,26 @@ record EventRow(String stateId, int seqId, String event, long createdAt) {
   static final String seqCol = "seq_id";
   static final DataType seqColType = DataTypes.INT;
   // Value
-  static final String eventCol = "event";
-  static final DataType eventColType = DataTypes.TEXT;
+  static final String payloadCol = "payload";
+  static final DataType payloadColType = DataTypes.TEXT;
   // CreatedAt
   static final String createdAtCol = "created_at";
   static final DataType createAtColType = DataTypes.BIGINT;
 
-  public EventRow {
+  public CassandraRow {
     if (seqId < 0)
       throw new IllegalArgumentException("Seq can't be less than zero!.");
   }
 
-  public EventRow(String stateId, int seq, String event) {
+  public CassandraRow(String stateId, int seq, String event) {
     this(stateId, seq, event, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
   }
 
-  public static EventRow from(Row row) {
+  public static CassandraRow from(Row row) {
     var rStateId = Objects.requireNonNull(row.getString(stateIdCol));
     var rSeqId = row.getInt(seqCol);
     var rCreatedAt = row.getLong(createdAtCol);
-    var rEvent = Objects.requireNonNull(row.getString(eventCol));
-    return new EventRow(rStateId, rSeqId, rEvent, rCreatedAt);
+    var rEvent = Objects.requireNonNull(row.getString(payloadCol));
+    return new CassandraRow(rStateId, rSeqId, rEvent, rCreatedAt);
   }
 }

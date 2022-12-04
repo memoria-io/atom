@@ -11,12 +11,12 @@ class Statements {
 
   private Statements() {}
 
-  public static SimpleStatement push(String keyspace, String table, EventRow row) {
+  public static SimpleStatement push(String keyspace, String table, CassandraRow row) {
     return QueryBuilder.insertInto(keyspace, table)
-                       .value(EventRow.stateIdCol, literal(row.stateId()))
-                       .value(EventRow.seqCol, literal(row.seqId()))
-                       .value(EventRow.eventCol, literal(row.event()))
-                       .value(EventRow.createdAtCol, literal(row.createdAt()))
+                       .value(CassandraRow.stateIdCol, literal(row.stateId()))
+                       .value(CassandraRow.seqCol, literal(row.seqId()))
+                       .value(CassandraRow.payloadCol, literal(row.payload()))
+                       .value(CassandraRow.createdAtCol, literal(row.createdAt()))
                        .ifNotExists()
                        .build();
   }
@@ -24,9 +24,9 @@ class Statements {
   public static SimpleStatement getLastSeqId(String keyspace, String table, String stateId) {
     return QueryBuilder.selectFrom(keyspace, table)
                        .all()
-                       .orderBy(EventRow.seqCol, ClusteringOrder.DESC)
+                       .orderBy(CassandraRow.seqCol, ClusteringOrder.DESC)
                        .limit(1)
-                       .whereColumn(EventRow.stateIdCol)
+                       .whereColumn(CassandraRow.stateIdCol)
                        .isEqualTo(literal(stateId))
                        .build();
   }
@@ -34,7 +34,7 @@ class Statements {
   public static SimpleStatement get(String keyspace, String table, String stateId) {
     return QueryBuilder.selectFrom(keyspace, table)
                        .all()
-                       .whereColumn(EventRow.stateIdCol)
+                       .whereColumn(CassandraRow.stateIdCol)
                        .isEqualTo(literal(stateId))
                        .build();
   }
@@ -50,10 +50,10 @@ class Statements {
   public static SimpleStatement createEventsTable(String keyspace, String table) {
     return SchemaBuilder.createTable(keyspace, table)
                         .ifNotExists()
-                        .withPartitionKey(EventRow.stateIdCol, EventRow.stateIdColType)
-                        .withClusteringColumn(EventRow.seqCol, EventRow.seqColType)
-                        .withColumn(EventRow.eventCol, EventRow.eventColType)
-                        .withColumn(EventRow.createdAtCol, EventRow.createAtColType)
+                        .withPartitionKey(CassandraRow.stateIdCol, CassandraRow.stateIdColType)
+                        .withClusteringColumn(CassandraRow.seqCol, CassandraRow.seqColType)
+                        .withColumn(CassandraRow.payloadCol, CassandraRow.payloadColType)
+                        .withColumn(CassandraRow.createdAtCol, CassandraRow.createAtColType)
                         .build();
   }
 }

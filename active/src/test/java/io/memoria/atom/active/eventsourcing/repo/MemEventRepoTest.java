@@ -1,6 +1,5 @@
-package io.memoria.atom.active.eventsourcing.pipeline.mem;
+package io.memoria.atom.active.eventsourcing.repo;
 
-import io.memoria.atom.active.eventsourcing.pipeline.EventRepo;
 import io.memoria.atom.core.eventsourcing.*;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
@@ -12,7 +11,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestMethodOrder(OrderAnnotation.class)
-class MemEventMsgRepoTest {
+class MemEventRepoTest {
   private static final int ELEMENTS_SIZE = 1000;
   private static final String topic = "some_topic";
   private static final int partition = 0;

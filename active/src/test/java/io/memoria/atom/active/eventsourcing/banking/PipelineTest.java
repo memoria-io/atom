@@ -6,9 +6,11 @@ import io.memoria.atom.active.eventsourcing.banking.command.UserCommand;
 import io.memoria.atom.active.eventsourcing.banking.event.UserEvent;
 import io.memoria.atom.active.eventsourcing.banking.state.User;
 import io.memoria.atom.active.eventsourcing.banking.state.Visitor;
-import io.memoria.atom.active.eventsourcing.pipeline.*;
-import io.memoria.atom.active.eventsourcing.pipeline.mem.MemCommandStream;
-import io.memoria.atom.active.eventsourcing.pipeline.mem.MemEventRepo;
+import io.memoria.atom.active.eventsourcing.pipeline.Domain;
+import io.memoria.atom.active.eventsourcing.pipeline.Pipeline;
+import io.memoria.atom.active.eventsourcing.pipeline.Route;
+import io.memoria.atom.active.eventsourcing.repo.EventRepo;
+import io.memoria.atom.active.eventsourcing.stream.CommandStream;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
@@ -16,19 +18,24 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-class DispatcherTest {
-  private static final AtomicInteger latch = new AtomicInteger(12);
+class PipelineTest {
   private static final Route route = new Route("cmdTopic", 0, 1, "eventTopic");
   private final CommandStream<UserCommand> commandStream;
   private final EventRepo<UserEvent> eventRepo;
-  private final Dispatcher<User, UserCommand, UserEvent> dispatcher;
+  private final Pipeline<UserCommand, UserEvent> pipeline;
 
-  DispatcherTest() {
-    var domain = new Domain<>(new Visitor(), new AccountDecider(), new AccountSaga(), new AccountEvolver());
+  PipelineTest() {
+    var domain = new Domain<>(User.class,
+                              UserCommand.class,
+                              UserEvent.class,
+                              new Visitor(),
+                              new AccountDecider(),
+                              new AccountSaga(),
+                              new AccountEvolver());
 
-    commandStream = new MemCommandStream<>(route.cmdTopic(), route.totalCmdPartitions());
-    eventRepo = new MemEventRepo<>(route.eventTopic());
-    dispatcher = new Dispatcher<>(domain, route, commandStream, eventRepo);
+    commandStream = CommandStream.fromMemory(route.cmdTopic(), route.totalCmdPartitions());
+    eventRepo = EventRepo.from(route.eventTopic());
+    pipeline = Pipeline.create(domain, route, commandStream, eventRepo);
   }
 
   @Test
@@ -37,22 +44,18 @@ class DispatcherTest {
     var bobId = StateId.of("bob");
     var janId = StateId.of("jan");
     var createBob = CreateAccount.of(bobId, "bob", 100);
-    var createJan = CreateAccount.of(janId, "jan", 100);
+    //    var createJan = CreateAccount.of(janId, "jan", 100);
     var sendMoneyFromBobToJan = DataSet.createTransfer(bobId, janId, 50);
     var sendSecondMoney = DataSet.createTransfer(bobId, janId, 25);
-    var sendThirdMoney = DataSet.createTransfer(bobId, janId, 25);
-    var closeJanAccount = CloseAccount.of(janId);
+    //    var sendThirdMoney = DataSet.createTransfer(bobId, janId, 25);
+    var closeJanAccount = CloseAccount.of(bobId);
     // When
-    Stream<UserCommand> cmds = Stream.of(createBob,
-                                         createJan,
-                                         sendMoneyFromBobToJan,
-                                         sendSecondMoney,
-                                         closeJanAccount,
-                                         sendThirdMoney);
+    Stream<UserCommand> cmds = Stream.of(createBob, sendMoneyFromBobToJan, sendSecondMoney, closeJanAccount);
 
-    cmds.map(c -> commandStream.pub(route.cmdTopic(), route.cmdPartition(), c)).forEach(Try::get);
+    cmds.map(pipeline::append).forEach(Try::get);
     // Then
-    dispatcher.run().takeWhile(s -> latch.decrementAndGet() > 0).forEach(Try::get);
+    final AtomicInteger latch = new AtomicInteger(4);
+    pipeline.stream().takeWhile(s -> latch.decrementAndGet() > 0).forEach(Try::get);
     //    eventRepo.stream(bobId).map(Try::get).forEach(System.out::println);
     //    Thread.sleep(1000);
     //    Thread.currentThread().join();

@@ -1,6 +1,8 @@
 package io.memoria.atom.active.eventsourcing.pipeline;
 
 import io.memoria.atom.active.eventsourcing.exception.PipelineException.MismatchingStateId;
+import io.memoria.atom.active.eventsourcing.repo.EventRepo;
+import io.memoria.atom.active.eventsourcing.stream.CommandStream;
 import io.memoria.atom.core.eventsourcing.*;
 import io.vavr.control.Option;
 import io.vavr.control.Try;

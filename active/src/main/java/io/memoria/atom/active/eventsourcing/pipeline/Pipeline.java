@@ -1,5 +1,7 @@
 package io.memoria.atom.active.eventsourcing.pipeline;
 
+import io.memoria.atom.active.eventsourcing.repo.EventRepo;
+import io.memoria.atom.active.eventsourcing.stream.CommandStream;
 import io.memoria.atom.core.eventsourcing.Command;
 import io.memoria.atom.core.eventsourcing.Event;
 import io.memoria.atom.core.eventsourcing.State;
@@ -13,9 +15,9 @@ public interface Pipeline<C extends Command, E extends Event> {
   Stream<Try<E>> stream();
 
   static <S extends State, C extends Command, E extends Event> Pipeline<C, E> create(Domain<S, C, E> domain,
-                                                                                        Route route,
-                                                                                        CommandStream<C> commandStream,
-                                                                                        EventRepo<E> eventRepo) {
+                                                                                     Route route,
+                                                                                     CommandStream<C> commandStream,
+                                                                                     EventRepo<E> eventRepo) {
     return new StatePipeline<>(domain, route, commandStream, eventRepo);
   }
 }

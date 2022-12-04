@@ -1,8 +1,8 @@
 package io.memoria.atom.active.eventsourcing.cassandra;
 
 import com.datastax.oss.driver.api.core.CqlSession;
+import io.memoria.atom.active.eventsourcing.repo.ESRepoRow;
 import io.memoria.atom.core.eventsourcing.*;
-import io.memoria.atom.core.text.SerializableTransformer;
 import io.vavr.collection.List;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -12,15 +12,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static io.memoria.atom.active.eventsourcing.cassandra.TestUtils.KEYSPACE;
 
 @TestMethodOrder(OrderAnnotation.class)
-class CassandraEventRepoTest {
-  private static final String TOPIC = CassandraEventRepoTest.class.getSimpleName() + "_events";
-  private static final StateId STATE_ID = StateId.randomUUID();
+class CassandraESRepoTest {
+  private static final String TOPIC = CassandraESRepoTest.class.getSimpleName() + "_events";
+  private static final String STATE_ID = StateId.randomUUID().value();
   private static final CqlSession session = TestUtils.CqlSession();
   private static final CassandraEventRepoAdmin admin = new CassandraEventRepoAdmin(session);
-  private static final CassandraEventRepo<UserEvent> repo = new CassandraEventRepo<>(KEYSPACE,
-                                                                                     session,
-                                                                                     new SerializableTransformer(),
-                                                                                     UserEvent.class);
+  private static final CassandraESRepo repo = new CassandraESRepo(KEYSPACE, session);
   private static final int COUNT = 100;
 
   @Test
@@ -46,12 +43,11 @@ class CassandraEventRepoTest {
   void push() {
     // When
     var rows = List.range(0, COUNT)
-                   .map(i -> new UserEvent(EventId.of(i), STATE_ID))
                    .zipWithIndex()
-                   .map(tup -> repo.append(TOPIC, tup._2, tup._1));
+                   .map(tup -> repo.append(new ESRepoRow(TOPIC, STATE_ID, tup._2, tup._1 + "")));
     AtomicInteger idx = new AtomicInteger(0);
     // Then
-    rows.forEach(i -> Assertions.assertEquals(i.get(), idx.getAndIncrement()));
+    rows.forEach(i -> Assertions.assertEquals(i.get().seqId(), idx.getAndIncrement()));
   }
 
   @Test

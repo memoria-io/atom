@@ -15,7 +15,7 @@ import static io.memoria.atom.active.eventsourcing.cassandra.TestUtils.KEYSPACE;
 
 @TestMethodOrder(OrderAnnotation.class)
 class StatementsTest {
-  private static final String TABLE = StatementsTest.class.getSimpleName() + "_events";
+  private static final String TABLE = StatementsTest.class.getSimpleName() + "_table";
   private static final String STATE_ID = StateId.randomUUID().value();
   private static final CqlSession session = TestUtils.CqlSession();
   private static final int COUNT = 100;
@@ -81,7 +81,7 @@ class StatementsTest {
     System.out.println("EventRowStsTest: StateId:" + STATE_ID);
   }
 
-  private static EventRow createRow(int i) {
-    return new EventRow(STATE_ID, i, "{some event happened here}");
+  private static CassandraRow createRow(int i) {
+    return new CassandraRow(STATE_ID, i, "{some event happened here}");
   }
 }

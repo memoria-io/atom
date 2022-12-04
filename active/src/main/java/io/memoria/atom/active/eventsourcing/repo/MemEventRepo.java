@@ -1,6 +1,5 @@
-package io.memoria.atom.active.eventsourcing.pipeline.mem;
+package io.memoria.atom.active.eventsourcing.repo;
 
-import io.memoria.atom.active.eventsourcing.pipeline.EventRepo;
 import io.memoria.atom.core.eventsourcing.Event;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.vavr.control.Try;
@@ -8,15 +7,15 @@ import io.vavr.control.Try;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class MemEventRepo<E extends Event> implements EventRepo<E> {
+class MemEventRepo<E extends Event> implements EventRepo<E> {
   private final Map<String, List<E>> topics = new HashMap<>();
 
   public MemEventRepo(List<String> topicNames) {
-    topicNames.forEach(name -> this.topics.put(name, new ArrayList<>()));
+    topicNames.forEach(this::putTopic);
   }
 
   public MemEventRepo(String... topicNames) {
-    Arrays.stream(topicNames).forEach(name -> this.topics.put(name, new ArrayList<>()));
+    Arrays.stream(topicNames).forEach(this::putTopic);
   }
 
   @Override
@@ -30,5 +29,9 @@ public class MemEventRepo<E extends Event> implements EventRepo<E> {
       topics.get(topic).add(e);
       return seqId;
     });
+  }
+
+  private List<E> putTopic(String topicName) {
+    return this.topics.put(topicName, new ArrayList<>());
   }
 }
