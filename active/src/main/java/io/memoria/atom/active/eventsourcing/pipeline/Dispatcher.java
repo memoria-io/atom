@@ -30,8 +30,8 @@ public class Dispatcher<S extends State, C extends Command, E extends Event> {
                     TextTransformer transformer) {
     this.domain = domain;
     this.route = route;
-    this.commandStream = CommandStream.from(esStream, transformer, domain.cClass());
-    this.eventRepo = EventRepo.from(esRepo, transformer, domain.eClass());
+    this.commandStream = CommandStream.create(esStream, transformer, domain.cClass());
+    this.eventRepo = EventRepo.create(esRepo, transformer, domain.eClass());
     this.pipelines = new ConcurrentHashMap<>();
   }
 

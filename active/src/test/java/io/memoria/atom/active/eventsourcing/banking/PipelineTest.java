@@ -33,8 +33,8 @@ class PipelineTest {
                               new AccountSaga(),
                               new AccountEvolver());
 
-    commandStream = CommandStream.fromMemory(route.cmdTopic(), route.totalCmdPartitions());
-    eventRepo = EventRepo.from(route.eventTopic());
+    commandStream = CommandStream.create(route.cmdTopic(), route.totalCmdPartitions());
+    eventRepo = EventRepo.create(route.eventTopic());
     pipeline = Pipeline.create(domain, route, commandStream, eventRepo);
   }
 

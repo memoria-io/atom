@@ -12,15 +12,21 @@ public interface CommandStream<C extends Command> {
 
   Stream<Try<C>> sub(String topic, int partition);
 
-  static <C extends Command> CommandStream<C> from(ESStream esStream, TextTransformer transformer, Class<C> cClass) {
+  static <C extends Command> CommandStream<C> create(ESStream esStream, TextTransformer transformer, Class<C> cClass) {
     return new AbstractCommandStream<>(esStream, transformer, cClass);
   }
 
-  static <C extends Command> CommandStream<C> fromMemory(Map<String, Integer> m) {
+  /**
+   * @return an in memory CommandStream
+   */
+  static <C extends Command> CommandStream<C> create(Map<String, Integer> m) {
     return new MemCommandStream<>(m);
   }
 
-  static <C extends Command> CommandStream<C> fromMemory(String topic, int totalPartitions) {
+  /**
+   * @return an in memory CommandStream
+   */
+  static <C extends Command> CommandStream<C> create(String topic, int totalPartitions) {
     return new MemCommandStream<>(topic, totalPartitions);
   }
 }

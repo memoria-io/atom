@@ -13,21 +13,21 @@ public interface EventRepo<E extends Event> {
 
   Try<Integer> append(String topic, int seqId, E event);
 
-  static <E extends Event> EventRepo<E> from(ESRepo esRepo, TextTransformer transformer, Class<E> eClass) {
+  static <E extends Event> EventRepo<E> create(ESRepo esRepo, TextTransformer transformer, Class<E> eClass) {
     return new AbstractEventRepo<>(esRepo, transformer, eClass);
   }
 
   /**
-   * @return In memory EventRepo
+   * @return an in memory EventRepo
    */
-  static <E extends Event> EventRepo<E> from(List<String> topicNames) {
-    return new MemEventRepo<>(topicNames);
+  static <E extends Event> EventRepo<E> create(List<String> tables) {
+    return new MemEventRepo<>(tables);
   }
 
   /**
-   * @return In memory event repo
+   * @return an in memory EventRepo
    */
-  static <E extends Event> EventRepo<E> from(String... topicNames) {
-    return new MemEventRepo<>(topicNames);
+  static <E extends Event> EventRepo<E> create(String... tables) {
+    return new MemEventRepo<>(tables);
   }
 }
