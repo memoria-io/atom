@@ -61,7 +61,7 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
       return Option.none();
     } else {
       if (state.equals(domain.initState())) {
-        eventRepo.getAll(route.eventTopic(), cmd.stateId()).forEach(tr -> tr.map(this::evolve));
+        eventRepo.getAll(route.eventTable(), cmd.stateId()).forEach(tr -> tr.map(this::evolve));
       }
       var e = domain.decider().apply(state, cmd).flatMap(this::saga).flatMap(this::append).map(this::evolve);
       return Option.some(e);
@@ -91,7 +91,7 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
   }
 
   private Try<E> append(E e) {
-    return eventRepo.append(route.eventTopic(), this.eventSeqId.get(), e).map(i -> e);
+    return eventRepo.append(route.eventTable(), this.eventSeqId.get(), e).map(i -> e);
   }
 
   private C take() {

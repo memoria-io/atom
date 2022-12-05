@@ -9,7 +9,7 @@ import io.vavr.control.Try;
 
 import java.util.stream.Stream;
 
-public interface Pipeline<C extends Command, E extends Event> {
+interface Pipeline<C extends Command, E extends Event> {
   Try<Void> append(C cmd);
 
   Stream<Try<E>> stream();

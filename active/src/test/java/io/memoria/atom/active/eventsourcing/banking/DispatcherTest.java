@@ -6,8 +6,8 @@ import io.memoria.atom.active.eventsourcing.banking.command.UserCommand;
 import io.memoria.atom.active.eventsourcing.banking.event.UserEvent;
 import io.memoria.atom.active.eventsourcing.banking.state.User;
 import io.memoria.atom.active.eventsourcing.banking.state.Visitor;
+import io.memoria.atom.active.eventsourcing.pipeline.Dispatcher;
 import io.memoria.atom.active.eventsourcing.pipeline.Domain;
-import io.memoria.atom.active.eventsourcing.pipeline.Pipeline;
 import io.memoria.atom.active.eventsourcing.pipeline.Route;
 import io.memoria.atom.active.eventsourcing.repo.EventRepo;
 import io.memoria.atom.active.eventsourcing.stream.CommandStream;
@@ -18,13 +18,14 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-class PipelineTest {
+class DispatcherTest {
+  private static final AtomicInteger latch = new AtomicInteger(12);
   private static final Route route = new Route("cmdTopic", 0, 1, "eventTopic");
   private final CommandStream<UserCommand> commandStream;
   private final EventRepo<UserEvent> eventRepo;
-  private final Pipeline<UserCommand, UserEvent> pipeline;
+  private final Dispatcher<User, UserCommand, UserEvent> dispatcher;
 
-  PipelineTest() {
+  DispatcherTest() {
     var domain = new Domain<>(User.class,
                               UserCommand.class,
                               UserEvent.class,
@@ -34,8 +35,8 @@ class PipelineTest {
                               new AccountEvolver());
 
     commandStream = CommandStream.create(route.cmdTopic(), route.totalCmdPartitions());
-    eventRepo = EventRepo.create(route.eventTopic());
-    pipeline = Pipeline.create(domain, route, commandStream, eventRepo);
+    eventRepo = EventRepo.create(route.eventTable());
+    dispatcher = new Dispatcher<>(domain, route, commandStream, eventRepo);
   }
 
   @Test
@@ -44,18 +45,22 @@ class PipelineTest {
     var bobId = StateId.of("bob");
     var janId = StateId.of("jan");
     var createBob = CreateAccount.of(bobId, "bob", 100);
-    //    var createJan = CreateAccount.of(janId, "jan", 100);
+    var createJan = CreateAccount.of(janId, "jan", 100);
     var sendMoneyFromBobToJan = DataSet.createTransfer(bobId, janId, 50);
     var sendSecondMoney = DataSet.createTransfer(bobId, janId, 25);
-    //    var sendThirdMoney = DataSet.createTransfer(bobId, janId, 25);
-    var closeJanAccount = CloseAccount.of(bobId);
+    var sendThirdMoney = DataSet.createTransfer(bobId, janId, 25);
+    var closeJanAccount = CloseAccount.of(janId);
     // When
-    Stream<UserCommand> cmds = Stream.of(createBob, sendMoneyFromBobToJan, sendSecondMoney, closeJanAccount);
+    Stream<UserCommand> cmds = Stream.of(createBob,
+                                         createJan,
+                                         sendMoneyFromBobToJan,
+                                         sendSecondMoney,
+                                         closeJanAccount,
+                                         sendThirdMoney);
 
-    cmds.map(pipeline::append).forEach(Try::get);
+    cmds.map(c -> commandStream.pub(route.cmdTopic(), route.cmdPartition(), c)).forEach(Try::get);
     // Then
-    final AtomicInteger latch = new AtomicInteger(4);
-    pipeline.stream().takeWhile(s -> latch.decrementAndGet() > 0).forEach(Try::get);
+    dispatcher.run().takeWhile(s -> latch.decrementAndGet() > 0).forEach(Try::get);
     //    eventRepo.stream(bobId).map(Try::get).forEach(System.out::println);
     //    Thread.sleep(1000);
     //    Thread.currentThread().join();

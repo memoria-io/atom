@@ -1,11 +1,8 @@
 package io.memoria.atom.active.eventsourcing.pipeline;
 
-import io.memoria.atom.active.eventsourcing.repo.ESRepo;
 import io.memoria.atom.active.eventsourcing.repo.EventRepo;
 import io.memoria.atom.active.eventsourcing.stream.CommandStream;
-import io.memoria.atom.active.eventsourcing.stream.ESStream;
 import io.memoria.atom.core.eventsourcing.*;
-import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,19 +20,7 @@ public class Dispatcher<S extends State, C extends Command, E extends Event> {
   private final EventRepo<E> eventRepo;
   private final Map<StateId, Pipeline<C, E>> pipelines;
 
-  public Dispatcher(Domain<S, C, E> domain,
-                    Route route,
-                    ESStream esStream,
-                    ESRepo esRepo,
-                    TextTransformer transformer) {
-    this.domain = domain;
-    this.route = route;
-    this.commandStream = CommandStream.create(esStream, transformer, domain.cClass());
-    this.eventRepo = EventRepo.create(esRepo, transformer, domain.eClass());
-    this.pipelines = new ConcurrentHashMap<>();
-  }
-
-  Dispatcher(Domain<S, C, E> domain, Route route, CommandStream<C> commandStream, EventRepo<E> eventRepo) {
+  public Dispatcher(Domain<S, C, E> domain, Route route, CommandStream<C> commandStream, EventRepo<E> eventRepo) {
     this.domain = domain;
     this.route = route;
     this.commandStream = commandStream;
