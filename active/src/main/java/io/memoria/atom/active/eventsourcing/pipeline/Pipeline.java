@@ -7,6 +7,7 @@ import io.memoria.atom.core.eventsourcing.Event;
 import io.memoria.atom.core.eventsourcing.State;
 import io.vavr.control.Try;
 
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 interface Pipeline<C extends Command, E extends Event> {
@@ -17,7 +18,8 @@ interface Pipeline<C extends Command, E extends Event> {
   static <S extends State, C extends Command, E extends Event> Pipeline<C, E> create(Domain<S, C, E> domain,
                                                                                      Route route,
                                                                                      CommandStream<C> commandStream,
-                                                                                     EventRepo<E> eventRepo) {
-    return new StatePipeline<>(domain, route, commandStream, eventRepo);
+                                                                                     EventRepo<E> eventRepo,
+                                                                                     Consumer<Try<E>> resultConsumer) {
+    return new StatePipeline<>(domain, route, commandStream, eventRepo, resultConsumer);
   }
 }

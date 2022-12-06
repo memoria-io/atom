@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 class StatePipeline<S extends State, C extends Command, E extends Event> implements Pipeline<C, E> {
@@ -26,12 +27,18 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
   private final Route route;
   private final CommandStream<C> commandStream;
   private final EventRepo<E> eventRepo;
+  private final Consumer<Try<E>> resultConsumer;
 
-  public StatePipeline(Domain<S, C, E> domain, Route route, CommandStream<C> commandStream, EventRepo<E> eventRepo) {
+  public StatePipeline(Domain<S, C, E> domain,
+                       Route route,
+                       CommandStream<C> commandStream,
+                       EventRepo<E> eventRepo,
+                       Consumer<Try<E>> resultConsumer) {
     this.domain = domain;
     // In memory
     this.state = domain.initState();
     this.route = route;
+    this.resultConsumer = resultConsumer;
     this.processed = new HashSet<>();
     this.cmdQueue = new LinkedBlockingDeque<>();
     this.eventSeqId = new AtomicInteger();
@@ -61,7 +68,9 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
       return Option.none();
     } else {
       if (state.equals(domain.initState())) {
-        eventRepo.getAll(route.eventTable(), cmd.stateId()).forEach(tr -> tr.map(this::evolve));
+        eventRepo.getAll(route.eventTable(), cmd.stateId())
+                 .map(tr -> tr.map(this::evolve))
+                 .forEachOrdered(resultConsumer);
       }
       var e = domain.decider().apply(state, cmd).flatMap(this::saga).flatMap(this::append).map(this::evolve);
       return Option.some(e);

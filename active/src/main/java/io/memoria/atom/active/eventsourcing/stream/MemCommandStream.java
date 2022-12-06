@@ -6,12 +6,13 @@ import io.vavr.control.Try;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 class MemCommandStream<C extends Command> implements CommandStream<C> {
-  private final Map<String, List<LinkedBlockingDeque<C>>> topics = new HashMap<>();
+  private final Map<String, List<LinkedBlockingDeque<C>>> topics = new ConcurrentHashMap<>();
 
   public MemCommandStream(Map<String, Integer> topicPartitions) {
     topicPartitions.forEach((key, value) -> this.topics.put(key, createTopic(value)));

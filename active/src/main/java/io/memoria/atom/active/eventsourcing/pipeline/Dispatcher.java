@@ -6,29 +6,29 @@ import io.memoria.atom.core.eventsourcing.*;
 import io.vavr.control.Try;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class Dispatcher<S extends State, C extends Command, E extends Event> {
-
   private final Domain<S, C, E> domain;
   private final Route route;
   private final CommandStream<C> commandStream;
   private final EventRepo<E> eventRepo;
-  private final Consumer<Try<E>> eventResult;
+  private final Consumer<Try<E>> resultConsumer;
   private final Map<StateId, Pipeline<C, E>> pipelines;
 
   public Dispatcher(Domain<S, C, E> domain,
                     Route route,
                     CommandStream<C> commandStream,
                     EventRepo<E> eventRepo,
-                    Consumer<Try<E>> eventResult) {
+                    Consumer<Try<E>> resultConsumer) {
     this.domain = domain;
     this.route = route;
     this.commandStream = commandStream;
     this.eventRepo = eventRepo;
-    this.eventResult = eventResult;
+    this.resultConsumer = resultConsumer;
     this.pipelines = new ConcurrentHashMap<>();
   }
 
@@ -38,14 +38,14 @@ public class Dispatcher<S extends State, C extends Command, E extends Event> {
 
   private Try<C> append(C cmd) {
     pipelines.computeIfAbsent(cmd.stateId(), s -> {
-      var pipeline = new StatePipeline<>(domain, route, commandStream, eventRepo);
-      Thread.ofVirtual().name(threadName(cmd)).start(() -> pipeline.stream().forEach(eventResult));
+      var pipeline = new StatePipeline<>(domain, route, commandStream, eventRepo, resultConsumer);
+      Thread.ofVirtual().name(threadName(cmd)).start(() -> pipeline.stream().forEachOrdered(resultConsumer));
       return pipeline;
     });
     return pipelines.get(cmd.stateId()).append(cmd).map(v -> cmd);
   }
 
   private String threadName(C cmd) {
-    return "StateId=%s".formatted(cmd.stateId().value());
+    return "StateId=%s:%s".formatted(cmd.stateId().value(), UUID.randomUUID().toString());
   }
 }

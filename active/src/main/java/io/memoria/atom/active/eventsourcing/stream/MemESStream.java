@@ -5,12 +5,13 @@ import io.vavr.control.Try;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 class MemESStream implements ESStream {
-  private final Map<String, List<LinkedBlockingDeque<ESStreamMsg>>> topics = new HashMap<>();
+  private final Map<String, List<LinkedBlockingDeque<ESStreamMsg>>> topics = new ConcurrentHashMap<>();
 
   public MemESStream(Map<String, Integer> topicPartitions) {
     topicPartitions.forEach((key, value) -> this.topics.put(key, createTopic(value)));
