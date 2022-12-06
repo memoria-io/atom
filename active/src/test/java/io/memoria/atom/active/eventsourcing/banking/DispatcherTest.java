@@ -14,11 +14,15 @@ import io.memoria.atom.active.eventsourcing.stream.CommandStream;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 class DispatcherTest {
+  private static final Logger log = LoggerFactory.getLogger(Dispatcher.class.getSimpleName());
+
   private static final AtomicInteger latch = new AtomicInteger(12);
   private static final Route route = new Route("cmdTopic", 0, 1, "eventTopic");
   private final CommandStream<UserCommand> commandStream;
@@ -36,7 +40,7 @@ class DispatcherTest {
 
     commandStream = CommandStream.create(route.cmdTopic(), route.totalCmdPartitions());
     eventRepo = EventRepo.create(route.eventTable());
-    dispatcher = new Dispatcher<>(domain, route, commandStream, eventRepo);
+    dispatcher = new Dispatcher<>(domain, route, commandStream, eventRepo, tr -> log.info(tr.toString()));
   }
 
   @Test
