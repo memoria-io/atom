@@ -46,6 +46,6 @@ public class Dispatcher<S extends State, C extends Command, E extends Event> {
   }
 
   private String threadName(C cmd) {
-    return "StateId=%s:%s".formatted(cmd.stateId().value(), UUID.randomUUID().toString());
+    return "StateId=%s".formatted(cmd.stateId().value());
   }
 }
