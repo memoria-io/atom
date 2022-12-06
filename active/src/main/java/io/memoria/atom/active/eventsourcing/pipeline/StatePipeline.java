@@ -49,12 +49,7 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
 
   @Override
   public Try<Void> append(C cmd) {
-    if (isValidCommand(cmd)) {
-      return Try.run(() -> this.cmdQueue.putLast(cmd));
-    } else {
-      var e = MismatchingStateId.create(cmd.stateId(), state.stateId());
-      return Try.failure(e);
-    }
+    return Try.run(() -> this.cmdQueue.putLast(cmd));
   }
 
   @Override
@@ -63,6 +58,11 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
   }
 
   public Option<Try<E>> handle(C cmd) {
+    if(!commandMatchesState(cmd)){
+      // For safety, but hypothetically should never be reached
+      var e = MismatchingStateId.create(cmd.stateId(), state.stateId());
+      return Option.some(Try.failure(e));
+    }
     if (processed.contains(cmd.commandId())) {
       // No change, command has already been processed
       return Option.none();
@@ -95,7 +95,7 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
     return e;
   }
 
-  public boolean isValidCommand(C cmd) {
+  public boolean commandMatchesState(C cmd) {
     return cmd.stateId().equals(state.stateId()) || state.equals(domain.initState());
   }
 
