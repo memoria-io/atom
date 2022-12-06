@@ -16,19 +16,19 @@ public class Dispatcher<S extends State, C extends Command, E extends Event> {
   private final Route route;
   private final CommandStream<C> commandStream;
   private final EventRepo<E> eventRepo;
-  private final Consumer<Try<E>> handleResult;
+  private final Consumer<Try<E>> eventResult;
   private final Map<StateId, Pipeline<C, E>> pipelines;
 
   public Dispatcher(Domain<S, C, E> domain,
                     Route route,
                     CommandStream<C> commandStream,
                     EventRepo<E> eventRepo,
-                    Consumer<Try<E>> handleResult) {
+                    Consumer<Try<E>> eventResult) {
     this.domain = domain;
     this.route = route;
     this.commandStream = commandStream;
     this.eventRepo = eventRepo;
-    this.handleResult = handleResult;
+    this.eventResult = eventResult;
     this.pipelines = new ConcurrentHashMap<>();
   }
 
@@ -39,7 +39,7 @@ public class Dispatcher<S extends State, C extends Command, E extends Event> {
   private Try<C> append(C cmd) {
     pipelines.computeIfAbsent(cmd.stateId(), s -> {
       var pipeline = new StatePipeline<>(domain, route, commandStream, eventRepo);
-      Thread.ofVirtual().name(threadName(cmd)).start(() -> pipeline.stream().forEach(handleResult));
+      Thread.ofVirtual().name(threadName(cmd)).start(() -> pipeline.stream().forEach(eventResult));
       return pipeline;
     });
     return pipelines.get(cmd.stateId()).append(cmd).map(v -> cmd);
