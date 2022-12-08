@@ -6,7 +6,6 @@ import io.memoria.atom.core.eventsourcing.*;
 import io.vavr.control.Try;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Stream;

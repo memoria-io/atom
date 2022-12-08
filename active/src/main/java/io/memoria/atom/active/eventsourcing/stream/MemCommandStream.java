@@ -3,7 +3,6 @@ package io.memoria.atom.active.eventsourcing.stream;
 import io.memoria.atom.core.eventsourcing.Command;
 import io.vavr.control.Try;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

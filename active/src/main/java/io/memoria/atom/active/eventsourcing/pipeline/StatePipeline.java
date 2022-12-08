@@ -58,7 +58,7 @@ class StatePipeline<S extends State, C extends Command, E extends Event> impleme
   }
 
   public Option<Try<E>> handle(C cmd) {
-    if(!commandMatchesState(cmd)){
+    if (!commandMatchesState(cmd)) {
       // For safety, but hypothetically should never be reached
       var e = MismatchingStateId.create(cmd.stateId(), state.stateId());
       return Option.some(Try.failure(e));
