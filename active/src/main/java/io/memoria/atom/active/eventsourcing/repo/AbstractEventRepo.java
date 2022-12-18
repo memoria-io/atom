@@ -20,7 +20,12 @@ class AbstractEventRepo<E extends Event> implements EventRepo<E> {
 
   @Override
   public Stream<Try<E>> getAll(String topic, StateId stateId) {
-    return esRepo.getAll(topic, stateId.value()).map(esRepoRow -> transformer.deserialize(esRepoRow.value(), eClass));
+    return esRepo.getAll(topic, stateId.value()).map(this::deserialize);
+  }
+
+  @Override
+  public Stream<Try<E>> getAll(String topic, StateId stateId, int seqId) {
+    return esRepo.getAll(topic, stateId.value(), seqId).map(this::deserialize);
   }
 
   @Override
@@ -28,5 +33,9 @@ class AbstractEventRepo<E extends Event> implements EventRepo<E> {
     return transformer.serialize(event)
                       .flatMap(eStr -> esRepo.append(new ESRepoRow(topic, event.stateId().value(), seqId, eStr)))
                       .map(ESRepoRow::seqId);
+  }
+
+  private Try<E> deserialize(ESRepoRow esRepoRow) {
+    return transformer.deserialize(esRepoRow.value(), eClass);
   }
 }

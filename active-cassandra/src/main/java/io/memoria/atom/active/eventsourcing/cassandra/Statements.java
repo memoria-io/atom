@@ -31,11 +31,13 @@ class Statements {
                        .build();
   }
 
-  public static SimpleStatement get(String keyspace, String table, String stateId) {
+  public static SimpleStatement get(String keyspace, String table, String stateId, int startIdx) {
     return QueryBuilder.selectFrom(keyspace, table)
                        .all()
                        .whereColumn(CassandraRow.stateIdCol)
                        .isEqualTo(literal(stateId))
+                       .whereColumn(CassandraRow.seqCol)
+                       .isGreaterThanOrEqualTo(literal(startIdx))
                        .build();
   }
 

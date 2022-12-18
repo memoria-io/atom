@@ -11,6 +11,8 @@ import java.util.stream.Stream;
 public interface EventRepo<E extends Event> {
   Stream<Try<E>> getAll(String topic, StateId stateId);
 
+  Stream<Try<E>> getAll(String topic, StateId stateId, int seqId);
+
   Try<Integer> append(String topic, int seqId, E event);
 
   static <E extends Event> EventRepo<E> create(ESRepo esRepo, TextTransformer transformer, Class<E> eClass) {
