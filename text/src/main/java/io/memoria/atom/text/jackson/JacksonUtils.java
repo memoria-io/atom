@@ -14,9 +14,13 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import io.memoria.atom.core.eventsourcing.CommandId;
+import io.memoria.atom.core.eventsourcing.EventId;
+import io.memoria.atom.core.eventsourcing.StateId;
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.text.jackson.adapters.IdTransformer.IdDeserializer;
-import io.memoria.atom.text.jackson.adapters.IdTransformer.IdSerializer;
+import io.memoria.atom.text.jackson.adapters.IdValueTransformer.IdValueDeserializer;
+import io.memoria.atom.text.jackson.adapters.IdValueTransformer.IdValueSerializer;
+import io.vavr.collection.List;
 import io.vavr.jackson.datatype.VavrModule;
 
 import java.text.SimpleDateFormat;
@@ -99,11 +103,17 @@ public class JacksonUtils {
   }
 
   public static SimpleModule atomModule() {
-    var reactive = new SimpleModule();
-    // Id
-    reactive.addSerializer(Id.class, new IdSerializer());
-    reactive.addDeserializer(Id.class, new IdDeserializer());
-    return reactive;
+    var atomModule = new SimpleModule();
+
+    List.of(Id.class, CommandId.class, EventId.class, StateId.class)
+        .forEach(c -> atomModule.addSerializer(c, new IdValueSerializer<>(c.asSubclass(Id.class))));
+
+    atomModule.addDeserializer(Id.class, new IdValueDeserializer<>(Id.class, Id::of));
+    atomModule.addDeserializer(CommandId.class, new IdValueDeserializer<>(CommandId.class, CommandId::of));
+    atomModule.addDeserializer(EventId.class, new IdValueDeserializer<>(EventId.class, EventId::of));
+    atomModule.addDeserializer(StateId.class, new IdValueDeserializer<>(StateId.class, StateId::of));
+
+    return atomModule;
   }
 
   public static ObjectMapper yaml() {

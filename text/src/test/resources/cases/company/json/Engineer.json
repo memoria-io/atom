@@ -1,6 +1,7 @@
 {
   "$type":"Engineer",
-  "id": 0,
+  "id":"0",
+  "commandId":"0",
   "name":"bob",
   "birthday":"2000-01-01",
   "tasks":[

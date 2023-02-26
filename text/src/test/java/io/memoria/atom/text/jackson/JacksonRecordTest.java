@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static io.memoria.atom.text.jackson.TestDeps.prettyJson;
+import static io.memoria.atom.text.jackson.TestDeps.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -74,7 +74,7 @@ class JacksonRecordTest {
   @Test
   void toList() {
     // When
-    var list = prettyJson.deserialize(Resources.JSON_LIST, String[].class).get();
+    var list = json.deserialize(Resources.JSON_LIST, String[].class).get();
     // Then
     assert list != null;
     assertEquals(List.of("mercedes", "chevy", "porsche"), List.of(list));

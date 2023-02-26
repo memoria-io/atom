@@ -12,7 +12,7 @@
     <!--suppress MavenRedundantGroupId -->
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>19.14.6</version>
+    <version>19.14.7</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
