@@ -7,12 +7,16 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactoryBuilder;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import io.memoria.atom.core.id.Id;
+import io.memoria.atom.text.jackson.adapters.IdTransformer.IdDeserializer;
+import io.memoria.atom.text.jackson.adapters.IdTransformer.IdSerializer;
 import io.vavr.jackson.datatype.VavrModule;
 
 import java.text.SimpleDateFormat;
@@ -75,6 +79,7 @@ public class JacksonUtils {
     om = setDateFormat(om);
     om = addJ8Modules(om);
     om = addVavrModule(om);
+    om = om.registerModule(atomModule());
     om.configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false);
     return om;
   }
@@ -93,6 +98,14 @@ public class JacksonUtils {
     return om.registerModule(new VavrModule());
   }
 
+  public static SimpleModule atomModule() {
+    var reactive = new SimpleModule();
+    // Id
+    reactive.addSerializer(Id.class, new IdSerializer());
+    reactive.addDeserializer(Id.class, new IdDeserializer());
+    return reactive;
+  }
+
   public static ObjectMapper yaml() {
     var yfb = new YAMLFactoryBuilder(YAMLFactory.builder().build());
     yfb.configure(YAMLGenerator.Feature.INDENT_ARRAYS_WITH_INDICATOR, true);
@@ -100,6 +113,7 @@ public class JacksonUtils {
     om = setDateFormat(om);
     om = addJ8Modules(om);
     om = addVavrModule(om);
+    om = om.registerModule(atomModule());
     om.configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false);
     return om;
   }
