@@ -68,12 +68,25 @@ class StatementsTest {
   @Order(5)
   void get() {
     // Given
-    var st = Statements.get(KEYSPACE, TABLE, STATE_ID);
+    var st = Statements.get(KEYSPACE, TABLE, STATE_ID, 0);
     // When
     var rs = session.execute(st);
     var rows = StreamSupport.stream(rs.spliterator(), false);
     // Then
     assert rows.count() == COUNT;
+  }
+
+  @Test
+  @Order(6)
+  void getAfter() {
+    // Given
+    int startIdx = 2;
+    var st = Statements.get(KEYSPACE, TABLE, STATE_ID, startIdx);
+    // When
+    var rs = session.execute(st);
+    var rows = StreamSupport.stream(rs.spliterator(), false);
+    // Then
+    Assertions.assertEquals(COUNT - startIdx, rows.count());
   }
 
   @BeforeAll

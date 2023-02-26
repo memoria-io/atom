@@ -23,6 +23,14 @@ class MemESRepo implements ESRepo {
   }
 
   @Override
+  public Stream<ESRepoRow> getAll(String table, String stateId, int startIdx) {
+    return List.copyOf(this.topics.get(table))
+               .stream()
+               .filter(msg -> msg.stateId().equals(stateId))
+               .filter(msg -> msg.seqId() >= startIdx);
+  }
+
+  @Override
   public Try<ESRepoRow> append(ESRepoRow r) {
     return Try.of(() -> {
       topics.computeIfPresent(r.table(), (k, v) -> {

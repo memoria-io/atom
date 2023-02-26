@@ -25,6 +25,15 @@ class MemEventRepo<E extends Event> implements EventRepo<E> {
   }
 
   @Override
+  public Stream<Try<E>> getAll(String topic, StateId stateId, int startIdx) {
+    return List.copyOf(this.topics.get(topic))
+               .stream()
+               .filter(msg -> msg.stateId().equals(stateId))
+               .skip(startIdx)
+               .map(Try::success);
+  }
+
+  @Override
   public Try<Integer> append(String topic, int seqId, E e) {
     return Try.of(() -> {
       topics.computeIfPresent(topic, (k, v) -> {

@@ -25,7 +25,12 @@ public class CassandraESRepo implements ESRepo {
 
   @Override
   public Stream<ESRepoRow> getAll(String table, String stateId) {
-    return get(keyspace, table, stateId).map(cassandraRow -> toESRepoRow(table, cassandraRow));
+    return get(keyspace, table, stateId, 0).map(cassandraRow -> toESRepoRow(table, cassandraRow));
+  }
+
+  @Override
+  public Stream<ESRepoRow> getAll(String table, String stateId, int starIdx) {
+    return get(keyspace, table, stateId, starIdx).map(cassandraRow -> toESRepoRow(table, cassandraRow));
   }
 
   @Override
@@ -37,8 +42,8 @@ public class CassandraESRepo implements ESRepo {
     return new ESRepoRow(table, r.stateId(), r.seqId(), r.payload());
   }
 
-  private Stream<CassandraRow> get(String keyspace, String table, String stateId) {
-    var st = Statements.get(keyspace, table, stateId);
+  private Stream<CassandraRow> get(String keyspace, String table, String stateId, int seqId) {
+    var st = Statements.get(keyspace, table, stateId, seqId);
     return execSelect(session, st).map(CassandraRow::from);
   }
 

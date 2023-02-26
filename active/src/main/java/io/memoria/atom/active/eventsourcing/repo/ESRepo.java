@@ -8,6 +8,8 @@ import java.util.stream.Stream;
 public interface ESRepo {
   Stream<ESRepoRow> getAll(String table, String stateId);
 
+  Stream<ESRepoRow> getAll(String table, String stateId, int minSeqId);
+
   Try<ESRepoRow> append(ESRepoRow esRepoRow);
 
   static ESRepo create(List<String> topicNames) {
