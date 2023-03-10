@@ -8,7 +8,6 @@ import io.memoria.reactive.eventsourcing.repo.Stream;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.core.publisher.ParallelFlux;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.Logger;
@@ -71,23 +70,21 @@ public class Pipeline<S extends State, C extends Command, E extends Event> {
     return publishReduced.concatWith(pubCmdEvents);
   }
 
-  public Mono<E> toEvent(Msg msg) {
-    return toMono(transformer.deserialize(msg.value(), domain.eventClass()));
+  public Try<E> toEvent(Msg msg) {
+    return transformer.deserialize(msg.value(), domain.eventClass());
   }
 
   public S stateOrInit(StateId stateId) {
     return Option.of(stateRepo.get(stateId)).getOrElse(domain.initState());
   }
 
-  public Mono<Msg> toMsg(Event event) {
-    return toMono(transformer.serialize(event)).map(body -> new Msg(route.newEventTopic(),
-                                                                    route.partition(),
-                                                                    event.eventId(),
-                                                                    body));
+  public Try<Msg> toMsg(Event event) {
+    return transformer.serialize(event)
+                      .map(body -> new Msg(route.newEventTopic(), route.partition(), event.eventId(), body));
   }
 
-  public Mono<C> toCommand(Msg msg) {
-    return toMono(transformer.deserialize(msg.value(), domain.commandClass()));
+  public Try<C> toCommand(Msg msg) {
+    return transformer.deserialize(msg.value(), domain.commandClass());
   }
 
   private Flux<E> reducedEvents() {
@@ -105,7 +102,8 @@ public class Pipeline<S extends State, C extends Command, E extends Event> {
     return stream.size(topic, partition)
                  .filter(size -> size > 0)
                  .flatMapMany(size -> stream.subscribe(topic, partition, 0).take(size))
-                 .concatMap(this::toEvent)
+                 .map(this::toEvent)
+                 .concatMap(ReactorVavrUtils::tryToFlux)
                  .log(LOGGER, logConfig.level(), logConfig.showLine(), logConfig.signalTypeArray());
   }
 
@@ -118,8 +116,9 @@ public class Pipeline<S extends State, C extends Command, E extends Event> {
   }
 
   private Flux<E> publishEvents(Flux<E> events) {
-    return stream.publish(events.concatMap(this::toMsg))
-                 .concatMap(this::toEvent)
+    return stream.publish(events.map(this::toMsg).concatMap(ReactorVavrUtils::tryToFlux))
+                 .map(this::toEvent)
+                 .concatMap(ReactorVavrUtils::tryToFlux)
                  .log(LOGGER, logConfig.level(), logConfig.showLine(), logConfig.signalTypeArray());
   }
 
@@ -131,13 +130,14 @@ public class Pipeline<S extends State, C extends Command, E extends Event> {
 
   private Flux<E> handleNewCommands() {
     return stream.subscribe(route.commandTopic(), route.partition(), 0)
-                 .concatMap(this::toCommand)
-                 .concatMap(this::rerouteIfNotEligible)
+                 .map(this::toCommand)
+                 .concatMap(ReactorVavrUtils::tryToFlux)
+                 .flatMap(this::rerouteIfNotEligible)
                  .filter(this::isEligible)
                  .filter(cmd -> !processedCmds.contains(cmd.commandId()))
                  .log(LOGGER, logConfig.level(), logConfig.showLine(), logConfig.signalTypeArray())
                  .map(this::decide)
-                 .concatMap(ReactorVavrUtils::toMono);
+                 .flatMap(ReactorVavrUtils::toMono);
   }
 
   private ParallelFlux<E> readAll(String prevTopic, int prevTotal) {

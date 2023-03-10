@@ -58,6 +58,10 @@ public final class ReactorVavrUtils {
     return b -> TRUE.equals(b) ? Mono.fromCallable(t) : Mono.error(throwable);
   }
 
+  public static <T> Flux<T> tryToFlux(Try<T> t) {
+    return (t.isSuccess()) ? Flux.just(t.get()) : Flux.error(t.getCause());
+  }
+
   public static <A, B> Flux<Try<B>> toTryFlux(Try<A> a, Function<A, Flux<Try<B>>> f) {
     return API.Match(a)
               .of(API.Case(Patterns.$Success(API.$()), f),
