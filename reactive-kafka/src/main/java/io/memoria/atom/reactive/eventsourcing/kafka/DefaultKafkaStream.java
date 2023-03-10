@@ -3,8 +3,6 @@ package io.memoria.atom.reactive.eventsourcing.kafka;
 import io.memoria.reactive.eventsourcing.repo.Msg;
 import io.vavr.collection.Map;
 import org.apache.kafka.common.TopicPartition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.kafka.receiver.KafkaReceiver;
@@ -17,7 +15,6 @@ import java.util.function.Supplier;
 import static java.util.Collections.singleton;
 
 class DefaultKafkaStream implements KafkaStream {
-  private static final Logger log = LoggerFactory.getLogger(DefaultKafkaStream.class.getName());
   public final Map<String, Object> producerConfig;
   public final Map<String, Object> consumerConfig;
   private final Supplier<Long> timeSupplier;
