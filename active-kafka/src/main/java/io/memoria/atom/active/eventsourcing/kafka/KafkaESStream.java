@@ -1,8 +1,8 @@
 package io.memoria.atom.active.eventsourcing.kafka;
 
 import io.memoria.atom.active.eventsourcing.kafka.infra.KafkaUtils;
-import io.memoria.atom.active.eventsourcing.stream.ESStream;
-import io.memoria.atom.active.eventsourcing.stream.ESStreamMsg;
+import io.memoria.atom.active.eventsourcing.infra.stream.ESStream;
+import io.memoria.atom.core.eventsourcing.infra.stream.ESStreamMsg;
 import io.vavr.collection.Map;
 import io.vavr.control.Try;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

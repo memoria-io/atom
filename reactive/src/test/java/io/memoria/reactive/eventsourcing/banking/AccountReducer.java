@@ -12,7 +12,6 @@ public record AccountReducer() implements Reducer<Account, AccountEvent> {
   @Override
   public AccountEvent apply(Account account) {
     return switch (account) {
-      case Visitor acc -> throw new IllegalArgumentException("State is an initial state");
       case Acc acc -> accountCreated(acc);
       case ClosedAccount acc -> new AccountClosed(EventId.randomUUID(), CommandId.randomUUID(), acc.stateId());
     };

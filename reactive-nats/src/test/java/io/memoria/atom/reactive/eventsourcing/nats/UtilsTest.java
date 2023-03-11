@@ -1,7 +1,6 @@
 package io.memoria.atom.reactive.eventsourcing.nats;
 
-import io.memoria.atom.core.id.Id;
-import io.memoria.reactive.eventsourcing.repo.Msg;
+import io.memoria.atom.core.eventsourcing.infra.stream.ESStreamMsg;
 import io.nats.client.Connection;
 import io.nats.client.JetStream;
 import io.nats.client.Nats;
@@ -17,7 +16,7 @@ public class UtilsTest {
 
   @Test
   void toMessage() {
-    var message = Utils.toMessage(new Msg("topic", 0, Id.of(1000), "hello world"));
+    var message = Utils.toMessage(new ESStreamMsg("topic", 0, 1000 + "", "hello world"));
     Assertions.assertEquals(message.getHeaders().getFirst(Utils.ID_HEADER), "1000");
     Assertions.assertEquals(message.getSubject(), "topic_0.subject");
   }

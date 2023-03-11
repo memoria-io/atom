@@ -1,6 +1,6 @@
 package io.memoria.atom.active.eventsourcing.kafka;
 
-import io.memoria.atom.active.eventsourcing.stream.ESStreamMsg;
+import io.memoria.atom.core.eventsourcing.infra.stream.ESStreamMsg;
 import io.memoria.atom.core.eventsourcing.CommandId;
 import io.vavr.collection.List;
 import org.junit.jupiter.api.*;

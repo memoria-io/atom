@@ -1,7 +1,7 @@
 package io.memoria.atom.active.eventsourcing.cassandra;
 
 import com.datastax.oss.driver.api.core.CqlSession;
-import io.memoria.atom.active.eventsourcing.repo.ESRepoRow;
+import io.memoria.atom.core.eventsourcing.infra.repo.ESRepoRow;
 import io.memoria.atom.core.eventsourcing.*;
 import io.vavr.collection.List;
 import org.junit.jupiter.api.*;

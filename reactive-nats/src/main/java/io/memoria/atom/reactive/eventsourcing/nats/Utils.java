@@ -1,7 +1,6 @@
 package io.memoria.atom.reactive.eventsourcing.nats;
 
-import io.memoria.atom.core.id.Id;
-import io.memoria.reactive.eventsourcing.repo.Msg;
+import io.memoria.atom.core.eventsourcing.infra.stream.ESStreamMsg;
 import io.nats.client.*;
 import io.nats.client.api.*;
 import io.nats.client.impl.Headers;
@@ -54,13 +53,13 @@ class Utils {
     }
   }
 
-  static CompletableFuture<PublishAck> publishMsg(JetStream js, Msg msg) {
+  static CompletableFuture<PublishAck> publishMsg(JetStream js, ESStreamMsg msg) {
     var message = toMessage(msg);
-    var opts = PublishOptions.builder().clearExpected().messageId(msg.id().value()).build();
+    var opts = PublishOptions.builder().clearExpected().messageId(msg.key()).build();
     return js.publishAsync(message, opts);
   }
 
-  static JetStreamSubscription pushSubscription(JetStream js, TP TP, long offset)
+  static JetStreamSubscription jetStreamSub(JetStream js, TP TP, long offset)
           throws IOException, JetStreamApiException {
     var cc = ConsumerConfiguration.builder()
                                   .ackPolicy(AckPolicy.None)
@@ -96,18 +95,17 @@ class Utils {
     }
   }
 
-  static Message toMessage(Msg msg) {
-    var tp = TP.fromMsg(msg);
+  static Message toMessage(ESStreamMsg ESStreamMsg) {
+    var tp = TP.fromMsg(ESStreamMsg);
     var headers = new Headers();
-    headers.add(ID_HEADER, msg.id().value());
-    return NatsMessage.builder().subject(tp.subjectName()).headers(headers).data(msg.value()).build();
+    headers.add(ID_HEADER, ESStreamMsg.key());
+    return NatsMessage.builder().subject(tp.subjectName()).headers(headers).data(ESStreamMsg.value()).build();
   }
 
-  static Msg toMsg(Message message) {
-    var id = Id.of(message.getHeaders().getFirst(ID_HEADER));
+  static ESStreamMsg toMsg(Message message) {
     var value = new String(message.getData(), StandardCharsets.UTF_8);
     var tp = TP.fromSubject(message.getSubject());
-    return new Msg(tp.topic(), tp.partition(), id, value);
+    return new ESStreamMsg(tp.topic(), tp.partition(), message.getHeaders().getFirst(ID_HEADER), value);
   }
 
   static Options toOptions(Config config) {
@@ -123,5 +121,4 @@ class Utils {
                               .subjects(c.tp().subjectName())
                               .build();
   }
-
 }
