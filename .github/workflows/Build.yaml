@@ -1,11 +1,12 @@
-on:
-push:
-  branches:
-    - master
-pull_request:
-  types: [opened, synchronize, reopened]
+name: Build
 
-name: SonarQube Scan
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+
 jobs:
   sonarqube:
     name: SonarQube Trigger
