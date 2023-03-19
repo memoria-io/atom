@@ -1,29 +1,50 @@
 package io.memoria.atom.core.eventsourcing.exception;
 
-import io.memoria.atom.core.eventsourcing.Command;
-import io.memoria.atom.core.eventsourcing.Event;
-import io.memoria.atom.core.eventsourcing.State;
+import io.memoria.atom.core.eventsourcing.*;
 
 public interface ESException {
   class InvalidCommand extends IllegalArgumentException implements ESException {
-    private InvalidCommand(String stateName, String commandName) {
-      super("Invalid command (%s) for the state (%s)".formatted(commandName, stateName));
+    private InvalidCommand(String msg) {
+      super(msg);
+    }
+
+    public static InvalidCommand create(Command command) {
+      var msg = "Invalid initializer command (%s)".formatted(command.getClass().getSimpleName());
+      return new InvalidCommand(msg);
     }
 
     public static InvalidCommand create(State state, Command command) {
-      return new InvalidCommand(state.getClass().getSimpleName(), command.getClass().getSimpleName());
+      var msg = "Invalid command (%s) for the state (%s)".formatted(command.getClass().getSimpleName(),
+                                                                    state.getClass().getSimpleName());
+      return new InvalidCommand(msg);
     }
   }
 
   class InvalidEvent extends IllegalArgumentException implements ESException {
-    private static final String msg = "Invalid evolution of: %s on current state: %s, this should never happen";
 
-    private InvalidEvent(State state, Event event) {
-      super(msg.formatted(state.getClass().getSimpleName(), event.getClass().getSimpleName()));
+    private InvalidEvent(String msg) {
+      super(msg);
+    }
+
+    public static InvalidEvent of(Event event) {
+      var msg = "Invalid creator event:%s for creating state, this should never happen";
+      return new InvalidEvent(msg.formatted(event.getClass().getSimpleName()));
     }
 
     public static InvalidEvent of(State state, Event event) {
-      return new InvalidEvent(state, event);
+      var msg = "Invalid evolution of: %s on current state: %s, this should never happen";
+      return new InvalidEvent(msg.formatted(state.getClass().getSimpleName(), event.getClass().getSimpleName()));
+    }
+  }
+
+  class MismatchingStateId extends Exception implements ESException {
+    private MismatchingStateId(String msg) {
+      super(msg);
+    }
+
+    public static MismatchingStateId of(StateId stateId, StateId cmdStateId) {
+      var msg = "The Command's stateId:%s doesn't match stream stateId:%s";
+      return new MismatchingStateId(msg.formatted(cmdStateId.value(), stateId.value()));
     }
   }
 }

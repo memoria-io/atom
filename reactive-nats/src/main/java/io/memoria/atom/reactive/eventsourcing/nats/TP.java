@@ -1,6 +1,6 @@
 package io.memoria.atom.reactive.eventsourcing.nats;
 
-import io.memoria.reactive.eventsourcing.repo.Msg;
+import io.memoria.atom.core.eventsourcing.infra.stream.ESStreamMsg;
 
 public record TP(String topic, int partition) {
   public static final String SPLIT_TOKEN = "_";
@@ -31,8 +31,8 @@ public record TP(String topic, int partition) {
     return new TP(topic, partition);
   }
 
-  public static TP fromMsg(Msg msg) {
-    return new TP(msg.topic(), msg.partition());
+  public static TP fromMsg(ESStreamMsg ESStreamMsg) {
+    return new TP(ESStreamMsg.topic(), ESStreamMsg.partition());
   }
 
   public static TP fromSubject(String subject) {

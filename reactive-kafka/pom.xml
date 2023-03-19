@@ -6,11 +6,11 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>atom</artifactId>
-        <version>19.15.0</version>
+        <version>19.16.0</version>
     </parent>
     <groupId>io.memoria.atom</groupId>
     <artifactId>reactive-kafka</artifactId>
-    <version>19.15.0</version>
+    <version>19.16.0</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
     <description>kafka Module</description>

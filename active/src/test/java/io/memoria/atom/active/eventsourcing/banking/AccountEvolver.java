@@ -1,7 +1,9 @@
 package io.memoria.atom.active.eventsourcing.banking;
 
 import io.memoria.atom.active.eventsourcing.banking.event.*;
-import io.memoria.atom.active.eventsourcing.banking.state.*;
+import io.memoria.atom.active.eventsourcing.banking.state.ActiveAccount;
+import io.memoria.atom.active.eventsourcing.banking.state.ClosedAccount;
+import io.memoria.atom.active.eventsourcing.banking.state.User;
 import io.memoria.atom.core.eventsourcing.exception.ESException.InvalidEvent;
 import io.memoria.atom.core.eventsourcing.rule.Evolver;
 
@@ -9,17 +11,17 @@ public record AccountEvolver() implements Evolver<User, UserEvent> {
   @Override
   public User apply(User user, UserEvent accountEvent) {
     return switch (user) {
-      case Visitor acc -> handle(acc, accountEvent);
       case ActiveAccount activeAccount -> handle(activeAccount, accountEvent);
       case ClosedAccount acc -> acc;
     };
   }
 
-  private User handle(Visitor acc, UserEvent accountEvent) {
-    if (accountEvent instanceof AccountCreated e) {
+  @Override
+  public User apply(UserEvent userEvent) {
+    if (userEvent instanceof AccountCreated e) {
       return new ActiveAccount(e.stateId(), e.name(), e.balance(), 0);
     } else {
-      throw InvalidEvent.of(acc, accountEvent);
+      throw InvalidEvent.of(userEvent);
     }
   }
 

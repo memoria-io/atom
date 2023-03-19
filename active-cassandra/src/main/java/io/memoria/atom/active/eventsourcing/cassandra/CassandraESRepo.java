@@ -4,8 +4,8 @@ import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import io.memoria.atom.active.eventsourcing.cassandra.exception.CassandraEventRepoException.FailedAppend;
-import io.memoria.atom.active.eventsourcing.repo.ESRepo;
-import io.memoria.atom.active.eventsourcing.repo.ESRepoRow;
+import io.memoria.atom.active.eventsourcing.infra.repo.ESRepo;
+import io.memoria.atom.core.eventsourcing.infra.repo.ESRepoRow;
 import io.vavr.control.Try;
 
 import java.util.stream.Stream;
@@ -21,6 +21,11 @@ public class CassandraESRepo implements ESRepo {
   public CassandraESRepo(String keyspace, CqlSession session) {
     this.keyspace = keyspace;
     this.session = session;
+  }
+
+  @Override
+  public Stream<ESRepoRow> getFirst(String table, String stateId) {
+    return getFirst(keyspace, table, stateId).map(cassandraRow -> toESRepoRow(table, cassandraRow));
   }
 
   @Override
@@ -44,6 +49,11 @@ public class CassandraESRepo implements ESRepo {
 
   private Stream<CassandraRow> get(String keyspace, String table, String stateId, int seqId) {
     var st = Statements.get(keyspace, table, stateId, seqId);
+    return execSelect(session, st).map(CassandraRow::from);
+  }
+
+  private Stream<CassandraRow> getFirst(String keyspace, String table, String stateId) {
+    var st = Statements.getFirst(keyspace, table, stateId);
     return execSelect(session, st).map(CassandraRow::from);
   }
 

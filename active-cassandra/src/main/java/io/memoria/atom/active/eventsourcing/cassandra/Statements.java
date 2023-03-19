@@ -41,6 +41,16 @@ class Statements {
                        .build();
   }
 
+  public static SimpleStatement getFirst(String keyspace, String table, String stateId) {
+    return QueryBuilder.selectFrom(keyspace, table)
+                       .all()
+                       .whereColumn(CassandraRow.stateIdCol)
+                       .isEqualTo(literal(stateId))
+                       .whereColumn(CassandraRow.seqCol)
+                       .isEqualTo(literal(0))
+                       .build();
+  }
+
   public static SimpleStatement createEventsKeyspace(String keyspace, int replication) {
     return SchemaBuilder.createKeyspace(keyspace).ifNotExists().withSimpleStrategy(replication).build();
   }

@@ -1,53 +1,52 @@
 package io.memoria.reactive.eventsourcing.banking;
 
+import io.memoria.atom.core.eventsourcing.exception.ESException;
 import io.memoria.atom.core.eventsourcing.rule.Decider;
-import io.memoria.reactive.eventsourcing.Utils;
 import io.memoria.reactive.eventsourcing.banking.command.*;
 import io.memoria.reactive.eventsourcing.banking.event.*;
-import io.memoria.reactive.eventsourcing.banking.state.*;
+import io.memoria.reactive.eventsourcing.banking.state.Acc;
+import io.memoria.reactive.eventsourcing.banking.state.Account;
+import io.memoria.reactive.eventsourcing.banking.state.ClosedAccount;
 import io.vavr.control.Try;
 
 public record AccountDecider() implements Decider<Account, AccountCommand, AccountEvent> {
 
   @Override
-  public Try<AccountEvent> apply(Account account, AccountCommand accountCommand) {
-    return switch (account) {
-      case Visitor acc -> handle(acc, accountCommand);
-      case Acc acc -> handle(acc, accountCommand);
-      case ClosedAccount acc -> handle(acc, accountCommand);
-    };
-  }
-
-  private Try<AccountEvent> handle(Visitor visitor, AccountCommand accountCommand) {
+  @SuppressWarnings("SwitchStatementWithTooFewBranches")
+  public Try<AccountEvent> apply(AccountCommand accountCommand) {
     return switch (accountCommand) {
       case CreateAccount cmd -> Try.success(AccountCreated.from(cmd));
-      case Debit cmd -> Utils.error(visitor, cmd);
-      case Credit cmd -> Utils.error(visitor, cmd);
-      case CloseAccount cmd -> Utils.error(visitor, cmd);
-      case ConfirmDebit cmd -> Utils.error(visitor, cmd);
-      case ChangeName cmd -> Utils.error(visitor, cmd);
+      default -> Try.failure(ESException.InvalidCommand.create(accountCommand));
     };
   }
 
-  private Try<AccountEvent> handle(Acc acc, AccountCommand accountCommand) {
-    return switch (accountCommand) {
+  @Override
+  public Try<AccountEvent> apply(Account state, AccountCommand command) {
+    return switch (state) {
+      case Acc acc -> handle(acc, command);
+      case ClosedAccount acc -> handle(acc, command);
+    };
+  }
+
+  private Try<AccountEvent> handle(Acc state, AccountCommand command) {
+    return switch (command) {
+      case CreateAccount cmd -> Try.failure(ESException.InvalidCommand.create(state, cmd));
       case ChangeName cmd -> Try.success(NameChanged.from(cmd));
       case Debit cmd -> Try.success(Debited.from(cmd));
       case Credit cmd -> Try.success(Credited.from(cmd));
       case ConfirmDebit cmd -> Try.success(DebitConfirmed.from(cmd));
-      case CloseAccount cmd -> tryToClose(acc, cmd);
-      case CreateAccount cmd -> Utils.error(acc, cmd);
+      case CloseAccount cmd -> tryToClose(state, cmd);
     };
   }
 
-  private Try<AccountEvent> handle(ClosedAccount closedAccount, AccountCommand accountCommand) {
-    return switch (accountCommand) {
+  private Try<AccountEvent> handle(ClosedAccount state, AccountCommand command) {
+    return switch (command) {
       case Credit cmd -> Try.success(CreditRejected.from(cmd));
       case ConfirmDebit cmd -> Try.success(DebitConfirmed.from(cmd));
-      case ChangeName cmd -> Utils.error(closedAccount, cmd);
-      case Debit cmd -> Utils.error(closedAccount, cmd);
-      case CreateAccount cmd -> Utils.error(closedAccount, cmd);
-      case CloseAccount cmd -> Utils.error(closedAccount, cmd);
+      case ChangeName cmd -> Try.failure(ESException.InvalidCommand.create(state, cmd));
+      case Debit cmd -> Try.failure(ESException.InvalidCommand.create(state, cmd));
+      case CreateAccount cmd -> Try.failure(ESException.InvalidCommand.create(state, cmd));
+      case CloseAccount cmd -> Try.failure(ESException.InvalidCommand.create(state, cmd));
     };
   }
 

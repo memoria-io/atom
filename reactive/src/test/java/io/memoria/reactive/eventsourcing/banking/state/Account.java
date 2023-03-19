@@ -3,7 +3,7 @@ package io.memoria.reactive.eventsourcing.banking.state;
 import io.memoria.atom.core.eventsourcing.State;
 import io.memoria.atom.core.eventsourcing.StateId;
 
-public sealed interface Account extends State permits Acc, ClosedAccount, Visitor {
+public sealed interface Account extends State permits Acc, ClosedAccount {
   StateId accountId();
 
   default StateId stateId() {
