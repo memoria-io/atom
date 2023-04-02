@@ -1,7 +1,7 @@
 package io.memoria.atom.active.eventsourcing.aggregate;
 
-import io.memoria.atom.active.eventsourcing.adapter.repo.EventRepo;
-import io.memoria.atom.active.eventsourcing.adapter.stream.CommandStream;
+import io.memoria.atom.active.eventsourcing.infra.repo.EventRepo;
+import io.memoria.atom.active.eventsourcing.infra.stream.CommandStream;
 import io.memoria.atom.active.eventsourcing.infra.repo.ESRepo;
 import io.memoria.atom.active.eventsourcing.infra.stream.ESStream;
 import io.memoria.atom.core.eventsourcing.*;

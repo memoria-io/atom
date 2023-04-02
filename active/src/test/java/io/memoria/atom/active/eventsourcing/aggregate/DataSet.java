@@ -31,7 +31,7 @@ class DataSet {
     return shuffledIds(nAccounts).map(CloseAccount::of);
   }
 
-  static List<UserCommand> randomOutBounds(int nAccounts, int maxAmount) {
+  static List<UserCommand> createRandomTransactions(int nAccounts, int maxAmount) {
     var accounts = shuffledIds(nAccounts);
     var from = accounts.subSequence(0, nAccounts / 2);
     var to = accounts.subSequence(nAccounts / 2, nAccounts);

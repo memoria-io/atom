@@ -1,7 +1,6 @@
-package io.memoria.atom.active.eventsourcing.adapter.repo;
+package io.memoria.atom.active.eventsourcing.infra.repo;
 
 import io.memoria.atom.core.eventsourcing.Route;
-import io.memoria.atom.active.eventsourcing.infra.repo.ESRepo;
 import io.memoria.atom.core.eventsourcing.infra.repo.ESRepoRow;
 import io.memoria.atom.core.eventsourcing.Event;
 import io.memoria.atom.core.eventsourcing.StateId;

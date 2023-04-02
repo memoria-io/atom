@@ -1,9 +1,8 @@
-package io.memoria.reactive.eventsourcing.adapter.stream;
+package io.memoria.reactive.eventsourcing.infra.stream;
 
 import io.memoria.atom.core.eventsourcing.Command;
 import io.memoria.atom.core.eventsourcing.Route;
 import io.memoria.atom.core.text.TextTransformer;
-import io.memoria.reactive.eventsourcing.infra.stream.ESStream;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

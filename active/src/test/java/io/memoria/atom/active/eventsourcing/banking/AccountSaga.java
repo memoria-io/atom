@@ -13,7 +13,7 @@ public record AccountSaga() implements Saga<UserEvent, UserCommand> {
       case TransferCreated e -> Option.some(HandleInboundTransfer.of(e.transfer().receiver(), e.transfer()));
       case InboundTransferAccepted e -> Option.some(MarkAsSuccessful.of(e.transfer()));
       case InboundTransferRejected e -> Option.some(MarkAsRejected.of(e.transfer()));
-      case default -> Option.none();
+      default -> Option.none();
     };
   }
 }

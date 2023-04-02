@@ -1,11 +1,10 @@
-package io.memoria.reactive.eventsourcing.adapter.repo;
+package io.memoria.reactive.eventsourcing.infra.repo;
 
 import io.memoria.atom.core.eventsourcing.Event;
 import io.memoria.atom.core.eventsourcing.Route;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.memoria.atom.core.eventsourcing.infra.repo.ESRepoRow;
 import io.memoria.atom.core.text.TextTransformer;
-import io.memoria.reactive.eventsourcing.infra.repo.ESRepo;
 import io.vavr.control.Try;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -32,12 +31,12 @@ class EventRepoImpl<E extends Event> implements EventRepo<E> {
 
   @Override
   public Flux<E> getAll(StateId stateId) {
-    return esRepo.getAll(route.eventTable(), stateId.value()).flatMap(row -> toMono(this.deserialize(row)));
+    return esRepo.getAll(route.eventTable(), stateId.value()).concatMap(row -> toMono(this.deserialize(row)));
   }
 
   @Override
   public Flux<E> getAll(StateId stateId, int seqId) {
-    return esRepo.getAll(route.eventTable(), stateId.value(), seqId).flatMap(row -> toMono(this.deserialize(row)));
+    return esRepo.getAll(route.eventTable(), stateId.value(), seqId).concatMap(row -> toMono(this.deserialize(row)));
   }
 
   @Override

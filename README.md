@@ -3,7 +3,7 @@
 [![Release](https://github.com/memoria-io/atom/workflows/Release/badge.svg)](https://github.com/memoria-io/atom/actions?query=workflow%3ARelease)
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/memoria-io/atom?label=Version&logo=github)](https://github.com/orgs/memoria-io/packages?repo_name=atom)
 [![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/memoria-io/atom/latest?logoColor=github)](https://github.com/memoria-io/atom/commits/master)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_active&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=memoria-io_active)
 
 > هذا العلم والعمل وقف للّه تعالي اسأل اللّه ان يرزقنا الاخلاص فالقول والعمل
 >

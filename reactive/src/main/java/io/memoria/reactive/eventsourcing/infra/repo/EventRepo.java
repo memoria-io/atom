@@ -1,22 +1,20 @@
-package io.memoria.atom.active.eventsourcing.adapter.repo;
+package io.memoria.reactive.eventsourcing.infra.repo;
 
-import io.memoria.atom.active.eventsourcing.infra.repo.ESRepo;
 import io.memoria.atom.core.eventsourcing.Event;
 import io.memoria.atom.core.eventsourcing.Route;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.memoria.atom.core.text.TextTransformer;
-import io.vavr.control.Try;
-
-import java.util.stream.Stream;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface EventRepo<E extends Event> {
-  Stream<Try<E>> getFirst(StateId stateId);
+  Mono<E> getFirst(StateId stateId);
 
-  Stream<Try<E>> getAll(StateId stateId);
+  Flux<E> getAll(StateId stateId);
 
-  Stream<Try<E>> getAll(StateId stateId, int seqId);
+  Flux<E> getAll(StateId stateId, int seqId);
 
-  Try<Integer> append(int seqId, E event);
+  Mono<Integer> append(int seqId, E event);
 
   static <E extends Event> EventRepo<E> create(Route route,
                                                ESRepo esRepo,

@@ -3,27 +3,31 @@ package io.memoria.atom.active.eventsourcing.aggregate;
 import io.memoria.atom.active.eventsourcing.banking.AccountDecider;
 import io.memoria.atom.active.eventsourcing.banking.AccountEvolver;
 import io.memoria.atom.active.eventsourcing.banking.AccountSaga;
-import io.memoria.atom.core.eventsourcing.Domain;
-import io.memoria.atom.core.eventsourcing.Route;
-import io.memoria.atom.active.eventsourcing.adapter.stream.CommandStream;
-import io.memoria.atom.active.eventsourcing.adapter.repo.EventRepo;
 import io.memoria.atom.active.eventsourcing.banking.command.CreateAccount;
 import io.memoria.atom.active.eventsourcing.banking.command.UserCommand;
 import io.memoria.atom.active.eventsourcing.banking.event.UserEvent;
 import io.memoria.atom.active.eventsourcing.banking.state.User;
 import io.memoria.atom.active.eventsourcing.infra.repo.ESRepo;
+import io.memoria.atom.active.eventsourcing.infra.repo.EventRepo;
+import io.memoria.atom.active.eventsourcing.infra.stream.CommandStream;
 import io.memoria.atom.active.eventsourcing.infra.stream.ESStream;
+import io.memoria.atom.core.eventsourcing.Domain;
+import io.memoria.atom.core.eventsourcing.Route;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.memoria.atom.core.text.SerializableTransformer;
 import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 class DispatcherTest {
   private static final Logger log = LoggerFactory.getLogger(DispatcherTest.class.getSimpleName());
@@ -33,6 +37,7 @@ class DispatcherTest {
   private static final Domain<User, UserCommand, UserEvent> domain = createdomain();
   private final static ESStream esStream = ESStream.inMemory(route.cmdTopic(), route.totalCmdPartitions());
   private final static ESRepo esRepo = ESRepo.inMemory(route.eventTable());
+  private final static Duration totalAwait = Duration.ofSeconds(5);
 
   private final CommandStream<UserCommand> cmdStream;
   private final EventRepo<UserEvent> eventRepo;
@@ -43,29 +48,27 @@ class DispatcherTest {
   }
 
   @Test
-  void twoAccounts() throws InterruptedException {
+  void twoAccounts() {
     // Given
     var bobId = StateId.of("bob");
     var janId = StateId.of("jan");
 
     // When
-    twoAccountsCommands(bobId, janId).map(cmdStream::pub).forEach(Try::get);
+    var commandsCount = new AtomicInteger(0);
+    twoAccountsCommands(bobId, janId).map(cmdStream::pub).peek(c -> commandsCount.incrementAndGet()).forEach(Try::get);
+
     try (var dispatcher = createDispatcher()) {
-      assert dispatcher.run().limit(5).count() == 5;
-      var bobEventsCount = 0L;
-      var loops = 0;
-      var bobEvents = eventRepo.getAll(bobId).toList();
-      while (bobEventsCount < 4) {
-        loops++;
-        // Expected to have max 10 loops until results are achieved
-        assertThat(loops).isLessThan(10);
-        Thread.sleep(10);
-        bobEvents = eventRepo.getAll(bobId).toList();
-        bobEventsCount = bobEvents.size();
-      }
-      // Then
-      assertThat(bobEvents).allMatch(e -> e.get().stateId().equals(bobId));
+      assert dispatcher.run().limit(commandsCount.get()).count() == commandsCount.get();
+      await().atMost(totalAwait)
+             .until(() -> eventRepo.getAll(bobId).count() == 4 && eventRepo.getAll(janId).count() == 1);
     }
+
+    // Then
+    var bobEvents = eventRepo.getAll(bobId).toList();
+    assertEvents(bobId, bobEvents);
+    // and
+    var janEvents = eventRepo.getAll(janId).toList();
+    assertEvents(janId, janEvents);
   }
 
   @Test
@@ -73,19 +76,25 @@ class DispatcherTest {
     // Given
     int nAccounts = 4;
     int balance = 100;
-    int treasury = nAccounts * balance;
     var createAccounts = DataSet.createAccounts(nAccounts, balance);
-    //    var accountIds = createAccounts.map(AccountCommand::accountId);
-    //    var randomOutbounds = DataSet.randomOutBounds(nAccounts, balance);
-    //    var cmds = Flux.<Command>fromIterable(createAccounts)
-    //                   .concatWith(Flux.fromIterable(randomOutbounds))
-    //                   .map(this::toMsg);
-    //
-    //    // When
+    var createRandomTransactions = DataSet.createRandomTransactions(nAccounts, balance);
+    var commands = createAccounts.appendAll(createRandomTransactions);
+
+    int treasury = nAccounts * balance;
+    var stateIds = createAccounts.map(UserCommand::stateId);
+
+    // When
+    var commandsCount = new AtomicInteger(0);
+    commands.map(cmdStream::pub).peek(t -> commandsCount.incrementAndGet()).forEach(Try::get);
+
+    try (var dispatcher = createDispatcher()) {
+      assert dispatcher.run().limit(commandsCount.get()).count() == commandsCount.get();
+
+    }
     //    var pipelines = Flux.merge(streamRepo.push(cmds), statePipeline.run(), blockingSagaPipeline.run());
     //    StepVerifier.create(pipelines).expectNextCount(20).verifyTimeout(timeout);
     //    // Then
-    //    var accounts = accountIds.map(statePipeline::stateOrInit).map(u -> (Acc) u);
+    //    var accounts = stateIds.map(statePipeline::stateOrInit).map(u -> (Acc) u);
     //    Assertions.assertEquals(nAccounts, accounts.size());
     //    var total = accounts.foldLeft(0, (a, b) -> a + b.balance());
     //    Assertions.assertEquals(treasury, total);
@@ -111,5 +120,10 @@ class DispatcherTest {
 
   private static Dispatcher<User, UserCommand, UserEvent> createDispatcher() {
     return new Dispatcher<>(domain, route, esStream, esRepo, transformer, tr -> log.info(tr.toString()));
+  }
+
+  private static void assertEvents(StateId janId, List<Try<UserEvent>> janEvents) {
+    janEvents.forEach(e -> Assertions.assertThat(e.isSuccess()).isTrue());
+    janEvents.forEach(e -> Assertions.assertThat(e.get().stateId()).isEqualTo(janId));
   }
 }

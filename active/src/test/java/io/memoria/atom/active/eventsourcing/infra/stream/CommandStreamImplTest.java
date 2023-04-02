@@ -1,5 +1,6 @@
-package io.memoria.atom.active.eventsourcing.adapter.stream;
+package io.memoria.atom.active.eventsourcing.infra.stream;
 
+import io.memoria.atom.active.eventsourcing.infra.stream.CommandStream;
 import io.memoria.atom.active.eventsourcing.infra.stream.ESStream;
 import io.memoria.atom.core.eventsourcing.*;
 import io.memoria.atom.core.text.SerializableTransformer;

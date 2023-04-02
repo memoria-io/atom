@@ -1,7 +1,6 @@
-package io.memoria.atom.active.eventsourcing.adapter.stream;
+package io.memoria.atom.active.eventsourcing.infra.stream;
 
 import io.memoria.atom.core.eventsourcing.Route;
-import io.memoria.atom.active.eventsourcing.infra.stream.ESStream;
 import io.memoria.atom.core.eventsourcing.Command;
 import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;

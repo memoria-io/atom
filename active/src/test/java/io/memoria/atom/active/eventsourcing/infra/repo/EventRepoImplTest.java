@@ -1,11 +1,9 @@
-package io.memoria.atom.active.eventsourcing.adapter.repo;
+package io.memoria.atom.active.eventsourcing.infra.repo;
 
-import io.memoria.atom.active.eventsourcing.infra.repo.ESRepo;
 import io.memoria.atom.core.eventsourcing.*;
 import io.memoria.atom.core.text.SerializableTransformer;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,24 +20,14 @@ class EventRepoImplTest {
                                                                   SomeEvent.class);
 
   @Test
-  @Order(0)
-  void publish() {
-    // Given
-    var events = createMessages(S0).appendAll(createMessages(S1));
-    // Then
-    events.zipWithIndex().map(tup -> eventRepo.append(tup._2, tup._1)).forEach(Try::get);
-  }
-
-  @Test
-  @Order(1)
-  void subscribe() {
+  void appendAndGet() {
     // Given
     var events = createMessages(S0).appendAll(createMessages(S1));
     // When
     events.zipWithIndex().map(tup -> eventRepo.append(tup._2, tup._1)).forEach(Try::get);
     // Then
-    assertEquals(1000, eventRepo.getAll(S0).toList().size());
-    assertEquals(1000, eventRepo.getAll(S1).toList().size());
+    assertEquals(ELEMENTS_SIZE, eventRepo.getAll(S0).toList().size());
+    assertEquals(ELEMENTS_SIZE, eventRepo.getAll(S1).toList().size());
   }
 
   private List<SomeEvent> createMessages(StateId stateId) {
