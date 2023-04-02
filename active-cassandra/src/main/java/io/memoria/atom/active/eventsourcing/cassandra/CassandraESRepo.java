@@ -34,8 +34,8 @@ public class CassandraESRepo implements ESRepo {
   }
 
   @Override
-  public Stream<ESRepoRow> getAll(String table, String stateId, int starIdx) {
-    return get(keyspace, table, stateId, starIdx).map(cassandraRow -> toESRepoRow(table, cassandraRow));
+  public Stream<ESRepoRow> getAll(String table, String stateId, int startIdx) {
+    return get(keyspace, table, stateId, startIdx).map(cassandraRow -> toESRepoRow(table, cassandraRow));
   }
 
   @Override
