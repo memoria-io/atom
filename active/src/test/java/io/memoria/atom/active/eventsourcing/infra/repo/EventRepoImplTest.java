@@ -1,6 +1,7 @@
 package io.memoria.atom.active.eventsourcing.infra.repo;
 
 import io.memoria.atom.core.eventsourcing.*;
+import io.memoria.atom.core.eventsourcing.infra.CRoute;
 import io.memoria.atom.core.text.SerializableTransformer;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
@@ -13,9 +14,9 @@ class EventRepoImplTest {
   private static final StateId S0 = StateId.of(0);
   private static final StateId S1 = StateId.of(1);
 
-  private final Route route = new Route("command_topic", 0, 1, "event_topic");
-  private final EventRepo<SomeEvent> eventRepo = EventRepo.create(route,
-                                                                  ESRepo.inMemory(route.eventTable()),
+  private final CRoute CRoute = new CRoute("command_topic", 0, 1, "event_topic");
+  private final EventRepo<SomeEvent> eventRepo = EventRepo.create(CRoute,
+                                                                  ESRepo.inMemory(CRoute.eventTable()),
                                                                   new SerializableTransformer(),
                                                                   SomeEvent.class);
 

@@ -9,20 +9,20 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 
-public class AggregateFuture<S extends State, C extends Command, E extends Event> {
-  private static final Logger log = LoggerFactory.getLogger(AggregateFuture.class.getSimpleName());
+public class CommandAggregateTask<S extends State, C extends Command, E extends Event> {
+  private static final Logger log = LoggerFactory.getLogger(CommandAggregateTask.class.getSimpleName());
   private final StateId stateId;
-  private final Aggregate<S, C, E> aggregate;
-  private final FutureTask<Aggregate<S, C, E>> task;
+  private final CommandAggregate<S, C, E> commandAggregate;
+  private final FutureTask<CommandAggregate<S, C, E>> task;
   private final Thread thread;
 
-  public AggregateFuture(StateId stateId,
-                         Aggregate<S, C, E> aggregate,
-                         Consumer<Try<E>> eventConsumer,
-                         ThreadFactory factory) {
+  public CommandAggregateTask(StateId stateId,
+                              CommandAggregate<S, C, E> commandAggregate,
+                              Consumer<Try<E>> eventConsumer,
+                              ThreadFactory factory) {
     this.stateId = stateId;
-    this.aggregate = aggregate;
-    this.task = new FutureTask<>(run(eventConsumer), aggregate);
+    this.commandAggregate = commandAggregate;
+    this.task = new FutureTask<>(createRunnable(eventConsumer), commandAggregate);
     this.thread = factory.newThread(task);
   }
 
@@ -33,7 +33,7 @@ public class AggregateFuture<S extends State, C extends Command, E extends Event
 
   public Try<C> append(C cmd) {
     return switch (task.state()) {
-      case RUNNING -> aggregate.append(cmd);
+      case RUNNING -> commandAggregate.append(cmd);
       case SUCCESS -> Try.failure(new IllegalStateException(message("finished")));
       case FAILED -> Try.failure(task.exceptionNow());
       case CANCELLED -> Try.failure(new InterruptedException(message("cancelled")));
@@ -41,7 +41,7 @@ public class AggregateFuture<S extends State, C extends Command, E extends Event
   }
 
   public String name() {
-    return aggregate.domain.toShortString() + ":" + aggregate.route.toShortString();
+    return commandAggregate.domain.toShortString() + ":" + commandAggregate.CRoute.toShortString();
   }
 
   public void interrupt() {
@@ -53,7 +53,7 @@ public class AggregateFuture<S extends State, C extends Command, E extends Event
     return "AggregateFuture with thread %s with stateId %s was %s".formatted(name(), stateId.value(), threadState);
   }
 
-  private Runnable run(Consumer<Try<E>> consumer) {
-    return () -> aggregate.stream(stateId).forEachOrdered(consumer);
+  private Runnable createRunnable(Consumer<Try<E>> consumer) {
+    return () -> commandAggregate.stream(stateId).forEachOrdered(consumer);
   }
 }

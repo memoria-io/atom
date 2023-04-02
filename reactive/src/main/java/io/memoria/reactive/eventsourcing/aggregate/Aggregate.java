@@ -2,6 +2,7 @@ package io.memoria.reactive.eventsourcing.aggregate;
 
 import io.memoria.atom.core.eventsourcing.*;
 import io.memoria.atom.core.eventsourcing.exception.ESException.MismatchingStateId;
+import io.memoria.atom.core.eventsourcing.infra.CRoute;
 import io.memoria.atom.core.text.TextTransformer;
 import io.memoria.reactive.core.vavr.ReactorVavrUtils;
 import io.memoria.reactive.eventsourcing.infra.repo.EventRepo;
@@ -25,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Aggregate<S extends State, C extends Command, E extends Event> {
   // Core
   public final Domain<S, C, E> domain;
-  public final Route route;
+  public final CRoute CRoute;
   // Infra
   private final CommandStream<C> commandStream;
   private final EventRepo<E> eventRepo;
@@ -35,13 +36,13 @@ public class Aggregate<S extends State, C extends Command, E extends Event> {
   private final AtomicInteger eventSeqId;
   private S state;
 
-  public Aggregate(Domain<S, C, E> domain, Route route, ESStream esStream, ESRepo esRepo, TextTransformer transformer) {
+  public Aggregate(Domain<S, C, E> domain, CRoute CRoute, ESStream esStream, ESRepo esRepo, TextTransformer transformer) {
     // Core
     this.domain = domain;
-    this.route = route;
+    this.CRoute = CRoute;
     // Infra
-    this.commandStream = CommandStream.create(route, esStream, transformer, domain.cClass());
-    this.eventRepo = EventRepo.create(route, esRepo, transformer, domain.eClass());
+    this.commandStream = CommandStream.create(CRoute, esStream, transformer, domain.cClass());
+    this.eventRepo = EventRepo.create(CRoute, esRepo, transformer, domain.eClass());
     // In memory
     this.processed = new HashSet<>();
     this.cmdQueue = new LinkedBlockingDeque<>();
@@ -61,7 +62,7 @@ public class Aggregate<S extends State, C extends Command, E extends Event> {
   }
 
   Flux<E> init(StateId stateId) {
-    return Flux.concat(eventRepo.getFirst(stateId).map(this::evolve), eventRepo.getAll(stateId).map(this::evolve));
+    return eventRepo.getAll(stateId).map(this::evolve);
   }
 
   Flux<E> processQueue() {

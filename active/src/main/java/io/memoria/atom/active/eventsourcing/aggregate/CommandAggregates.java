@@ -1,9 +1,10 @@
 package io.memoria.atom.active.eventsourcing.aggregate;
 
-import io.memoria.atom.active.eventsourcing.infra.stream.CommandStream;
 import io.memoria.atom.active.eventsourcing.infra.repo.ESRepo;
+import io.memoria.atom.active.eventsourcing.infra.stream.CommandStream;
 import io.memoria.atom.active.eventsourcing.infra.stream.ESStream;
 import io.memoria.atom.core.eventsourcing.*;
+import io.memoria.atom.core.eventsourcing.infra.CRoute;
 import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
 import org.slf4j.Logger;
@@ -15,26 +16,26 @@ import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class Dispatcher<S extends State, C extends Command, E extends Event> implements AutoCloseable {
-  private static final Logger log = LoggerFactory.getLogger(Dispatcher.class.getSimpleName());
+public class CommandAggregates<S extends State, C extends Command, E extends Event> implements AutoCloseable {
+  private static final Logger log = LoggerFactory.getLogger(CommandAggregates.class.getSimpleName());
 
   private final Domain<S, C, E> domain;
-  private final Route route;
+  private final CRoute CRoute;
   private final ESStream esStream;
   private final ESRepo esRepo;
   private final TextTransformer transformer;
   private final Consumer<Try<E>> eventConsumer;
   private final ThreadFactory factory;
-  private final Map<StateId, AggregateFuture<S, C, E>> tasks;
+  private final Map<StateId, CommandAggregateTask<S, C, E>> tasks;
 
-  public Dispatcher(Domain<S, C, E> domain,
-                    Route route,
-                    ESStream esStream,
-                    ESRepo esRepo,
-                    TextTransformer transformer,
-                    Consumer<Try<E>> eventConsumer) {
+  public CommandAggregates(Domain<S, C, E> domain,
+                           CRoute CRoute,
+                           ESStream esStream,
+                           ESRepo esRepo,
+                           TextTransformer transformer,
+                           Consumer<Try<E>> eventConsumer) {
     this.domain = domain;
-    this.route = route;
+    this.CRoute = CRoute;
     this.esStream = esStream;
     this.esRepo = esRepo;
     this.transformer = transformer;
@@ -44,14 +45,14 @@ public class Dispatcher<S extends State, C extends Command, E extends Event> imp
   }
 
   public Stream<Try<C>> run() {
-    var commandStream = CommandStream.create(route, esStream, transformer, domain.cClass());
+    var commandStream = CommandStream.create(CRoute, esStream, transformer, domain.cClass());
     return commandStream.sub().map(cTry -> cTry.flatMap(this::append));
   }
 
   private Try<C> append(C cmd) {
     tasks.computeIfAbsent(cmd.stateId(), s -> {
-      var aggregate = new Aggregate<>(domain, route, esStream, esRepo, transformer);
-      var agFu = new AggregateFuture<>(cmd.stateId(), aggregate, eventConsumer, factory);
+      var aggregate = new CommandAggregate<>(domain, CRoute, esStream, esRepo, transformer);
+      var agFu = new CommandAggregateTask<>(cmd.stateId(), aggregate, eventConsumer, factory);
       agFu.start();
       return agFu;
     });
@@ -68,10 +69,10 @@ public class Dispatcher<S extends State, C extends Command, E extends Event> imp
 
   @Override
   public void close() {
-    this.tasks.values().forEach(AggregateFuture::interrupt);
+    this.tasks.values().forEach(CommandAggregateTask::interrupt);
   }
 
   private String getThreadPrefix() {
-    return domain.toShortString() + "-" + route.toShortString() + "_";
+    return domain.toShortString() + "-" + CRoute.toShortString() + "_";
   }
 }

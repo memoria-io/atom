@@ -1,6 +1,7 @@
 package io.memoria.reactive.eventsourcing.infra.repo;
 
 import io.memoria.atom.core.eventsourcing.*;
+import io.memoria.atom.core.eventsourcing.infra.CRoute;
 import io.memoria.atom.core.text.SerializableTransformer;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
@@ -11,9 +12,9 @@ class EventRepoImplTest {
   private static final StateId S0 = StateId.of(0);
   private static final StateId S1 = StateId.of(1);
 
-  private final Route route = new Route("command_topic", 0, 1, "event_topic");
-  private final ESRepo esRepo = ESRepo.inMemory(route.eventTable());
-  private final EventRepo<SomeEvent> eventRepo = EventRepo.create(route,
+  private final CRoute CRoute = new CRoute("command_topic", 0, 1, "event_topic");
+  private final ESRepo esRepo = ESRepo.inMemory(CRoute.eventTable());
+  private final EventRepo<SomeEvent> eventRepo = EventRepo.create(CRoute,
                                                                   esRepo,
                                                                   new SerializableTransformer(),
                                                                   SomeEvent.class);

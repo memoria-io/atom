@@ -7,9 +7,19 @@ import io.memoria.atom.core.id.Id;
 import io.vavr.collection.List;
 
 import java.util.Random;
+import java.util.stream.Stream;
 
 class DataSet {
   private DataSet() {}
+
+  public static Stream<UserCommand> twoAccountsCommands(StateId bobId, StateId janId) {
+    var createBob = CreateAccount.of(bobId, "bob", 100);
+    var createJan = CreateAccount.of(janId, "jan", 100);
+    var sendMoneyFromBobToJan = createTransfer(bobId, janId, 50);
+    var sendSecondMoney = createTransfer(bobId, janId, 25);
+    var sendThirdMoney = createTransfer(bobId, janId, 25);
+    return Stream.of(createBob, createJan, sendMoneyFromBobToJan, sendSecondMoney, sendThirdMoney);
+  }
 
   static StateId createId(int i) {
     return StateId.of("acc_id_" + i);

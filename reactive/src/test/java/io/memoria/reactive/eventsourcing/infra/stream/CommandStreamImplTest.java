@@ -1,6 +1,7 @@
 package io.memoria.reactive.eventsourcing.infra.stream;
 
 import io.memoria.atom.core.eventsourcing.*;
+import io.memoria.atom.core.eventsourcing.infra.CRoute;
 import io.memoria.atom.core.text.SerializableTransformer;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
@@ -22,7 +23,7 @@ class CommandStreamImplTest {
   void publishAndSubscribe() {
     // Given
     var route = createRoute(0);
-    var esStream = ESStream.inMemory(route.cmdTopic(), route.totalCmdPartitions());
+    var esStream = ESStream.inMemory(route.cmdTopic(), route.cmdTopicTotalPartitions());
     var stream = CommandStream.create(route, esStream, new SerializableTransformer(), SomeCommand.class);
     var msgs = createMessages(S0).concatWith(createMessages(S1));
 
@@ -33,7 +34,7 @@ class CommandStreamImplTest {
     var latch0 = new AtomicInteger();
     stream.sub().take(ELEMENTS_SIZE).doOnNext(cmd -> {
       Assertions.assertThat(cmd.stateId()).isEqualTo(S0);
-      Assertions.assertThat(cmd.partition(route.totalCmdPartitions())).isEqualTo(route.cmdPartition());
+      Assertions.assertThat(cmd.partition(route.cmdTopicTotalPartitions())).isEqualTo(route.cmdTopicSrcPartition());
       latch0.incrementAndGet();
     }).subscribe();
     Awaitility.await().atMost(timeout).until(() -> latch0.get() == ELEMENTS_SIZE);
@@ -44,14 +45,14 @@ class CommandStreamImplTest {
     var latch1 = new AtomicInteger();
     stream1.sub().take(ELEMENTS_SIZE).doOnNext(cmd -> {
       Assertions.assertThat(cmd.stateId()).isEqualTo(S1);
-      Assertions.assertThat(cmd.partition(route.totalCmdPartitions())).isEqualTo(route1.cmdPartition());
+      Assertions.assertThat(cmd.partition(route.cmdTopicTotalPartitions())).isEqualTo(route1.cmdTopicSrcPartition());
       latch1.incrementAndGet();
     }).subscribe();
     Awaitility.await().atMost(timeout).until(() -> latch1.get() == ELEMENTS_SIZE);
   }
 
-  private static Route createRoute(int cmdPartition) {
-    return new Route("command_topic", cmdPartition, 2, "event_topic");
+  private static CRoute createRoute(int cmdPartition) {
+    return new CRoute("command_topic", cmdPartition, 2, "event_topic");
   }
 
   private Flux<SomeCommand> createMessages(StateId stateId) {

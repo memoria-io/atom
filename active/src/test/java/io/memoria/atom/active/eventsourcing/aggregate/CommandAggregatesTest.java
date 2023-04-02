@@ -3,7 +3,6 @@ package io.memoria.atom.active.eventsourcing.aggregate;
 import io.memoria.atom.active.eventsourcing.banking.AccountDecider;
 import io.memoria.atom.active.eventsourcing.banking.AccountEvolver;
 import io.memoria.atom.active.eventsourcing.banking.AccountSaga;
-import io.memoria.atom.active.eventsourcing.banking.command.CreateAccount;
 import io.memoria.atom.active.eventsourcing.banking.command.UserCommand;
 import io.memoria.atom.active.eventsourcing.banking.event.UserEvent;
 import io.memoria.atom.active.eventsourcing.banking.state.User;
@@ -12,7 +11,7 @@ import io.memoria.atom.active.eventsourcing.infra.repo.EventRepo;
 import io.memoria.atom.active.eventsourcing.infra.stream.CommandStream;
 import io.memoria.atom.active.eventsourcing.infra.stream.ESStream;
 import io.memoria.atom.core.eventsourcing.Domain;
-import io.memoria.atom.core.eventsourcing.Route;
+import io.memoria.atom.core.eventsourcing.infra.CRoute;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.memoria.atom.core.text.SerializableTransformer;
 import io.memoria.atom.core.text.TextTransformer;
@@ -25,26 +24,25 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
 
 import static org.awaitility.Awaitility.await;
 
-class DispatcherTest {
-  private static final Logger log = LoggerFactory.getLogger(DispatcherTest.class.getSimpleName());
+class CommandAggregatesTest {
+  private static final Logger log = LoggerFactory.getLogger(CommandAggregatesTest.class.getSimpleName());
 
   private static final TextTransformer transformer = new SerializableTransformer();
-  private static final Route route = new Route("commands_topic", 0, 1, "events_topic");
+  private static final CRoute CMD_C_ROUTE = new CRoute("commands_topic", 0, 1, "events_topic");
   private static final Domain<User, UserCommand, UserEvent> domain = createdomain();
-  private final static ESStream esStream = ESStream.inMemory(route.cmdTopic(), route.totalCmdPartitions());
-  private final static ESRepo esRepo = ESRepo.inMemory(route.eventTable());
+  private final static ESStream esStream = ESStream.inMemory(CMD_C_ROUTE.cmdTopic(), CMD_C_ROUTE.cmdTopicTotalPartitions());
+  private final static ESRepo esRepo = ESRepo.inMemory(CMD_C_ROUTE.eventTable());
   private final static Duration totalAwait = Duration.ofSeconds(5);
 
   private final CommandStream<UserCommand> cmdStream;
   private final EventRepo<UserEvent> eventRepo;
 
-  DispatcherTest() {
-    cmdStream = CommandStream.create(route, esStream, transformer, domain.cClass());
-    eventRepo = EventRepo.create(route, esRepo, transformer, domain.eClass());
+  CommandAggregatesTest() {
+    cmdStream = CommandStream.create(CMD_C_ROUTE, esStream, transformer, domain.cClass());
+    eventRepo = EventRepo.create(CMD_C_ROUTE, esRepo, transformer, domain.eClass());
   }
 
   @Test
@@ -55,7 +53,7 @@ class DispatcherTest {
 
     // When
     var commandsCount = new AtomicInteger(0);
-    twoAccountsCommands(bobId, janId).map(cmdStream::pub).peek(c -> commandsCount.incrementAndGet()).forEach(Try::get);
+    DataSet.twoAccountsCommands(bobId, janId).map(cmdStream::pub).peek(c -> commandsCount.incrementAndGet()).forEach(Try::get);
 
     try (var dispatcher = createDispatcher()) {
       assert dispatcher.run().limit(commandsCount.get()).count() == commandsCount.get();
@@ -89,7 +87,6 @@ class DispatcherTest {
 
     try (var dispatcher = createDispatcher()) {
       assert dispatcher.run().limit(commandsCount.get()).count() == commandsCount.get();
-
     }
     //    var pipelines = Flux.merge(streamRepo.push(cmds), statePipeline.run(), blockingSagaPipeline.run());
     //    StepVerifier.create(pipelines).expectNextCount(20).verifyTimeout(timeout);
@@ -98,15 +95,6 @@ class DispatcherTest {
     //    Assertions.assertEquals(nAccounts, accounts.size());
     //    var total = accounts.foldLeft(0, (a, b) -> a + b.balance());
     //    Assertions.assertEquals(treasury, total);
-  }
-
-  public Stream<UserCommand> twoAccountsCommands(StateId bobId, StateId janId) {
-    var createBob = CreateAccount.of(bobId, "bob", 100);
-    var createJan = CreateAccount.of(janId, "jan", 100);
-    var sendMoneyFromBobToJan = DataSet.createTransfer(bobId, janId, 50);
-    var sendSecondMoney = DataSet.createTransfer(bobId, janId, 25);
-    var sendThirdMoney = DataSet.createTransfer(bobId, janId, 25);
-    return Stream.of(createBob, createJan, sendMoneyFromBobToJan, sendSecondMoney, sendThirdMoney);
   }
 
   private static Domain<User, UserCommand, UserEvent> createdomain() {
@@ -118,8 +106,8 @@ class DispatcherTest {
                         new AccountEvolver());
   }
 
-  private static Dispatcher<User, UserCommand, UserEvent> createDispatcher() {
-    return new Dispatcher<>(domain, route, esStream, esRepo, transformer, tr -> log.info(tr.toString()));
+  private static CommandAggregates<User, UserCommand, UserEvent> createDispatcher() {
+    return new CommandAggregates<>(domain, CMD_C_ROUTE, esStream, esRepo, transformer, tr -> log.info(tr.toString()));
   }
 
   private static void assertEvents(StateId janId, List<Try<UserEvent>> janEvents) {

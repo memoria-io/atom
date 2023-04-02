@@ -1,7 +1,7 @@
 package io.memoria.reactive.eventsourcing.infra.stream;
 
 import io.memoria.atom.core.eventsourcing.Command;
-import io.memoria.atom.core.eventsourcing.Route;
+import io.memoria.atom.core.eventsourcing.infra.CRoute;
 import io.memoria.atom.core.eventsourcing.infra.stream.ESStreamMsg;
 import io.memoria.atom.core.text.TextTransformer;
 import reactor.core.publisher.Flux;
@@ -13,22 +13,22 @@ class CommandStreamImpl<C extends Command> implements CommandStream<C> {
   private final ESStream esStream;
   private final TextTransformer transformer;
   private final Class<C> cClass;
-  private final Route route;
+  private final CRoute CRoute;
 
-  CommandStreamImpl(Route route, ESStream esStream, TextTransformer transformer, Class<C> cClass) {
-    this.route = route;
+  CommandStreamImpl(CRoute CRoute, ESStream esStream, TextTransformer transformer, Class<C> cClass) {
+    this.CRoute = CRoute;
     this.esStream = esStream;
     this.transformer = transformer;
     this.cClass = cClass;
   }
 
   public Mono<C> pub(C c) {
-    var partition = c.partition(route.totalCmdPartitions());
-    return toMono(transformer.serialize(c)).flatMap(cStr -> pubMsg(route.cmdTopic(), partition, c, cStr)).map(id -> c);
+    var partition = c.partition(CRoute.cmdTopicTotalPartitions());
+    return toMono(transformer.serialize(c)).flatMap(cStr -> pubMsg(CRoute.cmdTopic(), partition, c, cStr)).map(id -> c);
   }
 
   public Flux<C> sub() {
-    return esStream.sub(route.cmdTopic(), route.cmdPartition())
+    return esStream.sub(CRoute.cmdTopic(), CRoute.cmdTopicSrcPartition())
                    .flatMap(msg -> toMono(transformer.deserialize(msg.value(), cClass)));
 
   }

@@ -1,8 +1,7 @@
 package io.memoria.atom.active.eventsourcing.infra.stream;
 
-import io.memoria.atom.active.eventsourcing.infra.stream.CommandStream;
-import io.memoria.atom.active.eventsourcing.infra.stream.ESStream;
 import io.memoria.atom.core.eventsourcing.*;
+import io.memoria.atom.core.eventsourcing.infra.CRoute;
 import io.memoria.atom.core.text.SerializableTransformer;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
@@ -21,7 +20,7 @@ class CommandStreamImplTest {
   void publish() {
     var route = createRoute(0);
     var stream = CommandStream.create(route,
-                                      ESStream.inMemory(route.cmdTopic(), route.totalCmdPartitions()),
+                                      ESStream.inMemory(route.cmdTopic(), route.cmdTopicTotalPartitions()),
                                       new SerializableTransformer(),
                                       SomeCommand.class);
     // Given
@@ -35,7 +34,7 @@ class CommandStreamImplTest {
   void subscribe() {
     // Given
     var route = createRoute(0);
-    var esStream = ESStream.inMemory(route.cmdTopic(), route.totalCmdPartitions());
+    var esStream = ESStream.inMemory(route.cmdTopic(), route.cmdTopicTotalPartitions());
     var stream = CommandStream.create(route, esStream,
                                       new SerializableTransformer(),
                                       SomeCommand.class);
@@ -45,7 +44,7 @@ class CommandStreamImplTest {
     // Then
     stream.sub().limit(ELEMENTS_SIZE).forEachOrdered(msg -> {
       assertEquals(S0, msg.get().stateId());
-      assertEquals(0, msg.get().partition(route.totalCmdPartitions()));
+      assertEquals(0, msg.get().partition(route.cmdTopicTotalPartitions()));
     });
 
 
@@ -57,12 +56,12 @@ class CommandStreamImplTest {
                                   SomeCommand.class);
     stream1.sub().limit(ELEMENTS_SIZE).forEachOrdered(msg -> {
       assertEquals(S1, msg.get().stateId());
-      assertEquals(1, msg.get().partition(route.totalCmdPartitions()));
+      assertEquals(1, msg.get().partition(route.cmdTopicTotalPartitions()));
     });
   }
 
-  private static Route createRoute(int cmdPartition) {
-    return new Route("command_topic", cmdPartition, 2, "event_topic");
+  private static CRoute createRoute(int cmdPartition) {
+    return new CRoute("command_topic", cmdPartition, 2, "event_topic");
   }
 
   private List<SomeCommand> createMessages(StateId stateId) {

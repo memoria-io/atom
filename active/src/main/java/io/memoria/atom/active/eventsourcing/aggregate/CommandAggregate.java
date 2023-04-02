@@ -1,11 +1,12 @@
 package io.memoria.atom.active.eventsourcing.aggregate;
 
+import io.memoria.atom.active.eventsourcing.infra.repo.ESRepo;
 import io.memoria.atom.active.eventsourcing.infra.repo.EventRepo;
 import io.memoria.atom.active.eventsourcing.infra.stream.CommandStream;
-import io.memoria.atom.active.eventsourcing.infra.repo.ESRepo;
 import io.memoria.atom.active.eventsourcing.infra.stream.ESStream;
 import io.memoria.atom.core.eventsourcing.*;
 import io.memoria.atom.core.eventsourcing.exception.ESException.MismatchingStateId;
+import io.memoria.atom.core.eventsourcing.infra.CRoute;
 import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
@@ -20,10 +21,10 @@ import java.util.stream.Stream;
 /**
  * Creates active stateful aggregation
  */
-public class Aggregate<S extends State, C extends Command, E extends Event> {
+public class CommandAggregate<S extends State, C extends Command, E extends Event> {
   // Core
   public final Domain<S, C, E> domain;
-  public final Route route;
+  public final CRoute CRoute;
   // Infra
   private final CommandStream<C> commandStream;
   private final EventRepo<E> eventRepo;
@@ -33,13 +34,13 @@ public class Aggregate<S extends State, C extends Command, E extends Event> {
   private final AtomicInteger eventSeqId;
   private S state;
 
-  public Aggregate(Domain<S, C, E> domain, Route route, ESStream esStream, ESRepo esRepo, TextTransformer transformer) {
+  public CommandAggregate(Domain<S, C, E> domain, CRoute CRoute, ESStream esStream, ESRepo esRepo, TextTransformer transformer) {
     // Core
     this.domain = domain;
-    this.route = route;
+    this.CRoute = CRoute;
     // Infra
-    this.commandStream = CommandStream.create(route, esStream, transformer, domain.cClass());
-    this.eventRepo = EventRepo.create(route, esRepo, transformer, domain.eClass());
+    this.commandStream = CommandStream.create(CRoute, esStream, transformer, domain.cClass());
+    this.eventRepo = EventRepo.create(CRoute, esRepo, transformer, domain.eClass());
     // In memory
     this.processed = new HashSet<>();
     this.cmdQueue = new LinkedBlockingDeque<>();
@@ -59,8 +60,7 @@ public class Aggregate<S extends State, C extends Command, E extends Event> {
   }
 
   Stream<Try<E>> init(StateId stateId) {
-    return Stream.concat(eventRepo.getFirst(stateId).map(eTry -> eTry.map(this::evolve)),
-                         eventRepo.getAll(stateId).map(eTry -> eTry.map(this::evolve)));
+    return eventRepo.getAll(stateId).map(eTry -> eTry.map(this::evolve));
   }
 
   Stream<Try<E>> processQueue() {
