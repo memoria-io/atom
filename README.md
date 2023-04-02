@@ -61,8 +61,8 @@ from [Vavr](https://www.vavr.io/).
 ## TODOs
 
 * [x] Event Sourcing
-    * [x] State decider, evolver, Stream aggregate
-    * [x] Sagas decider, Stream aggregate
+    * [x] State decider, evolver, Stream commandAggregate
+    * [x] Sagas decider, Stream commandAggregate
     * [x] id safety with typed classed (StateId, CommandId, EventId)
     * [x] Events reduction
         * If using reduction the event reducer should map all states to creation event
