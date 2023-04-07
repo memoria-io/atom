@@ -1,6 +1,7 @@
 package io.memoria.atom.active.eventsourcing.cassandra.exception;
 
 import io.memoria.atom.core.eventsourcing.exception.ESException;
+import io.memoria.atom.core.eventsourcing.pipeline.repo.ESRow;
 
 public interface CassandraEventRepoException extends ESException {
   class FailedAppend extends IllegalArgumentException implements CassandraEventRepoException {
@@ -13,6 +14,10 @@ public interface CassandraEventRepoException extends ESException {
 
     public static FailedAppend of(String keyspace, String table, String stateId, int seqId) {
       return new FailedAppend(keyspace, table, stateId, seqId);
+    }
+
+    public static FailedAppend of(String keyspace, ESRow esRow) {
+      return FailedAppend.of(keyspace, esRow.table(), esRow.stateId(), esRow.seqId());
     }
   }
 }
