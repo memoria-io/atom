@@ -1,100 +1,111 @@
 package io.memoria.atom.active.eventsourcing.cassandra;
 
+import com.datastax.dse.driver.api.core.cql.reactive.ReactiveRow;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
 import io.memoria.atom.core.eventsourcing.StateId;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import java.util.Objects;
-import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 import static io.memoria.atom.active.eventsourcing.cassandra.TestUtils.KEYSPACE;
 
-@TestMethodOrder(OrderAnnotation.class)
 class StatementsTest {
   private static final String TABLE = StatementsTest.class.getSimpleName() + "_table";
-  private static final String STATE_ID = StateId.randomUUID().value();
   private static final CqlSession session = TestUtils.CqlSession();
   private static final int COUNT = 100;
 
-  @Test
-  @Order(1)
-  void testConnection() {
-    // When
+  @BeforeAll
+  static void beforeAll() {
+    // Check connection
     ResultSet rs = session.execute("select release_version from system.local");
     Row row = rs.one();
     var version = Objects.requireNonNull(row).getString("release_version");
-    // Then
     assert version != null && !version.isEmpty();
-  }
 
-  @Test
-  @Order(2)
-  void createKeyspace() {
-    // Given
+    // Create namespace
     var st = Statements.createEventsKeyspace(KEYSPACE, 1);
-    // When
-    var isCreated = session.execute(st).wasApplied();
-    // Then
-    assert isCreated;
+    var keyspaceCreated = session.execute(st).wasApplied();
+    assert keyspaceCreated;
+
+    // Create table
+    var tableCreated = session.execute(Statements.createEventsTable(KEYSPACE, TABLE)).wasApplied();
+    assert tableCreated;
   }
 
   @Test
-  @Order(3)
-  void createTable() {
+  void pushReactive() {
     // Given
-    var st = Statements.createEventsTable(KEYSPACE, TABLE);
+    var stateId = StateId.randomUUID().value();
+    var statements = Flux.range(0, COUNT).map(i -> Statements.push(KEYSPACE, TABLE, createRow(stateId, i)));
     // When
-    var isCreated = session.execute(st).wasApplied();
+    var isCreatedFlux = statements.flatMap(session::executeReactive).map(ReactiveRow::wasApplied);
     // Then
-    assert isCreated;
+    StepVerifier.create(isCreatedFlux).expectNextCount(COUNT).verifyComplete();
   }
 
   @Test
-  @Order(4)
-  void push() {
+  void getAll() {
     // Given
-    var statements = IntStream.range(0, COUNT).mapToObj(i -> Statements.push(KEYSPACE, TABLE, createRow(i)));
+    var stateId = StateId.randomUUID().value();
+    var statements = Flux.range(0, COUNT).map(i -> Statements.push(KEYSPACE, TABLE, createRow(stateId, i)));
+    var isCreatedFlux = statements.flatMap(session::executeReactive).map(ReactiveRow::wasApplied);
+    StepVerifier.create(isCreatedFlux).expectNextCount(COUNT).verifyComplete();
     // When
-    var isCreated = statements.map(st -> session.execute(st).wasApplied());
-    // Then
-    isCreated.forEach(Assertions::assertTrue);
-  }
-
-  @Test
-  @Order(5)
-  void get() {
-    // Given
-    var st = Statements.get(KEYSPACE, TABLE, STATE_ID, 0);
-    // When
-    var rs = session.execute(st);
+    var rs = session.execute(Statements.get(KEYSPACE, TABLE, stateId, 0));
     var rows = StreamSupport.stream(rs.spliterator(), false);
     // Then
     assert rows.count() == COUNT;
   }
 
   @Test
-  @Order(6)
-  void getAfter() {
+  void getWithOffset() {
     // Given
     int startIdx = 2;
-    var st = Statements.get(KEYSPACE, TABLE, STATE_ID, startIdx);
+    // Given
+    var stateId = StateId.randomUUID().value();
+    var statements = Flux.range(0, COUNT).map(i -> Statements.push(KEYSPACE, TABLE, createRow(stateId, i)));
+    var isCreatedFlux = statements.flatMap(session::executeReactive).map(ReactiveRow::wasApplied);
+    StepVerifier.create(isCreatedFlux).expectNextCount(COUNT).verifyComplete();
     // When
-    var rs = session.execute(st);
-    var rows = StreamSupport.stream(rs.spliterator(), false);
+    var rowFlux = Flux.from(session.executeReactive(Statements.get(KEYSPACE, TABLE, stateId, startIdx)))
+                      .map(CassandraRow::from);
     // Then
-    Assertions.assertEquals(COUNT - startIdx, rows.count());
+    StepVerifier.create(rowFlux).expectNextCount(COUNT - 2).verifyComplete();
   }
 
-  @BeforeAll
-  static void beforeAll() {
-    System.out.println("EventRowStsTest: StateId:" + STATE_ID);
+  @Test
+  void get() {
+    // Given
+    var stateId = StateId.randomUUID().value();
+    var statements = Flux.range(0, COUNT).map(i -> Statements.push(KEYSPACE, TABLE, createRow(stateId, i)));
+    var isCreatedFlux = statements.flatMap(session::executeReactive).map(ReactiveRow::wasApplied);
+    StepVerifier.create(isCreatedFlux).expectNextCount(COUNT).verifyComplete();
+    // When
+    var lastSeq = Flux.from(session.executeReactive(Statements.getLastSeqId(KEYSPACE, TABLE, stateId)))
+                      .map(CassandraRow::from)
+                      .map(CassandraRow::seqId);
+    // Then
+    StepVerifier.create(lastSeq).expectNext(COUNT - 1).verifyComplete();
   }
 
-  private static CassandraRow createRow(int i) {
-    return new CassandraRow(STATE_ID, i, "{some event happened here}");
+  @Test
+  void getLastButUnknown() {
+    // Given
+    var st = Statements.getLastSeqId(KEYSPACE, TABLE, "unknown");
+    // When
+    var exec = Flux.from(session.executeReactive(st)).map(ReactiveRow::wasApplied);
+    // Then
+    StepVerifier.create(exec).verifyComplete();
+  }
+
+  private static CassandraRow createRow(String stateId, int i) {
+    return new CassandraRow(stateId, i, "{some event happened here}");
   }
 }

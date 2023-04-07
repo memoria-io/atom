@@ -24,10 +24,12 @@ class Statements {
   public static SimpleStatement getLastSeqId(String keyspace, String table, String stateId) {
     return QueryBuilder.selectFrom(keyspace, table)
                        .all()
-                       .orderBy(CassandraRow.seqCol, ClusteringOrder.DESC)
-                       .limit(1)
                        .whereColumn(CassandraRow.stateIdCol)
                        .isEqualTo(literal(stateId))
+                       .whereColumn(CassandraRow.seqCol)
+                       .isGreaterThanOrEqualTo(literal(0))
+                       .orderBy(CassandraRow.seqCol, ClusteringOrder.DESC)
+                       .limit(1)
                        .build();
   }
 
