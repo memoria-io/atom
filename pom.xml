@@ -25,16 +25,12 @@
 
     <modules>
         <module>core</module>
-        <module>active</module>
-        <module>active-cassandra</module>
-        <module>active-kafka</module>
-        <module>reactive</module>
-        <module>reactive-kafka</module>
-        <module>reactive-nats</module>
-        <module>reactive-web</module>
+        <module>adapter-cassandra</module>
+        <module>adapter-kafka</module>
+        <module>adapter-nats</module>
         <module>text</module>
         <module>sec</module>
-        <module>web</module>
+        <module>web2</module>
     </modules>
 
     <properties>
@@ -70,6 +66,24 @@
     </repositories>
     <dependencyManagement>
         <dependencies>
+            <!--======================================================================================== -->
+            <!-- Core Dependencies -->
+            <!--======================================================================================== -->
+            <dependency>
+                <groupId>io.vavr</groupId>
+                <artifactId>vavr-jackson</artifactId>
+                <version>0.10.3</version>
+            </dependency>
+            <!--======================================================================================== -->
+            <!-- Reactive Dependencies -->
+            <!--======================================================================================== -->
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-bom</artifactId>
+                <version>${reactor.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!--======================================================================================== -->
             <!-- Security Dependencies -->
             <!--======================================================================================== -->
@@ -116,7 +130,6 @@
                 <artifactId>kafka-clients</artifactId>
                 <version>${kafka.version}</version>
             </dependency>
-
             <!-- ===============================================================   -->
             <!-- Nats Dependencies                                                 -->
             <!-- ===============================================================   -->
@@ -124,16 +137,6 @@
                 <groupId>io.nats</groupId>
                 <artifactId>jnats</artifactId>
                 <version>2.16.9</version>
-            </dependency>
-            <!--======================================================================================== -->
-            <!-- Reactive Dependencies -->
-            <!--======================================================================================== -->
-            <dependency>
-                <groupId>io.projectreactor</groupId>
-                <artifactId>reactor-bom</artifactId>
-                <version>${reactor.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
             <!--======================================================================================== -->
             <!-- Json Dependencies -->
@@ -145,11 +148,6 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-            <dependency>
-                <groupId>io.vavr</groupId>
-                <artifactId>vavr-jackson</artifactId>
-                <version>0.10.3</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -158,6 +156,21 @@
             <artifactId>vavr</artifactId>
             <version>0.10.4</version>
         </dependency>
+        <!--======================================================================================== -->
+        <!-- Reactive Dependencies -->
+        <!--======================================================================================== -->
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--======================================================================================== -->
+        <!-- Testing Dependencies -->
+        <!--======================================================================================== -->
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>

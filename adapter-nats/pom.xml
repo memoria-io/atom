@@ -9,20 +9,26 @@
         <version>20.0.0</version>
     </parent>
     <groupId>io.memoria.atom</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>adapter-nats</artifactId>
     <version>20.0.0</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
-    <description>Core Module</description>
-
-
+    <description>nats Module</description>
     <dependencies>
         <!--======================================================================================== -->
-        <!-- Reactive Dependencies -->
+        <!-- Modules Dependencies -->
         <!--======================================================================================== -->
         <dependency>
-            <groupId>io.projectreactor.netty</groupId>
-            <artifactId>reactor-netty</artifactId>
+            <groupId>io.memoria.atom</groupId>
+            <artifactId>reactive</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <!-- ===============================================================   -->
+        <!-- Nats Dependencies                                                 -->
+        <!-- ===============================================================   -->
+        <dependency>
+            <groupId>io.nats</groupId>
+            <artifactId>jnats</artifactId>
         </dependency>
     </dependencies>
 </project>

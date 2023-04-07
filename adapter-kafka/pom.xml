@@ -9,20 +9,26 @@
         <version>20.0.0</version>
     </parent>
     <groupId>io.memoria.atom</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>adapter-kafka</artifactId>
     <version>20.0.0</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
-    <description>Core Module</description>
-
-
+    <description>kafka Module</description>
     <dependencies>
         <!--======================================================================================== -->
-        <!-- Reactive Dependencies -->
+        <!-- Modules Dependencies -->
         <!--======================================================================================== -->
         <dependency>
-            <groupId>io.projectreactor.netty</groupId>
-            <artifactId>reactor-netty</artifactId>
+            <groupId>io.memoria.atom</groupId>
+            <artifactId>reactive</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <!--======================================================================================== -->
+        <!-- Kafka Dependencies -->
+        <!--======================================================================================== -->
+        <dependency>
+            <groupId>io.projectreactor.kafka</groupId>
+            <artifactId>reactor-kafka</artifactId>
         </dependency>
     </dependencies>
 </project>
