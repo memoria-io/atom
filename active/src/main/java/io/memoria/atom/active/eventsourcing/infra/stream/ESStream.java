@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 public interface ESStream {
   Try<ESStreamMsg> pub(ESStreamMsg esStreamMsg);
 
-  Stream<ESStreamMsg> sub(String topic, int partition);
+  Stream<ESStreamMsg> sub(String topic, int partition, int maxWaitMillis);
 
   /**
    * @return an in memory ESStream

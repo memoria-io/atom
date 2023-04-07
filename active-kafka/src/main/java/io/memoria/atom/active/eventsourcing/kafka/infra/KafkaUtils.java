@@ -24,6 +24,9 @@ public class KafkaUtils {
     var tpList = java.util.List.of(tp);
     consumer.assign(tpList);
     consumer.seekToBeginning(tpList);
+    while(duration){
+      consumer.poll(duration).records(tp);
+    }
     return Stream.generate(() -> consumer.poll(duration).records(tp).stream()).flatMap(Function.identity());
   }
 

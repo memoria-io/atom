@@ -1,35 +1,58 @@
 package io.memoria.atom.active.eventsourcing.infra;
 
 import io.memoria.atom.active.eventsourcing.infra.repo.ESRepo;
+import io.memoria.atom.active.eventsourcing.infra.repo.EventRepo;
 import io.memoria.atom.active.eventsourcing.infra.stream.ESStream;
-import io.memoria.atom.core.eventsourcing.Shardable;
+import io.memoria.atom.active.eventsourcing.infra.stream.EventStream;
+import io.memoria.atom.core.eventsourcing.Event;
+import io.memoria.atom.core.eventsourcing.EventId;
 import io.memoria.atom.core.eventsourcing.StateId;
-import io.memoria.atom.core.eventsourcing.infra.QRoute;
-import io.memoria.atom.core.eventsourcing.infra.repo.ESRepoRow;
-import io.memoria.atom.core.eventsourcing.infra.stream.ESStreamMsg;
+import io.memoria.atom.core.eventsourcing.infra.EventSyncRoute;
+import io.memoria.atom.core.eventsourcing.infra.Topic;
+import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
 
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-class RepoToStreamImpl implements RepoToStream {
-  private final QRoute qRoute;
-  private final ESRepo esRepo;
-  private final ESStream esStream;
+class RepoToStreamImpl<E extends Event> implements RepoToStream<E> {
+  private final EventSyncRoute eventSyncRoute;
+  private final EventRepo<E> eventRepo;
+  private final EventStream<E> esStream;
+  private final Set<EventId> ingested;
+  private final AtomicInteger seqId;
 
-  public RepoToStreamImpl(QRoute qRoute, ESRepo esRepo, ESStream esStream) {
-    this.qRoute = qRoute;
-    this.esRepo = esRepo;
-    this.esStream = esStream;
+  RepoToStreamImpl(EventSyncRoute eventSyncRoute,
+                   ESRepo esRepo,
+                   ESStream esStream,
+                   TextTransformer transformer,
+                   Class<E> eClass) {
+    this.eventSyncRoute = eventSyncRoute;
+    this.eventRepo = EventRepo.create(eventSyncRoute.eventTable(), esRepo, transformer, eClass);
+    var qRoute = new Topic(eventSyncRoute.eventTopic(), eventSyncRoute.); this.esStream = EventStream.create(qRoute)
+    this.ingested = ingested;
+    this.seqId = seqId;
   }
 
   @Override
-  public Stream<Try<ESStreamMsg>> sync(String stateId) {
-    return esRepo.getAll(qRoute.eventTable(), stateId).map(row -> esStream.pub(toESStreamMsg(row)));
+  public Stream<Try<E>> sync(StateId stateId) {
+    esStream.sub(stateId).filter(this::skipDuplicates).peek(this::add)
+    return eventRepo.getAll(stateId, seqId.get()).map(row -> esStream.pub(toESStreamMsg(row)));
   }
 
-  private ESStreamMsg toESStreamMsg(ESRepoRow row) {
-    var partition = Shardable.partition(StateId.of(row.stateId()),qRoute.eventTopicTotalPartitions());
-    new ESStreamMsg(qRoute.eventTopic(), partition,  )
-    return null;
+  private boolean skipDuplicates(Try<E> e) {
+    if (e.isSuccess()) {
+      return !ingested.contains(e.get().eventId());
+    } else {
+      return true; // to keep failures
+    }
+  }
+
+  private void add(Try<E> e) {
+    if (e.isSuccess()) {
+      ingested.add(e.get().eventId());
+      seqId.incrementAndGet();
+    }
   }
 }

@@ -1,22 +1,21 @@
 package io.memoria.atom.active.eventsourcing.infra.repo;
 
-import io.memoria.atom.core.eventsourcing.infra.CRoute;
-import io.memoria.atom.core.eventsourcing.infra.repo.ESRepoRow;
 import io.memoria.atom.core.eventsourcing.Event;
 import io.memoria.atom.core.eventsourcing.StateId;
+import io.memoria.atom.core.eventsourcing.infra.repo.ESRepoRow;
 import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
 
 import java.util.stream.Stream;
 
 class EventRepoImpl<E extends Event> implements EventRepo<E> {
-  private final CRoute CRoute;
+  private final String eventTable;
   private final ESRepo esRepo;
   private final TextTransformer transformer;
   private final Class<E> eClass;
 
-  protected EventRepoImpl(CRoute CRoute, ESRepo esRepo, TextTransformer transformer, Class<E> eClass) {
-    this.CRoute = CRoute;
+  protected EventRepoImpl(String eventTable, ESRepo esRepo, TextTransformer transformer, Class<E> eClass) {
+    this.eventTable = eventTable;
     this.esRepo = esRepo;
     this.transformer = transformer;
     this.eClass = eClass;
@@ -24,17 +23,17 @@ class EventRepoImpl<E extends Event> implements EventRepo<E> {
 
   @Override
   public Stream<Try<E>> getFirst(StateId stateId) {
-    return esRepo.getFirst(CRoute.eventTable(), stateId.value()).map(this::deserialize);
+    return esRepo.getFirst(eventTable, stateId).map(this::deserialize);
   }
 
   @Override
   public Stream<Try<E>> getAll(StateId stateId) {
-    return esRepo.getAll(CRoute.eventTable(), stateId.value()).map(this::deserialize);
+    return esRepo.getAll(eventTable, stateId).map(this::deserialize);
   }
 
   @Override
   public Stream<Try<E>> getAll(StateId stateId, int seqId) {
-    return esRepo.getAll(CRoute.eventTable(), stateId.value(), seqId).map(this::deserialize);
+    return esRepo.getAll(eventTable, stateId, seqId).map(this::deserialize);
   }
 
   @Override
@@ -46,7 +45,7 @@ class EventRepoImpl<E extends Event> implements EventRepo<E> {
   }
 
   private ESRepoRow createRow(int seqId, String stateId, String eStr) {
-    return new ESRepoRow(CRoute.eventTable(), stateId, seqId, eStr);
+    return new ESRepoRow(eventTable, stateId, seqId, eStr);
   }
 
   private Try<E> deserialize(ESRepoRow esRepoRow) {

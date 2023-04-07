@@ -17,10 +17,10 @@ public interface EventRepo<E extends Event> {
 
   Try<Integer> append(int seqId, E event);
 
-  static <E extends Event> EventRepo<E> create(CRoute CRoute,
+  static <E extends Event> EventRepo<E> create(String eventTable,
                                                ESRepo esRepo,
                                                TextTransformer transformer,
                                                Class<E> eClass) {
-    return new EventRepoImpl<>(CRoute, esRepo, transformer, eClass);
+    return new EventRepoImpl<>(eventTable, esRepo, transformer, eClass);
   }
 }

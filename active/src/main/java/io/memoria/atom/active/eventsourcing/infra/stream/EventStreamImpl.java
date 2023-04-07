@@ -1,8 +1,9 @@
 package io.memoria.atom.active.eventsourcing.infra.stream;
 
 import io.memoria.atom.core.eventsourcing.Event;
-import io.memoria.atom.core.eventsourcing.infra.CRoute;
-import io.memoria.atom.core.eventsourcing.infra.QRoute;
+import io.memoria.atom.core.eventsourcing.Shardable;
+import io.memoria.atom.core.eventsourcing.StateId;
+import io.memoria.atom.core.eventsourcing.infra.Topic;
 import io.memoria.atom.core.eventsourcing.infra.stream.ESStreamMsg;
 import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
@@ -13,22 +14,24 @@ class EventStreamImpl<E extends Event> implements EventStream<E> {
   private final ESStream esStream;
   private final TextTransformer transformer;
   private final Class<E> cClass;
-  private final QRoute qRoute;
+  private final Topic topic;
 
-  EventStreamImpl(CRoute qRoute, ESStream esStream, TextTransformer transformer, Class<E> cClass) {
-    this.qRoute = qRoute;
+  EventStreamImpl(Topic topic, ESStream esStream, TextTransformer transformer, Class<E> cClass) {
+    this.topic = topic;
     this.esStream = esStream;
     this.transformer = transformer;
     this.cClass = cClass;
   }
 
   public Try<E> pub(E e) {
-    var partition = e.partition(qRoute.eventTopicTotalPartitions());
-    return transformer.serialize(e).flatMap(cStr -> pubMsg(qRoute.eventTopic(), partition, e, cStr)).map(id -> e);
+    var partition = e.partition(topic.nPartitions());
+    return transformer.serialize(e).flatMap(cStr -> pubMsg(topic.topic(), partition, e, cStr)).map(id -> e);
   }
 
-  public Stream<Try<E>> sub() {
-    return esStream.sub(qRoute.eventTopic(), qRoute.eventTopicPartition())
+  public Stream<Try<E>> sub(StateId stateId) {
+    int partition = Shardable.partition(stateId, topic.nPartitions());
+    return esStream.sub(topic.topic(), partition)
+                   .filter(s -> s.key().equals(stateId.value()))
                    .map(msg -> transformer.deserialize(msg.value(), cClass));
 
   }

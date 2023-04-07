@@ -4,7 +4,7 @@ import io.memoria.atom.active.eventsourcing.infra.repo.ESRepo;
 import io.memoria.atom.active.eventsourcing.infra.stream.EventStream;
 import io.memoria.atom.core.eventsourcing.*;
 import io.memoria.atom.core.eventsourcing.infra.CRoute;
-import io.memoria.atom.core.eventsourcing.infra.QRoute;
+import io.memoria.atom.core.eventsourcing.infra.Topic;
 import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
 
@@ -18,7 +18,7 @@ public class EventAggregate<S extends State, C extends Command, E extends Event>
   // Core
   public final StateId stateId;
   public final Domain<S, C, E> domain;
-  public final QRoute qRoute;
+  public final Topic topic;
   // Infra
   private final EventStream<E> eventStream;
   // In memory
@@ -29,7 +29,7 @@ public class EventAggregate<S extends State, C extends Command, E extends Event>
     // Core
     this.stateId = stateId;
     this.domain = domain;
-    this.qRoute = qRoute;
+    this.topic = qRoute;
     // Infra
     this.eventStream = EventStream.create(qRoute, esRepo, transformer, domain.eClass());
     // In memory
