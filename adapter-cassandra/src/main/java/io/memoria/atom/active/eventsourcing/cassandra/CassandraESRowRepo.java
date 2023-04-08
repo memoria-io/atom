@@ -27,32 +27,24 @@ public class CassandraESRowRepo implements ESRowRepo {
   }
 
   @Override
-  public Mono<ESRow> append(String table, String stateId, String value) {
-    var lastSeqStatement = Statements.getLastSeqId(keyspace, table, stateId);
-    return execSelect(lastSeqStatement).map(CassandraRow::from)
-                                       .map(CassandraRow::seqId)
-                                       .single(0)
-                                       .flatMap(seqId -> exec(keyspace, new ESRow(table, stateId, seqId, value)));
+  public Flux<ESRow> append(String table, Flux<ESRow> rows) {
+    return rows.concatMap(r -> appendESRow(keyspace, r));
   }
 
-  private ESRow toESRepoRow(String table, CassandraRow r) {
-    return new ESRow(table, r.stateId(), r.seqId(), r.payload());
-  }
-
-  private Flux<CassandraRow> get(String keyspace, String table, String stateId) {
+  Flux<CassandraRow> get(String keyspace, String table, String stateId) {
     var st = Statements.get(keyspace, table, stateId, 0);
     return execSelect(st).map(CassandraRow::from);
   }
 
-  private Mono<ESRow> exec(String keyspace, ESRow esRow) {
+  Mono<ESRow> appendESRow(String keyspace, ESRow esRow) {
     var row = new CassandraRow(esRow.stateId(), esRow.seqId(), esRow.value());
-    var st = Statements.push(keyspace, esRow.table(), row);
-    return Mono.from(session.executeReactive(st).wasApplied())
-               .flatMap(applied -> applied ? Mono.just(esRow) : Mono.error(failedAppend(keyspace, esRow)));
+    return Mono.from(session.executeReactive(Statements.push(keyspace, esRow.table(), row)))
+               .map(ReactiveRow::wasApplied)
+               .flatMap(applied -> applied ? Mono.just(esRow) : Mono.error(FailedAppend.of(keyspace, esRow)));
   }
 
-  private static FailedAppend failedAppend(String keyspace, ESRow esRow) {
-    return FailedAppend.of(keyspace, esRow.table(), esRow.stateId(), esRow.seqId());
+  private ESRow toESRepoRow(String table, CassandraRow r) {
+    return new ESRow(table, r.stateId(), r.seqId(), r.payload());
   }
 
   public Flux<ReactiveRow> execSelect(SimpleStatement st) {

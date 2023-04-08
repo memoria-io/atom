@@ -21,9 +21,7 @@ class MemESRowRepoTest {
     // Given
     var msgs = createMessages(S0).concatWith(createMessages(S1));
     // When,
-    StepVerifier.create(msgs.flatMap(r -> repo.append(r.table(), r.stateId(), r.value())))
-                .expectNextCount(ELEMENTS_SIZE * 2)
-                .verifyComplete();
+    StepVerifier.create(repo.append(table, msgs)).expectNextCount(ELEMENTS_SIZE * 2).verifyComplete();
     // Then
     StepVerifier.create(repo.getAll(table, S0.value())).expectNextCount(ELEMENTS_SIZE).verifyComplete();
     StepVerifier.create(repo.getAll(table, S1.value())).expectNextCount(ELEMENTS_SIZE).verifyComplete();

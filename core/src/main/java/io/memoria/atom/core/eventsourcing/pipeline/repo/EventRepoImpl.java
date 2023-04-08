@@ -3,6 +3,7 @@ package io.memoria.atom.core.eventsourcing.pipeline.repo;
 import io.memoria.atom.core.eventsourcing.Event;
 import io.memoria.atom.core.eventsourcing.StateId;
 import io.memoria.atom.core.text.TextTransformer;
+import io.vavr.control.Try;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -27,13 +28,13 @@ class EventRepoImpl<E extends Event> implements EventRepo<E> {
   }
 
   @Override
-  public Mono<Integer> append(E event) {
-    var eventMono = toMono(() -> transformer.serialize(event));
-    return eventMono.flatMap(eventStr -> append(event.stateId(), eventStr)).map(ESRow::seqId);
+  public Flux<E> append(Flux<E> events) {
+    var flux = events.concatMap(e -> toMono(toESRow(e)));
+    return esRowRepo.append(eventTable, flux).flatMap(esRow -> toMono(transformer.deserialize(esRow.value(), eClass)));
   }
 
-  private Mono<ESRow> append(StateId stateId, String eventStr) {
-    return esRowRepo.append(eventTable, stateId.value(), eventStr);
+  private Try<ESRow> toESRow(E e) {
+    return transformer.serialize(e).map(eventStr -> new ESRow(eventTable, e.stateId().value(), e.seqId(), eventStr));
   }
 
   private Mono<E> deserialize(ESRow esRow) {

@@ -31,18 +31,18 @@ public record AccountDecider() implements Decider<Account, AccountCommand, Accou
   private Try<AccountEvent> handle(Acc state, AccountCommand command) {
     return switch (command) {
       case CreateAccount cmd -> Try.failure(ESException.InvalidCommand.create(state, cmd));
-      case ChangeName cmd -> Try.success(NameChanged.from(cmd));
-      case Debit cmd -> Try.success(Debited.from(cmd));
-      case Credit cmd -> Try.success(Credited.from(cmd));
-      case ConfirmDebit cmd -> Try.success(DebitConfirmed.from(cmd));
+      case ChangeName cmd -> Try.success(NameChanged.from(state, cmd));
+      case Debit cmd -> Try.success(Debited.from(state, cmd));
+      case Credit cmd -> Try.success(Credited.from(state, cmd));
+      case ConfirmDebit cmd -> Try.success(DebitConfirmed.from(state, cmd));
       case CloseAccount cmd -> tryToClose(state, cmd);
     };
   }
 
   private Try<AccountEvent> handle(ClosedAccount state, AccountCommand command) {
     return switch (command) {
-      case Credit cmd -> Try.success(CreditRejected.from(cmd));
-      case ConfirmDebit cmd -> Try.success(DebitConfirmed.from(cmd));
+      case Credit cmd -> Try.success(CreditRejected.from(state, cmd));
+      case ConfirmDebit cmd -> Try.success(DebitConfirmed.from(state, cmd));
       case ChangeName cmd -> Try.failure(ESException.InvalidCommand.create(state, cmd));
       case Debit cmd -> Try.failure(ESException.InvalidCommand.create(state, cmd));
       case CreateAccount cmd -> Try.failure(ESException.InvalidCommand.create(state, cmd));
@@ -52,7 +52,7 @@ public record AccountDecider() implements Decider<Account, AccountCommand, Accou
 
   private Try<AccountEvent> tryToClose(Acc acc, CloseAccount cmd) {
     if (acc.hasOngoingDebit())
-      return Try.success(ClosureRejected.from(cmd));
-    return Try.success(AccountClosed.from(cmd));
+      return Try.success(ClosureRejected.from(acc, cmd));
+    return Try.success(AccountClosed.from(acc, cmd));
   }
 }

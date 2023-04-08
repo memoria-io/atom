@@ -21,7 +21,7 @@ class Statements {
                        .build();
   }
 
-  public static SimpleStatement getLastSeqId(String keyspace, String table, String stateId) {
+  public static SimpleStatement getLastRow(String keyspace, String table, String stateId) {
     return QueryBuilder.selectFrom(keyspace, table)
                        .all()
                        .whereColumn(CassandraRow.stateIdCol)

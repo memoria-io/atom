@@ -1,8 +1,6 @@
 package io.memoria.atom.core.eventsourcing.pipeline.repo;
 
 import io.memoria.atom.core.eventsourcing.*;
-import io.memoria.atom.core.eventsourcing.pipeline.repo.ESRowRepo;
-import io.memoria.atom.core.eventsourcing.pipeline.repo.EventRepo;
 import io.memoria.atom.core.text.SerializableTransformer;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
@@ -23,7 +21,7 @@ class EventRepoImplTest {
     // Given
     var events = createEvents(S0).concatWith(createEvents(S1));
     // When
-    var eventFlux = events.flatMap(eventRepo::append);
+    var eventFlux = eventRepo.append(events);
     StepVerifier.create(eventFlux).expectNextCount(ELEMENTS_SIZE * 2).verifyComplete();
     // Then
     StepVerifier.create(eventRepo.getAll(S0)).expectNextCount(ELEMENTS_SIZE).verifyComplete();
@@ -31,10 +29,10 @@ class EventRepoImplTest {
   }
 
   private Flux<SomeEvent> createEvents(StateId stateId) {
-    return Flux.range(0, ELEMENTS_SIZE).map(i -> new SomeEvent(EventId.of(i), stateId, CommandId.of(i)));
+    return Flux.range(0, ELEMENTS_SIZE).map(i -> new SomeEvent(EventId.of(i), i, stateId, CommandId.of(i)));
   }
 
-  private record SomeEvent(EventId eventId, StateId stateId, CommandId commandId) implements Event {
+  private record SomeEvent(EventId eventId, int seqId, StateId stateId, CommandId commandId) implements Event {
     @Override
     public long timestamp() {
       return 0;

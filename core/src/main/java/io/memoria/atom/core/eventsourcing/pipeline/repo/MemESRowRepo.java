@@ -1,5 +1,6 @@
 package io.memoria.atom.core.eventsourcing.pipeline.repo;
 
+import io.memoria.atom.core.eventsourcing.exception.ESException.MismatchingEventSeqId;
 import io.vavr.collection.List;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -26,19 +27,24 @@ class MemESRowRepo implements ESRowRepo {
   }
 
   @Override
-  public Mono<ESRow> append(String table, String stateId, String value) {
+  public Flux<ESRow> append(String table, Flux<ESRow> rows) {
+    return rows.concatMap(r -> append(table, r));
+  }
+
+  private Mono<ESRow> append(String table, ESRow row) {
     return Mono.fromCallable(() -> {
-      this.topics.computeIfPresent(table, (k, v) -> {
-        var seqId = (int) v.stream().filter(r -> r.stateId().equals(stateId)).count();
-        v.add(new ESRow(table, stateId, seqId, value));
-        return v;
-      });
-      this.topics.computeIfAbsent(table, k -> {
-        var arr = new ArrayList<ESRow>();
-        arr.add(new ESRow(table, stateId, 0, value));
-        return arr;
-      });
-      return new ESRow(table, stateId, 0, value);
+      var esRows = this.topics.get(table);
+      if (esRows != null) {
+        if (esRows.stream().anyMatch(r -> r.stateId().equals(row.stateId()) && r.seqId() == row.seqId())) {
+          throw MismatchingEventSeqId.of(row.seqId());
+        }
+        esRows.add(row);
+      } else {
+        var rows = new ArrayList<ESRow>();
+        rows.add(row);
+        this.topics.put(table, rows);
+      }
+      return row;
     });
   }
 

@@ -7,5 +7,7 @@ public interface Event extends Shardable, Serializable {
 
   EventId eventId();
 
+  int seqId();
+
   long timestamp();
 }

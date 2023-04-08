@@ -32,7 +32,8 @@ class StreamToRepoImpl<E extends Event> implements StreamToRepo<E> {
 
   @Override
   public Flux<E> sync() {
-    return eventStream.sub().flatMap(this::loadEvents).flatMap(e -> eventRepo.append(e).map(i -> e));
+    var events = eventStream.sub().flatMap(this::loadEvents);
+    return eventRepo.append(events);
   }
 
   private Mono<E> loadEvents(E e) {

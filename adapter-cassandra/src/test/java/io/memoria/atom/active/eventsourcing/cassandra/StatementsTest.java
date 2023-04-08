@@ -5,7 +5,6 @@ import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
 import io.memoria.atom.core.eventsourcing.StateId;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
@@ -85,10 +84,10 @@ class StatementsTest {
     // Given
     var stateId = StateId.randomUUID().value();
     var statements = Flux.range(0, COUNT).map(i -> Statements.push(KEYSPACE, TABLE, createRow(stateId, i)));
-    var isCreatedFlux = statements.flatMap(session::executeReactive).map(ReactiveRow::wasApplied);
-    StepVerifier.create(isCreatedFlux).expectNextCount(COUNT).verifyComplete();
+    var rowFlux = statements.flatMap(session::executeReactive).map(ReactiveRow::wasApplied);
+    StepVerifier.create(rowFlux).expectNextCount(COUNT).verifyComplete();
     // When
-    var lastSeq = Flux.from(session.executeReactive(Statements.getLastSeqId(KEYSPACE, TABLE, stateId)))
+    var lastSeq = Flux.from(session.executeReactive(Statements.getLastRow(KEYSPACE, TABLE, stateId)))
                       .map(CassandraRow::from)
                       .map(CassandraRow::seqId);
     // Then
@@ -98,7 +97,7 @@ class StatementsTest {
   @Test
   void getLastButUnknown() {
     // Given
-    var st = Statements.getLastSeqId(KEYSPACE, TABLE, "unknown");
+    var st = Statements.getLastRow(KEYSPACE, TABLE, "unknown");
     // When
     var exec = Flux.from(session.executeReactive(st)).map(ReactiveRow::wasApplied);
     // Then
