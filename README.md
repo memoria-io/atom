@@ -39,7 +39,7 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
 ## Atom Features
 
 * Eventsourcing sdk in two flavours active, and reactive
-* Kafka, Nats, Cassandra adapters
+* Kafka, Nats adapters
 * Virtual threading
 * Vavr + Reactor Functional utilities
 * Reactor Netty utility functions

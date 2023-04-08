@@ -25,7 +25,6 @@
 
     <modules>
         <module>core</module>
-        <module>adapter-cassandra</module>
         <module>adapter-kafka</module>
         <module>adapter-nats</module>
         <module>text</module>
@@ -34,7 +33,6 @@
     </modules>
 
     <properties>
-        <cassandra.version>4.15.0</cassandra.version>
         <kafka.version>3.4.0</kafka.version>
         <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
         <reactor.version>2022.0.5</reactor.version>
@@ -108,19 +106,6 @@
                 <artifactId>jjwt-jackson</artifactId>
                 <version>${jsonwebtoken.version}</version>
                 <scope>runtime</scope>
-            </dependency>
-            <!--======================================================================================== -->
-            <!-- Cassandra Dependencies -->
-            <!--======================================================================================== -->
-            <dependency>
-                <groupId>com.datastax.oss</groupId>
-                <artifactId>java-driver-core</artifactId>
-                <version>${cassandra.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.datastax.oss</groupId>
-                <artifactId>java-driver-query-builder</artifactId>
-                <version>${cassandra.version}</version>
             </dependency>
             <!--======================================================================================== -->
             <!-- kafka Dependencies -->
