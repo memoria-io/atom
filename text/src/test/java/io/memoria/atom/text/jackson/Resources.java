@@ -1,7 +1,6 @@
 package io.memoria.atom.text.jackson;
 
 import io.memoria.atom.core.eventsourcing.CommandId;
-import io.memoria.atom.core.eventsourcing.EventId;
 import io.memoria.atom.core.file.ResourceFileOps;
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.text.jackson.cases.company.Engineer;

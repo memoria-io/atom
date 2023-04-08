@@ -14,6 +14,6 @@ public record DebitConfirmed(EventId eventId, int seqId, CommandId commandId, St
   }
 
   public static DebitConfirmed from(Account account, ConfirmDebit cmd) {
-    return new DebitConfirmed(EventId.randomUUID(), account.seqId(), cmd.commandId(), cmd.debitedAcc());
+    return new DebitConfirmed(EventId.randomUUID(), account.seqId() + 1, cmd.commandId(), cmd.debitedAcc());
   }
 }

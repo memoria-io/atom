@@ -14,6 +14,6 @@ public record NameChanged(EventId eventId, int seqId, CommandId commandId, State
   }
 
   public static NameChanged from(Account account, ChangeName cmd) {
-    return new NameChanged(EventId.randomUUID(), account.seqId(), cmd.commandId(), cmd.stateId(), cmd.name());
+    return new NameChanged(EventId.randomUUID(), account.seqId() + 1, cmd.commandId(), cmd.stateId(), cmd.name());
   }
 }

@@ -19,7 +19,7 @@ public record Debited(EventId eventId,
 
   public static Debited from(Account account, Debit cmd) {
     return new Debited(EventId.randomUUID(),
-                       account.seqId(),
+                       account.seqId() + 1,
                        cmd.commandId(),
                        cmd.debitedAcc(),
                        cmd.creditedAcc(),

@@ -19,7 +19,7 @@ public record Credited(EventId eventId,
 
   public static Credited from(Account account, Credit cmd) {
     return new Credited(EventId.randomUUID(),
-                        account.seqId(),
+                        account.seqId() + 1,
                         cmd.commandId(),
                         cmd.creditedAcc(),
                         cmd.debitedAcc(),

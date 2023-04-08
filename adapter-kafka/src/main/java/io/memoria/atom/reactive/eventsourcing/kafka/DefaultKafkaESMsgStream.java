@@ -55,10 +55,6 @@ class DefaultKafkaESMsgStream implements KafkaESMsgStream {
   }
 
   private SenderRecord<String, String, ESMsg> toRecord(ESMsg ESMsg) {
-    return SenderRecord.create(ESMsg.topic(),
-                               ESMsg.partition(),
-                               timeSupplier.get(),
-                               ESMsg.key(),
-                               ESMsg.value(), ESMsg);
+    return SenderRecord.create(ESMsg.topic(), ESMsg.partition(), timeSupplier.get(), ESMsg.key(), ESMsg.value(), ESMsg);
   }
 }

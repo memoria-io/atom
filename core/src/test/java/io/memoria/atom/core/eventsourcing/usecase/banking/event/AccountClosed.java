@@ -14,6 +14,6 @@ public record AccountClosed(EventId eventId, int seqId, CommandId commandId, Sta
   }
 
   public static AccountClosed from(Account account, CloseAccount cmd) {
-    return new AccountClosed(EventId.randomUUID(), account.seqId(), cmd.commandId(), cmd.stateId());
+    return new AccountClosed(EventId.randomUUID(), account.seqId() + 1, cmd.commandId(), cmd.stateId());
   }
 }

@@ -6,8 +6,6 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 
-import static io.netty.handler.codec.http.HttpResponseStatus.OK;
-
 public record VarzController() implements Function2<HttpServerRequest, HttpServerResponse, Mono<Void>> {
   public Mono<Void> apply(HttpServerRequest req, HttpServerResponse resp) {
     return resp.status(HttpResponseStatus.OK).sendString(Mono.just(HttpResponseStatus.OK.reasonPhrase())).then();

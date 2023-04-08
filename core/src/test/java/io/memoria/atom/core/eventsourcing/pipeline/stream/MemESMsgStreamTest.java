@@ -46,8 +46,7 @@ class MemESMsgStreamTest {
   }
 
   private Flux<ESMsg> createMessages(StateId stateId) {
-    return Flux.range(0, ELEMENTS_SIZE)
-               .map(i -> new ESMsg(topic, getPartition(stateId), String.valueOf(i), "hello"));
+    return Flux.range(0, ELEMENTS_SIZE).map(i -> new ESMsg(topic, getPartition(stateId), String.valueOf(i), "hello"));
   }
 
   private static int getPartition(StateId stateId) {

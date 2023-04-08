@@ -19,7 +19,7 @@ public record CreditRejected(EventId eventId,
 
   public static CreditRejected from(Account acc, Credit cmd) {
     return new CreditRejected(EventId.randomUUID(),
-                              acc.seqId(),
+                              acc.seqId() + 1,
                               cmd.commandId(),
                               cmd.creditedAcc(),
                               cmd.debitedAcc(),
