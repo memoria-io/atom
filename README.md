@@ -12,7 +12,11 @@
 ## Introduction
 
 * Atom is a collection of utilities for web, and event based applications.
-* Current JDK used is `Java 19`.
+* Current JDK used is `Java 20`.
+* Atom relies heavily
+  on [Reactive Streams](https://www.reactive-streams.org/) and uses [Project-Reactor](https://projectreactor.io/),
+  [Reactor Netty](https://github.com/reactor/reactor-netty), it also uses functional paradigms and collections
+  from [Vavr](https://www.vavr.io/).
 
 **Disclaimer:**
 > `atom` is on edge, it's a work in progress and a pragmatic learning effort, so feel free to create issues or PRs.
@@ -27,20 +31,12 @@ Core module has basic set of utilities:
 * Basic Eventsourcing functional interfaces
 * ConfigFileOps, and ResourceFileOps (similar to Typesafe HOCOON library)
 * TextTransformer base interfaces
-* other
 
-## Active module
+## Adapter-* modules
 
-Active module and submodules use the blocking virtual threading available starting jdk 19 preview.
+Adapter initially were built to implement eventsourcing infra ports, but might later have more
 
-## Reactive module
-
-`reactive` relies heavily
-on [Reactive Streams](https://www.reactive-streams.org/) and uses [Project-Reactor](https://projectreactor.io/),
-[Reactor Netty](https://github.com/reactor/reactor-netty), it also uses functional paradigms and collections
-from [Vavr](https://www.vavr.io/).
-
-## Features
+## Atom Features
 
 * Eventsourcing sdk in two flavours active, and reactive
 * Kafka, Nats, Cassandra adapters
