@@ -30,7 +30,7 @@
         <module>adapter-nats</module>
         <module>text</module>
         <module>sec</module>
-        <module>web2</module>
+        <module>web</module>
     </modules>
 
     <properties>
