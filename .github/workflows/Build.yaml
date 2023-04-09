@@ -37,7 +37,7 @@ jobs:
           mvn clean verify sonar:sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
           -Dsonar.host.url="https://sonarcloud.io" \
           -Dsonar.organization=memoria-io \
-          -Dsonar.projectKey=memoria-io_active
+          -Dsonar.projectKey=io.memoria.atom
 #          mvn clean \
 #          verify \
 #          sonar:sonar \
