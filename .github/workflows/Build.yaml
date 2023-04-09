@@ -36,11 +36,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn clean verify sonar:sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.host.url="https://sonarcloud.io" \
           -Dsonar.organization=memoria-io \
-          -Dsonar.projectKey=io.memoria.atom \
-          -Dsonar.pullrequest.github.endpoint=${GITHUB_API_URL}
+          -Dsonar.projectKey=memoria-io_atom
           
 
 #          -Dsonar.pullrequest.github.repository=${{ GITHUB_REPOSITORY }}
