@@ -40,10 +40,10 @@ jobs:
           -Dsonar.host.url="https://sonarcloud.io" \
           -Dsonar.organization=memoria-io \
           -Dsonar.projectKey=io.memoria.atom \
+          -Dsonar.pullrequest.key=${{github.event.pull_request.number}} \
           -Dsonar.pullrequest.github.endpoint=${GITHUB_API_URL} \
           -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }} \ 
-          -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }} \
-          -Dsonar.pullrequest.key=${{github.event.pull_request.number}}
+          -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }}
 
 #          -Dsonar.pullrequest.github.repository=${{ GITHUB_REPOSITORY }}
 #          -Dsonar.pullrequest.branch=${{ GITHUB_HEAD_REF#refs/heads/ }}
