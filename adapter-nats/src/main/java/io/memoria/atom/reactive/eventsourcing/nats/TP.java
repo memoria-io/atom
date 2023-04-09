@@ -1,6 +1,6 @@
 package io.memoria.atom.reactive.eventsourcing.nats;
 
-import io.memoria.atom.core.eventsourcing.pipeline.stream.ESMsg;
+import io.memoria.atom.core.stream.ESMsg;
 
 public record TP(String topic, int partition) {
   public static final String SPLIT_TOKEN = "_";

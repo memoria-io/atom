@@ -25,6 +25,7 @@
 
     <modules>
         <module>core</module>
+        <module>eventsourcing</module>
         <module>adapter-kafka</module>
         <module>adapter-nats</module>
         <module>text</module>

@@ -1,6 +1,6 @@
 package io.memoria.atom.reactive.eventsourcing.nats;
 
-import io.memoria.atom.core.eventsourcing.pipeline.stream.ESMsgStream;
+import io.memoria.atom.core.stream.ESMsgStream;
 import io.nats.client.JetStreamApiException;
 
 import java.io.IOException;

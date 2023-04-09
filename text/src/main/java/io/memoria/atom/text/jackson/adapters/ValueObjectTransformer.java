@@ -14,34 +14,34 @@ public final class ValueObjectTransformer {
 
   private ValueObjectTransformer() {}
 
-  public static class ValueObjectDeserializer<T> extends StdDeserializer<T> {
+  public static class ValueObjectDeserializer<A, B extends A> extends StdDeserializer<B> {
 
-    private final Function<String, T> constructor;
+    private final Function<String, B> constructor;
 
-    public ValueObjectDeserializer(Class vc, Function<String, T> constructor) {
+    public ValueObjectDeserializer(Class vc, Function<String, B> constructor) {
       super(vc);
       this.constructor = constructor;
     }
 
     @Override
-    public T deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
+    public B deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
       var value = p.readValueAs(String.class);
       return constructor.apply(value);
     }
 
   }
 
-  public static class ValueObjectSerializer<T> extends StdSerializer<T> {
+  public static class ValueObjectSerializer<A, B extends A> extends StdSerializer<B> {
 
-    private final Function<T, String> valueExtractor;
+    private final Function<B, String> valueExtractor;
 
-    public ValueObjectSerializer(Class<T> vc, Function<T, String> valueExtractor) {
+    public ValueObjectSerializer(Class<B> vc, Function<B, String> valueExtractor) {
       super(vc);
       this.valueExtractor = valueExtractor;
     }
 
     @Override
-    public void serialize(T value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(B value, JsonGenerator gen, SerializerProvider provider) throws IOException {
       gen.writeString(valueExtractor.apply(value));
     }
 

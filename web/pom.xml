@@ -13,7 +13,7 @@
     <version>20.1.0</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
-    <description>text Module</description>
+    <description>Web Module</description>
     <dependencies>
         <!--======================================================================================== -->
         <!-- Modules Dependencies -->
@@ -28,7 +28,10 @@
             <artifactId>text</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>io.projectreactor.netty</groupId>
+            <artifactId>reactor-netty</artifactId>
+        </dependency>
     </dependencies>
 </project>
 
