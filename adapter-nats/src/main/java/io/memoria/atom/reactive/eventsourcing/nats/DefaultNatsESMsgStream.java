@@ -1,6 +1,6 @@
 package io.memoria.atom.reactive.eventsourcing.nats;
 
-import io.memoria.atom.eventsourcing.pipeline.stream.ESMsg;
+import io.memoria.atom.core.stream.ESMsg;
 import io.nats.client.*;
 import io.nats.client.api.StreamInfo;
 import io.vavr.control.Try;

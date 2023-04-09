@@ -1,6 +1,6 @@
 package io.memoria.atom.reactive.eventsourcing.kafka;
 
-import io.memoria.atom.eventsourcing.pipeline.stream.ESMsg;
+import io.memoria.atom.core.stream.ESMsg;
 import io.vavr.collection.Map;
 import org.apache.kafka.common.TopicPartition;
 import reactor.core.publisher.Flux;

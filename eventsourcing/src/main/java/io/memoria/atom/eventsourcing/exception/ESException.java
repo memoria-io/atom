@@ -1,9 +1,6 @@
 package io.memoria.atom.eventsourcing.exception;
 
-import io.memoria.atom.core.eventsourcing.*;
-import io.memoria.atom.eventsourcing.Command;
-import io.memoria.atom.eventsourcing.Event;
-import io.memoria.atom.eventsourcing.State;
+import io.memoria.atom.eventsourcing.*;
 
 public interface ESException {
   class InvalidCommand extends IllegalArgumentException implements ESException {

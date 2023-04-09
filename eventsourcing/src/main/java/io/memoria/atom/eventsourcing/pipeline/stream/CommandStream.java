@@ -1,5 +1,6 @@
 package io.memoria.atom.eventsourcing.pipeline.stream;
 
+import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.eventsourcing.Command;
 import io.memoria.atom.eventsourcing.pipeline.CommandRoute;
 import io.memoria.atom.core.text.TextTransformer;

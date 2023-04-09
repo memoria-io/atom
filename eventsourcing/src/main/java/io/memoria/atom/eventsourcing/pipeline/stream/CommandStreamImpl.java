@@ -1,5 +1,7 @@
 package io.memoria.atom.eventsourcing.pipeline.stream;
 
+import io.memoria.atom.core.stream.ESMsg;
+import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.eventsourcing.Command;
 import io.memoria.atom.eventsourcing.pipeline.CommandRoute;
 import io.memoria.atom.core.text.TextTransformer;
@@ -10,7 +12,7 @@ import reactor.core.publisher.Mono;
 import static io.memoria.atom.core.vavr.ReactorVavrUtils.toMono;
 
 class CommandStreamImpl<C extends Command> implements CommandStream<C> {
-  private final ESMsgStream ESMsgStream;
+  private final io.memoria.atom.core.stream.ESMsgStream ESMsgStream;
   private final TextTransformer transformer;
   private final Class<C> cClass;
   private final io.memoria.atom.eventsourcing.pipeline.CommandRoute CommandRoute;

@@ -1,5 +1,7 @@
 package io.memoria.atom.eventsourcing.pipeline.stream;
 
+import io.memoria.atom.core.stream.ESMsg;
+import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.core.text.TextTransformer;
 import reactor.core.publisher.Flux;
@@ -8,7 +10,7 @@ import reactor.core.publisher.Mono;
 import static io.memoria.atom.core.vavr.ReactorVavrUtils.toMono;
 
 class EventStreamImpl<E extends Event> implements EventStream<E> {
-  private final ESMsgStream ESMsgStream;
+  private final io.memoria.atom.core.stream.ESMsgStream ESMsgStream;
   private final TextTransformer transformer;
   private final Class<E> cClass;
   private final String topic;

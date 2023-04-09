@@ -1,4 +1,4 @@
-package io.memoria.atom.eventsourcing.pipeline.repo;
+package io.memoria.atom.core.repo;
 
 import io.vavr.collection.List;
 import reactor.core.publisher.Flux;

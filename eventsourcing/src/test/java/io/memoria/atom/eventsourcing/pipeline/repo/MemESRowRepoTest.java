@@ -1,5 +1,7 @@
 package io.memoria.atom.eventsourcing.pipeline.repo;
 
+import io.memoria.atom.core.repo.ESRow;
+import io.memoria.atom.core.repo.ESRowRepo;
 import io.memoria.atom.eventsourcing.StateId;
 import io.memoria.atom.core.eventsourcing.pipeline.repo.MemESRowRepo;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -15,7 +17,7 @@ class MemESRowRepoTest {
   private static final StateId S0 = StateId.of(0);
   private static final StateId S1 = StateId.of(1);
 
-  private final ESRowRepo repo = new MemESRowRepo(table);
+  private final ESRowRepo repo = ESRowRepo.inMemory(table);
 
   @Test
   void appendAndGet() {

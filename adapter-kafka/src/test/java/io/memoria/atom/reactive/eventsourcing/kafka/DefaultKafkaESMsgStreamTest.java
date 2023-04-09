@@ -1,7 +1,7 @@
 package io.memoria.atom.reactive.eventsourcing.kafka;
 
-import io.memoria.atom.eventsourcing.pipeline.stream.ESMsg;
-import io.memoria.atom.eventsourcing.pipeline.stream.ESMsgStream;
+import io.memoria.atom.core.stream.ESMsg;
+import io.memoria.atom.core.stream.ESMsgStream;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;

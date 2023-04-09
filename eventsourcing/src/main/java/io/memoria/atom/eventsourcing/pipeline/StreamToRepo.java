@@ -1,8 +1,8 @@
 package io.memoria.atom.eventsourcing.pipeline;
 
 import io.memoria.atom.eventsourcing.Event;
-import io.memoria.atom.eventsourcing.pipeline.repo.ESRowRepo;
-import io.memoria.atom.eventsourcing.pipeline.stream.ESMsgStream;
+import io.memoria.atom.core.repo.ESRowRepo;
+import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.core.text.TextTransformer;
 import reactor.core.publisher.Flux;
 

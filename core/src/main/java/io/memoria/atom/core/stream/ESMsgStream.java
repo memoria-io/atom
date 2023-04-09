@@ -1,4 +1,4 @@
-package io.memoria.atom.eventsourcing.pipeline.stream;
+package io.memoria.atom.core.stream;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

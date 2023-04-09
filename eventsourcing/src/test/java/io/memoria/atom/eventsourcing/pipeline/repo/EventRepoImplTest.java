@@ -1,6 +1,7 @@
 package io.memoria.atom.eventsourcing.pipeline.repo;
 
 import io.memoria.atom.core.eventsourcing.*;
+import io.memoria.atom.core.repo.ESRowRepo;
 import io.memoria.atom.eventsourcing.*;
 import io.memoria.atom.core.text.SerializableTransformer;
 import org.junit.jupiter.api.Test;

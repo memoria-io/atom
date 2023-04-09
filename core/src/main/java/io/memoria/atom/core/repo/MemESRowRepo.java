@@ -1,6 +1,5 @@
-package io.memoria.atom.eventsourcing.pipeline.repo;
+package io.memoria.atom.core.repo;
 
-import io.memoria.atom.eventsourcing.exception.ESException.MismatchingEventSeqId;
 import io.vavr.collection.List;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -36,7 +35,7 @@ class MemESRowRepo implements ESRowRepo {
       var esRows = this.topics.get(table);
       if (esRows != null) {
         if (esRows.stream().anyMatch(r -> r.stateId().equals(row.stateId()) && r.seqId() == row.seqId())) {
-          throw MismatchingEventSeqId.of(row.seqId());
+          throw new IllegalArgumentException("Mismatching sequence Id:" + row.seqId());
         }
         esRows.add(row);
       } else {

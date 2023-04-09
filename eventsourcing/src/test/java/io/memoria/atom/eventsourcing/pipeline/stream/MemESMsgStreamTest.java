@@ -1,5 +1,8 @@
 package io.memoria.atom.eventsourcing.pipeline.stream;
 
+import io.memoria.atom.core.stream.ESMsg;
+import io.memoria.atom.core.stream.ESMsgStream;
+import io.memoria.atom.core.stream.MemESMsgStream;
 import io.memoria.atom.eventsourcing.StateId;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
