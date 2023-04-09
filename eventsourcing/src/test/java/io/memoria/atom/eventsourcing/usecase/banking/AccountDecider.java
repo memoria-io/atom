@@ -2,13 +2,11 @@ package io.memoria.atom.eventsourcing.usecase.banking;
 
 import io.memoria.atom.eventsourcing.exception.ESException;
 import io.memoria.atom.eventsourcing.rule.Decider;
-import io.memoria.atom.core.eventsourcing.usecase.banking.command.*;
-import io.memoria.atom.core.eventsourcing.usecase.banking.event.*;
+import io.memoria.atom.eventsourcing.usecase.banking.command.*;
+import io.memoria.atom.eventsourcing.usecase.banking.event.*;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Acc;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;
 import io.memoria.atom.eventsourcing.usecase.banking.state.ClosedAccount;
-import io.memoria.atom.eventsourcing.usecase.banking.command.*;
-import io.memoria.atom.eventsourcing.usecase.banking.event.*;
 import io.vavr.control.Try;
 
 public record AccountDecider() implements Decider<Account, AccountCommand, AccountEvent> {

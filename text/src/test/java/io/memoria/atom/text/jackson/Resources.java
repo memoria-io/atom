@@ -33,14 +33,8 @@ public class Resources {
     BOB_ENGINEER_YAML = ResourceFileOps.read("cases/company/yaml/Engineer.yaml").get();
     ANNIKA_MANAGER_YAML = ResourceFileOps.read("cases/company/yaml/Manager.yaml").get();
     // Objects
-    BOB_ENGINEER = new Engineer(Id.of(0),
-                                "bob",
-                                LocalDate.of(2000, 1, 1),
-                                List.of("fix issue 1", "Fix issue 2"));
-    ALEX_ENGINEER = new Engineer(Id.of(1),
-                                 "alex",
-                                 LocalDate.of(2000, 1, 1),
-                                 List.of("fix issue 3", "Fix issue 4"));
+    BOB_ENGINEER = new Engineer(Id.of(0), "bob", LocalDate.of(2000, 1, 1), List.of("fix issue 1", "Fix issue 2"));
+    ALEX_ENGINEER = new Engineer(Id.of(1), "alex", LocalDate.of(2000, 1, 1), List.of("fix issue 3", "Fix issue 4"));
     ANNIKA_MANAGER = new Manager("Annika", List.of(BOB_ENGINEER, ALEX_ENGINEER));
   }
 

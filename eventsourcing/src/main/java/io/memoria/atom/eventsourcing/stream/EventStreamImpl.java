@@ -1,9 +1,9 @@
-package io.memoria.atom.eventsourcing.pipeline.stream;
+package io.memoria.atom.eventsourcing.stream;
 
 import io.memoria.atom.core.stream.ESMsg;
 import io.memoria.atom.core.stream.ESMsgStream;
-import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.core.text.TextTransformer;
+import io.memoria.atom.eventsourcing.Event;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -29,8 +29,7 @@ class EventStreamImpl<E extends Event> implements EventStream<E> {
   }
 
   public Flux<E> sub() {
-    return ESMsgStream.sub(topic, partition)
-                      .flatMap(msg -> toMono(transformer.deserialize(msg.value(), cClass)));
+    return ESMsgStream.sub(topic, partition).flatMap(msg -> toMono(transformer.deserialize(msg.value(), cClass)));
 
   }
 

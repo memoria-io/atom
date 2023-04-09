@@ -1,10 +1,10 @@
 package io.memoria.atom.eventsourcing.pipeline.stream;
 
-import io.memoria.atom.core.eventsourcing.*;
 import io.memoria.atom.core.stream.ESMsgStream;
+import io.memoria.atom.core.text.SerializableTransformer;
 import io.memoria.atom.eventsourcing.*;
 import io.memoria.atom.eventsourcing.pipeline.CommandRoute;
-import io.memoria.atom.core.text.SerializableTransformer;
+import io.memoria.atom.eventsourcing.stream.CommandStream;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;

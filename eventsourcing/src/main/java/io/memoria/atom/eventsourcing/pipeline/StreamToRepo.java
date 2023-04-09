@@ -1,9 +1,9 @@
 package io.memoria.atom.eventsourcing.pipeline;
 
-import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.core.repo.ESRowRepo;
 import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.core.text.TextTransformer;
+import io.memoria.atom.eventsourcing.Event;
 import reactor.core.publisher.Flux;
 
 public interface StreamToRepo<E extends Event> {

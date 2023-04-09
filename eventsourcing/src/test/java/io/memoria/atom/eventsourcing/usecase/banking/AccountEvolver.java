@@ -2,11 +2,10 @@ package io.memoria.atom.eventsourcing.usecase.banking;
 
 import io.memoria.atom.eventsourcing.exception.ESException.InvalidEvent;
 import io.memoria.atom.eventsourcing.rule.Evolver;
-import io.memoria.atom.core.eventsourcing.usecase.banking.event.*;
+import io.memoria.atom.eventsourcing.usecase.banking.event.*;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Acc;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;
 import io.memoria.atom.eventsourcing.usecase.banking.state.ClosedAccount;
-import io.memoria.atom.eventsourcing.usecase.banking.event.*;
 
 @SuppressWarnings("SwitchStatementWithTooFewBranches")
 public record AccountEvolver() implements Evolver<Account, AccountEvent> {

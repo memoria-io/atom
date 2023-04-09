@@ -1,10 +1,10 @@
-package io.memoria.atom.eventsourcing.pipeline.repo;
+package io.memoria.atom.eventsourcing.repo;
 
 import io.memoria.atom.core.repo.ESRow;
 import io.memoria.atom.core.repo.ESRowRepo;
+import io.memoria.atom.core.text.TextTransformer;
 import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.eventsourcing.StateId;
-import io.memoria.atom.core.text.TextTransformer;
 import io.vavr.control.Try;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

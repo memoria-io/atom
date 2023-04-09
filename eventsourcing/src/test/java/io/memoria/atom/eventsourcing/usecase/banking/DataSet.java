@@ -2,7 +2,6 @@ package io.memoria.atom.eventsourcing.usecase.banking;
 
 import io.memoria.atom.eventsourcing.CommandId;
 import io.memoria.atom.eventsourcing.StateId;
-import io.memoria.atom.core.eventsourcing.usecase.banking.command.*;
 import io.memoria.atom.eventsourcing.usecase.banking.command.*;
 import io.vavr.collection.List;
 import reactor.core.publisher.Flux;
