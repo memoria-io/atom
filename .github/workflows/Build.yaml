@@ -34,13 +34,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn clean verify sonar:sonar
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }} 
-          -Dsonar.host.url="https://sonarcloud.io" 
-          -Dsonar.organization=memoria-io 
-          -Dsonar.projectKey=memoria-io_active 
-          -Dsonar.pullrequest.key=${{ github.event.number }}
-          -Dsonar.pullrequest.branch=${GITHUB_HEAD_REF#refs/heads/}
-          -Dsonar.pullrequest.base=${GITHUB_BASE_REF#refs/heads/}
-          -Dsonar.pullrequest.github.repository=${GITHUB_REPOSITORY}
+          mvn clean verify sonar:sonar \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }} \ 
+          -Dsonar.host.url="https://sonarcloud.io" \
+          -Dsonar.organization=memoria-io \
+          -Dsonar.projectKey=memoria-io_active \ 
+          -Dsonar.pullrequest.key=${{ github.event.number }} \
+          -Dsonar.pullrequest.branch=${GITHUB_HEAD_REF#refs/heads/} \
+          -Dsonar.pullrequest.base=${GITHUB_BASE_REF#refs/heads/} \
+          -Dsonar.pullrequest.github.repository=${GITHUB_REPOSITORY} \
           -Dsonar.pullrequest.github.endpoint=${GITHUB_API_URL}
