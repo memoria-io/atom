@@ -15,15 +15,5 @@
     <name>${project.groupId}.${project.artifactId}</name>
     <description>Core Module</description>
 
-
-    <dependencies>
-        <!--======================================================================================== -->
-        <!-- Reactive Dependencies -->
-        <!--======================================================================================== -->
-        <dependency>
-            <groupId>io.projectreactor.netty</groupId>
-            <artifactId>reactor-netty</artifactId>
-        </dependency>
-    </dependencies>
 </project>
 
