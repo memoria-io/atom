@@ -39,6 +39,7 @@ jobs:
           -Dsonar.organization=memoria-io \
           -Dsonar.projectKey=io.memoria.atom \
           -Dsonar.pullrequest.github.endpoint=${{ GITHUB_API_URL }}
+          
 
 #          -Dsonar.pullrequest.github.repository=${{ GITHUB_REPOSITORY }}
 #          -Dsonar.pullrequest.branch=${{ GITHUB_HEAD_REF#refs/heads/ }}
