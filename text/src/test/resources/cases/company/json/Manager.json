@@ -5,7 +5,6 @@
     {
       "$type":"Engineer",
       "id":"0",
-      "commandId":"0",
       "name":"bob",
       "birthday":"2000-01-01",
       "tasks":[
@@ -16,7 +15,6 @@
     {
       "$type":"Engineer",
       "id":"1",
-      "commandId":"1",
       "name":"alex",
       "birthday":"2000-01-01",
       "tasks":[

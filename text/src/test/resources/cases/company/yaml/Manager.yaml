@@ -2,14 +2,12 @@
 name: "Annika"
 team:
   - id: "0"
-    commandId: "0"
     name: "bob"
     birthday: "2000-01-01"
     tasks:
       - "fix issue 1"
       - "Fix issue 2"
   - id: "1"
-    commandId: "1"
     name: "alex"
     birthday: "2000-01-01"
     tasks:

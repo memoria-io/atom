@@ -1,7 +1,6 @@
 package io.memoria.atom.text.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.memoria.atom.core.eventsourcing.CommandId;
 import io.memoria.atom.core.file.ConfigFileOps;
 import io.memoria.atom.core.text.Json;
 import io.memoria.atom.core.text.Yaml;
@@ -27,9 +26,8 @@ public class TestDeps {
 
   private static ObjectMapper jacksonJsonMapper(boolean isPretty) {
     var jsonOM = (isPretty) ? JacksonUtils.prettyJson() : JacksonUtils.json();
-    var jsonMapper = JacksonUtils.mixinPropertyFormat(jsonOM, Employee.class);
-    jsonMapper.registerSubtypes(Manager.class, Engineer.class);
-    jsonMapper.registerSubtypes(CommandId.class);
-    return jsonMapper;
+    JacksonUtils.addMixInPropertyFormat(jsonOM, Employee.class);
+    jsonOM.registerSubtypes(Manager.class, Engineer.class);
+    return jsonOM;
   }
 }

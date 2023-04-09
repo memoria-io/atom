@@ -1,6 +1,6 @@
 package io.memoria.atom.reactive.eventsourcing.kafka;
 
-import io.memoria.atom.core.eventsourcing.pipeline.stream.ESMsgStream;
+import io.memoria.atom.eventsourcing.pipeline.stream.ESMsgStream;
 import io.vavr.collection.Map;
 
 import java.util.function.Supplier;

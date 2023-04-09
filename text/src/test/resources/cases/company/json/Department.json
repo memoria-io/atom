@@ -7,7 +7,6 @@
         {
           "$type":"Engineer",
           "id":"0",
-          "commandId":"0",
           "name":"bob",
           "birthday":"2000-01-01",
           "tasks":[
@@ -18,7 +17,6 @@
         {
           "$type":"Engineer",
           "id":"1",
-          "commandId":"1",
           "name":"alex",
           "birthday":"2000-01-01",
           "tasks":[
@@ -32,7 +30,6 @@
       "$type":"Engineer",
       "name":"bob",
       "id":"0",
-      "commandId":"0",
       "birthday":"2000-01-01",
       "tasks":[
         "fix issue 1",
@@ -43,7 +40,6 @@
       "$type":"Engineer",
       "name":"alex",
       "id":"1",
-      "commandId":"1",
       "birthday":"2000-01-01",
       "tasks":[
         "fix issue 3",

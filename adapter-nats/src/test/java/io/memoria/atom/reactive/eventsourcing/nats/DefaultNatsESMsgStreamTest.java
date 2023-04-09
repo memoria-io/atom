@@ -1,7 +1,7 @@
 package io.memoria.atom.reactive.eventsourcing.nats;
 
-import io.memoria.atom.core.eventsourcing.pipeline.stream.ESMsg;
-import io.memoria.atom.core.eventsourcing.pipeline.stream.ESMsgStream;
+import io.memoria.atom.eventsourcing.pipeline.stream.ESMsg;
+import io.memoria.atom.eventsourcing.pipeline.stream.ESMsgStream;
 import io.nats.client.JetStreamApiException;
 import io.vavr.collection.HashSet;
 import io.vavr.collection.List;

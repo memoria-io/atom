@@ -1,6 +1,6 @@
 package io.memoria.atom.reactive.eventsourcing.nats;
 
-import io.memoria.atom.core.eventsourcing.pipeline.stream.ESMsg;
+import io.memoria.atom.eventsourcing.pipeline.stream.ESMsg;
 import io.nats.client.Connection;
 import io.nats.client.JetStream;
 import io.nats.client.Nats;
