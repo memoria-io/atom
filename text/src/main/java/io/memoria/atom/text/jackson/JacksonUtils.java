@@ -90,7 +90,6 @@ public class JacksonUtils {
    * return "BaseClass$ChildClass" kind of naming
    *
    * @param baseClass base classes
-   * @return a new {@link JacksonUtils}
    */
   public static void addMixInWrapperObjectFormat(ObjectMapper om, Class<?>... baseClass) {
     @JsonTypeInfo(include = As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
