@@ -21,20 +21,44 @@
 **Disclaimer:**
 > `atom` is on edge, it's a work in progress and a pragmatic learning effort, so feel free to create issues or PRs.
 
+## Usage
 
-![](docs/atom.jpg)
+First make sure you can fetch repositories under such memoria organisation from github
 
-## Core module
+```xml
 
-Core module has basic set of utilities:
+<repositories>
+    <repository>
+        <id>github</id>
+        <name>GitHub Packages</name>
+        <url>https://maven.pkg.github.com/memoria-io/*</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
 
-* Basic Eventsourcing functional interfaces
-* ConfigFileOps, and ResourceFileOps (similar to Typesafe HOCOON library)
-* TextTransformer base interfaces
+```
 
-## Adapter-* modules
+Then import nomrally in your pom dependencies
 
-Adapter initially were built to implement eventsourcing infra ports, but might later have more
+```xml
+
+<dependency>
+    <groupId>io.memoria</groupId>
+    <artifactId>atom</artifactId>
+    <version>20.1.0</version>
+</dependency>
+```
+
+## Versioning
+
+The versioning is similar to semantic but with a shift where the first segment being the jdk version.
+
+Format Example: `JDK_Version.major.mino`
 
 ## Atom Features
 
@@ -53,6 +77,22 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
     * Reading as a system property if not found as environment variable or else the default value if it was supplied:
         * `path: ${JAVA_HOME}`
         * `myVar: ${SOME_VAR:-defaultValue}`
+
+# Architecture
+
+![](docs/atom.jpg)
+
+## Core module
+
+Core module has basic set of utilities:
+
+* Basic Eventsourcing functional interfaces
+* ConfigFileOps, and ResourceFileOps (similar to Typesafe HOCOON library)
+* TextTransformer base interfaces
+
+## Adapter-* modules
+
+Adapter initially were built to implement eventsourcing infra ports, but might later have more
 
 ## TODOs
 
@@ -75,7 +115,7 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
 
 ## Release notes
 
-* Current versioning scheme `jdk_version.major.minor` once stable, a patch version will be added.
+* `20.1.0` Fixing Jacoco and sonar to work with `--enable-preview`
 
 ## Contribution
 
