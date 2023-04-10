@@ -2,8 +2,20 @@
 
 [![Release](https://github.com/memoria-io/atom/workflows/Release/badge.svg)](https://github.com/memoria-io/atom/actions?query=workflow%3ARelease)
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/memoria-io/atom?label=Version&logo=github)](https://github.com/orgs/memoria-io/packages?repo_name=atom)
-[![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/memoria-io/atom/latest?logoColor=github)](https://github.com/memoria-io/atom/commits/master)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_active&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=memoria-io_active)
+
+
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=bugs)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=coverage)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+
 
 > هذا العلم والعمل وقف للّه تعالي اسأل اللّه ان يرزقنا الاخلاص فالقول والعمل
 >
@@ -21,24 +33,48 @@
 **Disclaimer:**
 > `atom` is on edge, it's a work in progress and a pragmatic learning effort, so feel free to create issues or PRs.
 
+## Usage
 
-![](docs/atom.jpg)
+First make sure you can fetch repositories under such memoria organisation from github
 
-## Core module
+```xml
 
-Core module has basic set of utilities:
+<repositories>
+    <repository>
+        <id>github</id>
+        <name>GitHub Packages</name>
+        <url>https://maven.pkg.github.com/memoria-io/*</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
 
-* Basic Eventsourcing functional interfaces
-* ConfigFileOps, and ResourceFileOps (similar to Typesafe HOCOON library)
-* TextTransformer base interfaces
+```
 
-## Adapter-* modules
+Then import nomrally in your pom dependencies
 
-Adapter initially were built to implement eventsourcing infra ports, but might later have more
+```xml
+
+<dependency>
+    <groupId>io.memoria</groupId>
+    <artifactId>atom</artifactId>
+    <version>20.1.0</version>
+</dependency>
+```
+
+## Versioning
+
+The versioning is similar to semantic but with a shift where the first segment being the jdk version.
+
+Format Example: `JDK_Version.major.mino`
 
 ## Atom Features
 
-* Eventsourcing sdk in two flavours active, and reactive
+* Eventsourcing sdk 
 * Kafka, Nats adapters
 * Virtual threading
 * Vavr + Reactor Functional utilities
@@ -53,6 +89,27 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
     * Reading as a system property if not found as environment variable or else the default value if it was supplied:
         * `path: ${JAVA_HOME}`
         * `myVar: ${SOME_VAR:-defaultValue}`
+
+# Architecture
+
+![](docs/atom.jpg)
+
+## Core module
+
+Core module has basic set of utilities:
+
+* ConfigFileOps, and ResourceFileOps (similar to Typesafe HOCOON library)
+* TextTransformer base interfaces
+
+## Eventsourcing module
+
+* Basic Eventsourcing functional interface
+* Reactive pipeline
+* Usage examples can be found in tests
+
+## Adapter-* modules
+
+Adapter initially were built to implement eventsourcing infra ports, but might later have more
 
 ## TODOs
 
@@ -75,7 +132,7 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
 
 ## Release notes
 
-* Current versioning scheme `jdk_version.major.minor` once stable, a patch version will be added.
+* `20.1.0` Fixing Jacoco and sonar to work with `--enable-preview`
 
 ## Contribution
 
