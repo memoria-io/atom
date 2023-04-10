@@ -8,11 +8,9 @@ import io.nats.client.impl.NatsMessage;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
-import reactor.core.publisher.SynchronousSink;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 class Utils {
@@ -39,20 +37,6 @@ class Utils {
     };
   }
 
-  static void fetchOnce(Connection nc, JetStreamSubscription sub, SynchronousSink<Message> sink, long fetchWaitMillis) {
-    try {
-      nc.flushBuffer();
-      var msg = sub.nextMessage(Duration.ofMillis(fetchWaitMillis));
-      if (msg != null) {
-        sink.next(msg);
-        msg.ack();
-      }
-      sink.complete();
-    } catch (IOException | InterruptedException e) {
-      sink.error(e);
-    }
-  }
-
   static CompletableFuture<PublishAck> publishMsg(JetStream js, ESMsg msg) {
     var message = toMessage(msg);
     var opts = PublishOptions.builder().clearExpected().messageId(msg.key()).build();
@@ -61,25 +45,27 @@ class Utils {
 
   static JetStreamSubscription jetStreamSub(JetStream js, Topic topic, long offset)
           throws IOException, JetStreamApiException {
-    var cc = ConsumerConfiguration.builder()
-                                  .ackPolicy(AckPolicy.None)
-                                  .startSequence(offset)
-                                  .replayPolicy(ReplayPolicy.Instant)
-                                  .deliverPolicy(DeliverPolicy.ByStartSequence)
-                                  .build();
-    var pushOptions = PushSubscribeOptions.builder().ordered(true).stream(topic.streamName()).configuration(cc).build();
-    return js.subscribe(topic.subjectName(), pushOptions);
+    var config = ConsumerConfiguration.builder()
+                                      .ackPolicy(AckPolicy.None)
+                                      .startSequence(offset)
+                                      .replayPolicy(ReplayPolicy.Instant)
+                                      .deliverPolicy(DeliverPolicy.ByStartSequence)
+                                      .build();
+    var subscribeOptions = PushSubscribeOptions.builder()
+                                               .ordered(true)
+                                               .stream(topic.streamName())
+                                               .configuration(config)
+                                               .build();
+    return js.subscribe(topic.subjectName(), subscribeOptions);
   }
 
-  static JetStreamSubscription jetStreamSubLatest(JetStream js, Topic topic)
-          throws IOException, JetStreamApiException {
-    var cc = ConsumerConfiguration.builder()
-                                  .ackPolicy(AckPolicy.None)
-                                  .replayPolicy(ReplayPolicy.Instant)
-                                  .deliverPolicy(DeliverPolicy.LastPerSubject)
-                                  .build();
-    var pushOptions = PushSubscribeOptions.builder().ordered(true).stream(topic.streamName()).configuration(cc).build();
-    return js.subscribe(topic.subjectName(), pushOptions);
+  static JetStreamSubscription jetStreamSubLatest(JetStream js, Topic topic) throws IOException, JetStreamApiException {
+    var config = ConsumerConfiguration.builder()
+                                      .ackPolicy(AckPolicy.Explicit)
+                                      .deliverPolicy(DeliverPolicy.LastPerSubject)
+                                      .build();
+    var subscribeOptions = PullSubscribeOptions.builder().stream(topic.streamName()).configuration(config).build();
+    return js.subscribe(topic.subjectName(), subscribeOptions);
   }
 
   static long size(Connection nc, Topic topic) throws IOException, JetStreamApiException {
@@ -119,11 +105,11 @@ class Utils {
     return new ESMsg(tp.topic(), tp.partition(), message.getHeaders().getFirst(ID_HEADER), value);
   }
 
-  static Options toOptions(Config config) {
-    return new Options.Builder().server(config.url()).errorListener(errorListener()).build();
+  static Options toOptions(NatsConfig natsConfig) {
+    return new Options.Builder().server(natsConfig.url()).errorListener(errorListener()).build();
   }
 
-  static StreamConfiguration toStreamConfiguration(TPConfig c) {
+  static StreamConfiguration toStreamConfiguration(TopicConfig c) {
     return StreamConfiguration.builder()
                               .storageType(c.storageType())
                               .denyDelete(c.denyDelete())

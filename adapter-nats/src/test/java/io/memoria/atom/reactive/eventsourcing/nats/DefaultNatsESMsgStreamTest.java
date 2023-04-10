@@ -13,7 +13,6 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Random;
 
 @TestMethodOrder(OrderAnnotation.class)
@@ -27,7 +26,7 @@ class DefaultNatsESMsgStreamTest {
   static {
     try {
       var streams = HashSet.of(TestUtils.streamConfig(topic, partition));
-      var config = new Config("nats://localhost:4222", streams);
+      var config = new NatsConfig("nats://localhost:4222", streams);
       repo = NatsESMsgStream.create(config);
     } catch (IOException | InterruptedException | JetStreamApiException e) {
       throw new IllegalArgumentException(e);
