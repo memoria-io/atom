@@ -74,7 +74,7 @@ Format Example: `JDK_Version.major.mino`
 
 ## Atom Features
 
-* Eventsourcing sdk in two flavours active, and reactive
+* Eventsourcing sdk 
 * Kafka, Nats adapters
 * Virtual threading
 * Vavr + Reactor Functional utilities
@@ -98,9 +98,14 @@ Format Example: `JDK_Version.major.mino`
 
 Core module has basic set of utilities:
 
-* Basic Eventsourcing functional interfaces
 * ConfigFileOps, and ResourceFileOps (similar to Typesafe HOCOON library)
 * TextTransformer base interfaces
+
+## Eventsourcing module
+
+* Basic Eventsourcing functional interface
+* Reactive pipeline
+* Usage examples can be found in tests
 
 ## Adapter-* modules
 
