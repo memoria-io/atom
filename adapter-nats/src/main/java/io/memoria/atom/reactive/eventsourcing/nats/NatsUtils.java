@@ -13,10 +13,14 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 
-class Utils {
+/**
+ * Utility class for directly using nats, this layer is for testing NATS java driver, and ideally it shouldn't have
+ * Flux/Mono utilities, only pure java/nats APIs
+ */
+class NatsUtils {
   public static final String ID_HEADER = "ID_HEADER";
 
-  private Utils() {}
+  private NatsUtils() {}
 
   static Try<StreamInfo> createOrUpdateStream(Connection nc, StreamConfiguration streamConfiguration) {
     return Try.of(() -> {
@@ -66,30 +70,6 @@ class Utils {
                                       .build();
     var subscribeOptions = PullSubscribeOptions.builder().stream(topic.streamName()).configuration(config).build();
     return js.subscribe(topic.subjectName(), subscribeOptions);
-  }
-
-  static long size(Connection nc, Topic topic) throws IOException, JetStreamApiException {
-    return streamInfo(nc, topic.streamName()).map(StreamInfo::getStreamState)
-                                             .map(StreamState::getSubjects)
-                                             .flatMap(Option::of)
-                                             .map(List::ofAll)
-                                             .getOrElse(List::empty)
-                                             .find(s -> s.getName().equals(topic.subjectName()))
-                                             .map(Subject::getCount)
-                                             .getOrElse(0L);
-  }
-
-  static Option<StreamInfo> streamInfo(Connection nc, String streamName) throws IOException, JetStreamApiException {
-    try {
-      var opts = StreamInfoOptions.allSubjects();
-      return Option.some(nc.jetStreamManagement().getStreamInfo(streamName, opts));
-    } catch (JetStreamApiException e) {
-      if (e.getErrorCode() == 404) {
-        return Option.none();
-      } else {
-        throw e;
-      }
-    }
   }
 
   static Message toMessage(ESMsg ESMsg) {

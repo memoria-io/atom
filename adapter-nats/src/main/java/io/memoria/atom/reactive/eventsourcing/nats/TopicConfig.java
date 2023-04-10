@@ -6,8 +6,10 @@ public record TopicConfig(Topic topic,
                           StorageType storageType,
                           int streamReplication,
                           long fetchWaitMillis,
-                          int fetchBatchSize,
                           boolean denyDelete,
                           boolean denyPurge) {
 
+  static TopicConfig appendOnly(Topic topic, StorageType storageType, int streamReplication, long fetchWaitMillis) {
+    return new TopicConfig(topic, storageType, streamReplication, fetchWaitMillis, true, true);
+  }
 }

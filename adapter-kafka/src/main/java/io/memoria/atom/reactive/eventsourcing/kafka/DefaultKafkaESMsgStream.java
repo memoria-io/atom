@@ -41,8 +41,13 @@ class DefaultKafkaESMsgStream implements KafkaESMsgStream {
   }
 
   @Override
-  public Mono<ESMsg> getLast(String topic, int partition) {
+  public Mono<ESMsg> getLast(String topic, int partition, int bufferWaitMillis) {
     return null;
+  }
+
+  @Override
+  public void close() {
+    sender.close();
   }
 
   private Flux<ReceiverRecord<String, String>> receive(String topic, int partition) {

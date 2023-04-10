@@ -3,6 +3,7 @@ package io.memoria.atom.core.stream;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,7 +42,7 @@ public final class MemESMsgStream implements ESMsgStream {
   }
 
   @Override
-  public Mono<ESMsg> getLast(String topic, int partition) {
+  public Mono<ESMsg> getLast(String topic, int partition, Duration maxWait) {
     var q = topics.get(topic).get(partition);
     return Flux.<ESMsg>generate(c -> {
       try {
@@ -50,6 +51,11 @@ public final class MemESMsgStream implements ESMsgStream {
         c.error(e);
       }
     }).singleOrEmpty();
+  }
+
+  @Override
+  public void close() {
+    // Silence is golden
   }
 
   private List<LinkedBlockingDeque<ESMsg>> createTopic(int e) {
