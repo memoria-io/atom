@@ -10,7 +10,6 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Random;
 
 class DefaultNatsESMsgStreamTest {
@@ -55,7 +54,7 @@ class DefaultNatsESMsgStreamTest {
       var m = Flux.fromIterable(msgs).concatMap(repo::pub);
       StepVerifier.create(m).expectNextCount(msgs.size()).verifyComplete();
     });
-    var sub = repo.getLast(topic, partition, Duration.ofMillis(1000));
+    var sub = repo.fetchLast(topic, partition);
 
     // Then
     StepVerifier.create(sub).expectNext(msgs.last()).verifyComplete();
@@ -68,7 +67,7 @@ class DefaultNatsESMsgStreamTest {
     /* Silence is golden */
 
     // When
-    var sub = repo.getLast(topic, partition, Duration.ofMillis(500));
+    var sub = repo.fetchLast(topic, partition);
 
     // Then
     StepVerifier.create(sub).expectComplete();

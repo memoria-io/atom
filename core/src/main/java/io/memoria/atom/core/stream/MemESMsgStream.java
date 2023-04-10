@@ -42,7 +42,7 @@ public final class MemESMsgStream implements ESMsgStream {
   }
 
   @Override
-  public Mono<ESMsg> getLast(String topic, int partition, Duration maxWait) {
+  public Mono<ESMsg> fetchLast(String topic, int partition) {
     var q = topics.get(topic).get(partition);
     return Flux.<ESMsg>generate(c -> {
       try {

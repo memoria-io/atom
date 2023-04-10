@@ -3,7 +3,6 @@ package io.memoria.atom.core.stream;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.Map;
 
 public interface ESMsgStream extends AutoCloseable{
@@ -15,10 +14,9 @@ public interface ESMsgStream extends AutoCloseable{
    *
    * @param topic
    * @param partition
-   * @param maxWait before returning an empty result
    * @return
    */
-  Mono<ESMsg> getLast(String topic, int partition, Duration maxWait);
+  Mono<ESMsg> fetchLast(String topic, int partition);
 
   /**
    * @return an in memory ESStream

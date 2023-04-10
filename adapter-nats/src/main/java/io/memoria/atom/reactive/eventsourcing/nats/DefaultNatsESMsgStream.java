@@ -14,7 +14,6 @@ import reactor.core.publisher.SynchronousSink;
 import java.io.IOException;
 import java.time.Duration;
 
-import static io.memoria.atom.reactive.eventsourcing.nats.NatsConfig.DEFAULT_FETCH_WAIT;
 import static io.memoria.atom.reactive.eventsourcing.nats.NatsUtils.createOrUpdateStream;
 import static io.memoria.atom.reactive.eventsourcing.nats.NatsUtils.jetStreamSub;
 import static io.memoria.atom.reactive.eventsourcing.nats.NatsUtils.jetStreamSubLatest;
@@ -45,23 +44,27 @@ class DefaultNatsESMsgStream implements NatsESMsgStream {
   @Override
   public Flux<ESMsg> sub(String topic, int partition) {
     var tp = Topic.create(topic, partition);
-    var waitMillis = natsConfig.find(topic).map(TopicConfig::fetchWaitMillis).getOrElse(DEFAULT_FETCH_WAIT);
+    var config = natsConfig.find(topic).get();
     return Mono.fromCallable(() -> jetStreamSub(js, tp, 1))
-               .flatMapMany(sub -> this.fetch(sub, waitMillis).repeat())
+               .flatMapMany(sub -> this.fetch(sub, config.maxWaitBeforeRetry()).repeat())
                .map(NatsUtils::toMsg);
   }
 
   /**
    * @param topic
    * @param partition
-   * @param maxWait
    * @return last message after maxWait expired
    */
   @Override
-  public Mono<ESMsg> getLast(String topic, int partition, Duration maxWait) {
+  public Mono<ESMsg> fetchLast(String topic, int partition) {
     var tp = Topic.create(topic, partition);
+    var config = natsConfig.find(topic).get();
 
-    return Mono.fromCallable(() -> this.pullLast(tp, maxWait, 256, 1, 10))
+    return Mono.fromCallable(() -> this.pullLast(tp,
+                                                 config.maxBatchSize(),
+                                                 config.maxWaitBeforeRetry(),
+                                                 config.minRetriesOfFetchLast(),
+                                                 config.maxRetriesOfFetchLast()))
                .filter(Option::isDefined)
                .map(Option::get)
                .map(NatsUtils::toMsg);
@@ -72,7 +75,7 @@ class DefaultNatsESMsgStream implements NatsESMsgStream {
     this.nc.close();
   }
 
-  private Option<Message> pullLast(Topic topic, Duration maxWait, int maxBatchSize, int minRetries, int maxRetries)
+  private Option<Message> pullLast(Topic topic, int maxBatchSize, Duration maxWait, int minRetries, int maxRetries)
           throws IOException, JetStreamApiException {
 
     Option<Message> result = Option.none();
@@ -82,7 +85,7 @@ class DefaultNatsESMsgStream implements NatsESMsgStream {
 
     while (maxRetries > 0) {
       var msgs = sub.fetch(maxBatchSize, maxWait.toMillis() / maxRetries);
-      System.out.printf("MsgSize:%d Retries:%d%n", msgs.size(), maxRetries);
+      // System.out.printf("MsgSize:%d Retries:%d%n", msgs.size(), maxRetries);
       if (msgs.size() > 0) {
         result = Option.some(msgs.get(msgs.size() - 1));
       } else {
@@ -97,14 +100,17 @@ class DefaultNatsESMsgStream implements NatsESMsgStream {
     return result;
   }
 
-  private Flux<Message> fetch(JetStreamSubscription sub, long waitMillis) {
+  private Flux<Message> fetch(JetStreamSubscription sub, Duration waitMillis) {
     return Flux.generate((SynchronousSink<Message> sink) -> fetchOnce(nc, sub, sink, waitMillis));
   }
 
-  static void fetchOnce(Connection nc, JetStreamSubscription sub, SynchronousSink<Message> sink, long fetchWaitMillis) {
+  static void fetchOnce(Connection nc,
+                        JetStreamSubscription sub,
+                        SynchronousSink<Message> sink,
+                        Duration fetchWaitMillis) {
     try {
       nc.flushBuffer();
-      var msg = sub.nextMessage(Duration.ofMillis(fetchWaitMillis));
+      var msg = sub.nextMessage(fetchWaitMillis);
       if (msg != null) {
         sink.next(msg);
         msg.ack();
