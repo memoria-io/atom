@@ -13,6 +13,7 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Random;
 
 @TestMethodOrder(OrderAnnotation.class)
@@ -35,14 +36,13 @@ class DefaultNatsESMsgStreamTest {
 
   @Test
   @Order(1)
-  void t1_publish() throws InterruptedException {
+  void t1_publish() {
     // Given
     var msgs = Flux.range(0, MSG_COUNT).map(i -> new ESMsg(topic, partition, i + "", "hello" + i));
     // When
     var pub = msgs.concatMap(repo::pub);
     // Then
     StepVerifier.create(pub).expectNextCount(MSG_COUNT).verifyComplete();
-    Thread.sleep(100);
   }
 
   @Test
@@ -55,5 +55,17 @@ class DefaultNatsESMsgStreamTest {
     // Given
     StepVerifier.create(sub).expectNextCount(MSG_COUNT).verifyComplete();
     StepVerifier.create(sub).expectNextSequence(msgs).verifyComplete();
+  }
+
+  @Test
+  @Order(3)
+  void t2_subscribeToLast() {
+    // Given previous publish ran successfully
+    var msgs = List.range(0, MSG_COUNT).map(i -> new ESMsg(topic, partition, i + "", "hello" + i));
+    // When
+    var sub = repo.getLast(topic, partition);
+    // Given
+    StepVerifier.create(sub).expectNextCount(1).verifyComplete();
+    StepVerifier.create(sub).expectNext(msgs.last()).verifyComplete();
   }
 }

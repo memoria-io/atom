@@ -59,7 +59,7 @@ class Utils {
     return js.publishAsync(message, opts);
   }
 
-  static JetStreamSubscription jetStreamSub(JetStream js, TP TP, long offset)
+  static JetStreamSubscription jetStreamSub(JetStream js, Topic topic, long offset)
           throws IOException, JetStreamApiException {
     var cc = ConsumerConfiguration.builder()
                                   .ackPolicy(AckPolicy.None)
@@ -67,19 +67,30 @@ class Utils {
                                   .replayPolicy(ReplayPolicy.Instant)
                                   .deliverPolicy(DeliverPolicy.ByStartSequence)
                                   .build();
-    var pushOptions = PushSubscribeOptions.builder().ordered(true).stream(TP.streamName()).configuration(cc).build();
-    return js.subscribe(TP.subjectName(), pushOptions);
+    var pushOptions = PushSubscribeOptions.builder().ordered(true).stream(topic.streamName()).configuration(cc).build();
+    return js.subscribe(topic.subjectName(), pushOptions);
   }
 
-  static long size(Connection nc, TP TP) throws IOException, JetStreamApiException {
-    return streamInfo(nc, TP.streamName()).map(StreamInfo::getStreamState)
-                                          .map(StreamState::getSubjects)
-                                          .flatMap(Option::of)
-                                          .map(List::ofAll)
-                                          .getOrElse(List::empty)
-                                          .find(s -> s.getName().equals(TP.subjectName()))
-                                          .map(Subject::getCount)
-                                          .getOrElse(0L);
+  static JetStreamSubscription jetStreamSubLatest(JetStream js, Topic topic)
+          throws IOException, JetStreamApiException {
+    var cc = ConsumerConfiguration.builder()
+                                  .ackPolicy(AckPolicy.None)
+                                  .replayPolicy(ReplayPolicy.Instant)
+                                  .deliverPolicy(DeliverPolicy.LastPerSubject)
+                                  .build();
+    var pushOptions = PushSubscribeOptions.builder().ordered(true).stream(topic.streamName()).configuration(cc).build();
+    return js.subscribe(topic.subjectName(), pushOptions);
+  }
+
+  static long size(Connection nc, Topic topic) throws IOException, JetStreamApiException {
+    return streamInfo(nc, topic.streamName()).map(StreamInfo::getStreamState)
+                                             .map(StreamState::getSubjects)
+                                             .flatMap(Option::of)
+                                             .map(List::ofAll)
+                                             .getOrElse(List::empty)
+                                             .find(s -> s.getName().equals(topic.subjectName()))
+                                             .map(Subject::getCount)
+                                             .getOrElse(0L);
   }
 
   static Option<StreamInfo> streamInfo(Connection nc, String streamName) throws IOException, JetStreamApiException {
@@ -96,7 +107,7 @@ class Utils {
   }
 
   static Message toMessage(ESMsg ESMsg) {
-    var tp = TP.fromMsg(ESMsg);
+    var tp = Topic.fromMsg(ESMsg);
     var headers = new Headers();
     headers.add(ID_HEADER, ESMsg.key());
     return NatsMessage.builder().subject(tp.subjectName()).headers(headers).data(ESMsg.value()).build();
@@ -104,7 +115,7 @@ class Utils {
 
   static ESMsg toMsg(Message message) {
     var value = new String(message.getData(), StandardCharsets.UTF_8);
-    var tp = TP.fromSubject(message.getSubject());
+    var tp = Topic.fromSubject(message.getSubject());
     return new ESMsg(tp.topic(), tp.partition(), message.getHeaders().getFirst(ID_HEADER), value);
   }
 
@@ -117,8 +128,8 @@ class Utils {
                               .storageType(c.storageType())
                               .denyDelete(c.denyDelete())
                               .denyPurge(c.denyPurge())
-                              .name(c.tp().streamName())
-                              .subjects(c.tp().subjectName())
+                              .name(c.topic().streamName())
+                              .subjects(c.topic().subjectName())
                               .build();
   }
 }

@@ -3,13 +3,26 @@ package io.memoria.atom.eventsourcing.stream;
 import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.core.text.TextTransformer;
 import io.memoria.atom.eventsourcing.Event;
+import io.memoria.atom.eventsourcing.EventId;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface EventStream<E extends Event> {
   Mono<E> pub(E e);
 
+  /**
+   * @return Infinite subscription
+   */
   Flux<E> sub();
+
+  /**
+   * @return subscribe until eventId (key) is matched
+   */
+  default Flux<E> sub(EventId eventId) {
+    return sub().takeUntil(e -> e.eventId().equals(eventId));
+  }
+
+  Mono<E> getLast();
 
   static <E extends Event> EventStream<E> create(String topic,
                                                  int partition,

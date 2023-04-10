@@ -15,6 +15,7 @@ import java.io.IOException;
 import static io.memoria.atom.reactive.eventsourcing.nats.Config.DEFAULT_FETCH_WAIT;
 import static io.memoria.atom.reactive.eventsourcing.nats.Utils.createOrUpdateStream;
 import static io.memoria.atom.reactive.eventsourcing.nats.Utils.jetStreamSub;
+import static io.memoria.atom.reactive.eventsourcing.nats.Utils.jetStreamSubLatest;
 
 class DefaultNatsESMsgStream implements NatsESMsgStream {
   private static final Logger log = LoggerFactory.getLogger(DefaultNatsESMsgStream.class.getName());
@@ -41,14 +42,23 @@ class DefaultNatsESMsgStream implements NatsESMsgStream {
 
   @Override
   public Flux<ESMsg> sub(String topic, int partition) {
-    var tp = TP.create(topic, partition);
+    var tp = Topic.create(topic, partition);
     var waitMillis = config.find(topic).map(TPConfig::fetchWaitMillis).getOrElse(DEFAULT_FETCH_WAIT);
     return Mono.fromCallable(() -> jetStreamSub(js, tp, 1))
-               .flatMapMany(sub -> this.fetch(sub, waitMillis))
+               .flatMapMany(sub -> this.fetch(sub, waitMillis).repeat())
+               .map(Utils::toMsg);
+  }
+
+  @Override
+  public Mono<ESMsg> getLast(String topic, int partition) {
+    var tp = Topic.create(topic, partition);
+    var waitMillis = config.find(topic).map(TPConfig::fetchWaitMillis).getOrElse(DEFAULT_FETCH_WAIT);
+    return Mono.fromCallable(() -> jetStreamSubLatest(js, tp))
+               .flatMap(sub -> this.fetch(sub, waitMillis).singleOrEmpty())
                .map(Utils::toMsg);
   }
 
   private Flux<Message> fetch(JetStreamSubscription sub, long wait) {
-    return Flux.generate((SynchronousSink<Message> sink) -> Utils.fetchOnce(nc, sub, sink, wait)).repeat();
+    return Flux.generate((SynchronousSink<Message> sink) -> Utils.fetchOnce(nc, sub, sink, wait));
   }
 }

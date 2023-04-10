@@ -10,6 +10,8 @@ public interface ESMsgStream {
 
   Flux<ESMsg> sub(String topic, int partition);
 
+  Mono<ESMsg> getLast(String topic, int partition);
+
   /**
    * @return an in memory ESStream
    */

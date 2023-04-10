@@ -40,6 +40,11 @@ class DefaultKafkaESMsgStream implements KafkaESMsgStream {
     return receive(topic, partition).map(KafkaUtils::toMsg);
   }
 
+  @Override
+  public Mono<ESMsg> getLast(String topic, int partition) {
+    return null;
+  }
+
   private Flux<ReceiverRecord<String, String>> receive(String topic, int partition) {
     var tp = new TopicPartition(topic, partition);
     var receiverOptions = ReceiverOptions.<String, String>create(consumerConfig.toJavaMap())

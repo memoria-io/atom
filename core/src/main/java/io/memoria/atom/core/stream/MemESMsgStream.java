@@ -40,6 +40,18 @@ public final class MemESMsgStream implements ESMsgStream {
     });
   }
 
+  @Override
+  public Mono<ESMsg> getLast(String topic, int partition) {
+    var q = topics.get(topic).get(partition);
+    return Flux.<ESMsg>generate(c -> {
+      try {
+        c.next(q.takeLast());
+      } catch (InterruptedException e) {
+        c.error(e);
+      }
+    }).singleOrEmpty();
+  }
+
   private List<LinkedBlockingDeque<ESMsg>> createTopic(int e) {
     return IntStream.range(0, e).mapToObj(i -> new LinkedBlockingDeque<ESMsg>()).toList();
   }

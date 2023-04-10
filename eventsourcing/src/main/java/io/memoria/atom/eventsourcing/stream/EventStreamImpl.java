@@ -10,16 +10,16 @@ import reactor.core.publisher.Mono;
 import static io.memoria.atom.core.vavr.ReactorVavrUtils.toMono;
 
 class EventStreamImpl<E extends Event> implements EventStream<E> {
-  private final io.memoria.atom.core.stream.ESMsgStream ESMsgStream;
+  private final ESMsgStream esMsgStream;
   private final TextTransformer transformer;
   private final Class<E> cClass;
   private final String topic;
   private final int partition;
 
-  EventStreamImpl(String topic, int partition, ESMsgStream ESMsgStream, TextTransformer transformer, Class<E> cClass) {
+  EventStreamImpl(String topic, int partition, ESMsgStream esMsgStream, TextTransformer transformer, Class<E> cClass) {
     this.topic = topic;
     this.partition = partition;
-    this.ESMsgStream = ESMsgStream;
+    this.esMsgStream = esMsgStream;
     this.transformer = transformer;
     this.cClass = cClass;
   }
@@ -29,11 +29,16 @@ class EventStreamImpl<E extends Event> implements EventStream<E> {
   }
 
   public Flux<E> sub() {
-    return ESMsgStream.sub(topic, partition).flatMap(msg -> toMono(transformer.deserialize(msg.value(), cClass)));
+    return esMsgStream.sub(topic, partition).flatMap(msg -> toMono(transformer.deserialize(msg.value(), cClass)));
 
   }
 
+  @Override
+  public Mono<E> getLast() {
+    return null;
+  }
+
   private Mono<ESMsg> pubMsg(String topic, int partition, E e, String cStr) {
-    return ESMsgStream.pub(new ESMsg(topic, partition, e.commandId().value(), cStr));
+    return esMsgStream.pub(new ESMsg(topic, partition, e.commandId().value(), cStr));
   }
 }

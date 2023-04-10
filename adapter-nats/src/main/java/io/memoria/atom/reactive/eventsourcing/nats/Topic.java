@@ -2,11 +2,11 @@ package io.memoria.atom.reactive.eventsourcing.nats;
 
 import io.memoria.atom.core.stream.ESMsg;
 
-public record TP(String topic, int partition) {
+public record Topic(String topic, int partition) {
   public static final String SPLIT_TOKEN = "_";
   public static final String SUBJECT_EXT = ".subject";
 
-  public TP {
+  public Topic {
     validateName(topic, partition);
   }
 
@@ -27,19 +27,19 @@ public record TP(String topic, int partition) {
     }
   }
 
-  public static TP create(String topic, int partition) {
-    return new TP(topic, partition);
+  public static Topic create(String topic, int partition) {
+    return new Topic(topic, partition);
   }
 
-  public static TP fromMsg(ESMsg ESMsg) {
-    return new TP(ESMsg.topic(), ESMsg.partition());
+  public static Topic fromMsg(ESMsg ESMsg) {
+    return new Topic(ESMsg.topic(), ESMsg.partition());
   }
 
-  public static TP fromSubject(String subject) {
+  public static Topic fromSubject(String subject) {
     var idx = subject.indexOf(SUBJECT_EXT);
     var s = subject.substring(0, idx).split(SPLIT_TOKEN);
     var topic = s[0];
     var partition = Integer.parseInt(s[1]);
-    return TP.create(topic, partition);
+    return Topic.create(topic, partition);
   }
 }
