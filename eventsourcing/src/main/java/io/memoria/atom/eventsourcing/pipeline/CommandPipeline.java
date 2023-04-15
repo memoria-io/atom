@@ -1,11 +1,9 @@
 package io.memoria.atom.eventsourcing.pipeline;
 
-import io.memoria.atom.core.repo.ESRowRepo;
 import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.core.text.TextTransformer;
 import io.memoria.atom.core.vavr.ReactorVavrUtils;
 import io.memoria.atom.eventsourcing.*;
-import io.memoria.atom.eventsourcing.repo.EventRepo;
 import io.memoria.atom.eventsourcing.stream.CommandStream;
 import io.memoria.atom.eventsourcing.stream.EventStream;
 import io.vavr.control.Option;
@@ -22,38 +20,39 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   // Infra
   private final CommandStream<C> commandStream;
   private final EventStream<E> eventStream;
-  private final EventRepo<E> eventRepo;
   // In memory
   private final Set<CommandId> processedCommands;
-  private final Map<StateId, StateAggregate<S>> aggregates;
+  private final Set<EventId> processedEvents;
+  private final Map<StateId, S> aggregates;
 
   public CommandPipeline(Domain<S, C, E> domain,
                          CommandRoute commandRoute,
                          ESMsgStream esMsgStream,
-                         ESRowRepo esRowRepo,
                          TextTransformer transformer) {
     // Core
     this.domain = domain;
     this.CommandRoute = commandRoute;
     // Infra
     this.commandStream = CommandStream.create(commandRoute, esMsgStream, transformer, domain.cClass());
-    this.eventStream = EventStream.create(commandRoute.eventTable(),
+    this.eventStream = EventStream.create(commandRoute.eventTopic(),
                                           commandRoute.eventTopicPartition(),
                                           esMsgStream,
                                           transformer,
                                           domain.eClass());
-    this.eventRepo = EventRepo.create(commandRoute.eventTable(), esRowRepo, transformer, domain.eClass());
     // In memory
     this.processedCommands = new HashSet<>();
+    this.processedEvents = new HashSet<>();
     this.aggregates = new HashMap<>();
   }
 
   public Flux<E> append(Flux<C> cmds) {
-    return cmds.flatMap(cmd -> this.init(cmd.stateId()).map(i -> cmd))
+    return cmds.flatMap(cmd -> this.init(cmd.stateId()).thenMany(Flux.just(cmd)))
                .map(this::handle)
                .filter(Option::isDefined)
                .map(Option::get)
                .flatMap(ReactorVavrUtils::toMono)
+               .skipWhile(e -> this.processedEvents.contains(e.eventId()))
+               .map(this::evolve)
                .flatMap(this::saga)
                .flatMap(eventStream::pub);
   }
@@ -61,11 +60,11 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   /**
    * Used internally for lazy loading, and can be called for warmups
    */
-  public Flux<S> init(StateId stateId) {
+  public Flux<E> init(StateId stateId) {
     if (this.aggregates.containsKey(stateId)) {
-      return Flux.just(this.aggregates.get(stateId).getState());
+      return Flux.empty();
     } else {
-      return eventRepo.getAll(stateId).map(this::evolve).map(StateAggregate::getState);
+      return eventStream.getLast().flatMapMany(last -> eventStream.subUntil(last.eventId())).map(this::evolve);
     }
   }
 
@@ -74,7 +73,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
       return Option.none();
     }
     if (aggregates.containsKey(cmd.stateId())) {
-      return Option.some(domain.decider().apply(aggregates.get(cmd.stateId()).getState(), cmd));
+      return Option.some(domain.decider().apply(aggregates.get(cmd.stateId()), cmd));
     } else {
       return Option.some(domain.decider().apply(cmd));
     }
@@ -82,7 +81,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
 
   Mono<E> saga(E e) {
     var sagaCmd = domain.saga().apply(e);
-    if (sagaCmd.isDefined()) {
+    if (!this.processedCommands.contains(e.commandId()) && sagaCmd.isDefined()) {
       C cmd = sagaCmd.get();
       return commandStream.pub(cmd).map(c -> e);
     } else {
@@ -90,15 +89,16 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
     }
   }
 
-  StateAggregate<S> evolve(E e) {
-    S s;
+  E evolve(E e) {
+    S newState;
     if (aggregates.containsKey(e.stateId())) {
-      s = domain.evolver().apply(aggregates.get(e.stateId()).getState(), e);
-      aggregates.get(e.stateId()).updateState(s);
+      newState = domain.evolver().apply(aggregates.get(e.stateId()), e);
     } else {
-      aggregates.put(e.stateId(), StateAggregate.of(domain.evolver().apply(e)));
+      newState = domain.evolver().apply(e);
     }
+    aggregates.put(e.stateId(), newState);
     this.processedCommands.add(e.commandId());
-    return aggregates.get(e.stateId());
+    this.processedEvents.add(e.eventId());
+    return e;
   }
 }

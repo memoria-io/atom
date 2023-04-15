@@ -124,8 +124,7 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
         * [x] Tests
         * Due to sharding (reading from **multiple** src event streams) the whole cluster should be down first before
           executing sharding, so that oldStreams are not receiving new events, while being ingested, they should be in
-          read
-          only state
+          read only state, etcd can be used as well to enforce that.
 * [x] Streaming
     * [x] Stream api for usage in event sourcing
 * [ ] Increase test coverage to >85%

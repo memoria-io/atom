@@ -15,14 +15,14 @@ public interface EventStream<E extends Event> {
    */
   Flux<E> sub();
 
+  Mono<E> getLast();
+
   /**
    * @return subscribe until eventId (key) is matched
    */
-  default Flux<E> sub(EventId eventId) {
+  default Flux<E> subUntil(EventId eventId) {
     return sub().takeUntil(e -> e.eventId().equals(eventId));
   }
-
-  Mono<E> getLast();
 
   static <E extends Event> EventStream<E> create(String topic,
                                                  int partition,

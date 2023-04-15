@@ -3,7 +3,7 @@ package io.memoria.atom.eventsourcing.usecase.banking;
 import io.memoria.atom.eventsourcing.exception.ESException.InvalidEvent;
 import io.memoria.atom.eventsourcing.rule.Evolver;
 import io.memoria.atom.eventsourcing.usecase.banking.event.*;
-import io.memoria.atom.eventsourcing.usecase.banking.state.Acc;
+import io.memoria.atom.eventsourcing.usecase.banking.state.OpenAccount;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;
 import io.memoria.atom.eventsourcing.usecase.banking.state.ClosedAccount;
 
@@ -12,7 +12,7 @@ public record AccountEvolver() implements Evolver<Account, AccountEvent> {
   @Override
   public Account apply(Account account, AccountEvent accountEvent) {
     return switch (account) {
-      case Acc acc -> handle(acc, accountEvent);
+      case OpenAccount openAccount -> handle(openAccount, accountEvent);
       case ClosedAccount acc -> acc;
     };
   }
@@ -20,18 +20,18 @@ public record AccountEvolver() implements Evolver<Account, AccountEvent> {
   @Override
   public Account apply(AccountEvent accountEvent) {
     return switch (accountEvent) {
-      case AccountCreated e -> new Acc(e.stateId(), e.seqId(), e.name(), e.balance(), 0);
+      case AccountCreated e -> new OpenAccount(e.stateId(), e.seqId(), e.name(), e.balance(), 0);
       default -> throw InvalidEvent.of(accountEvent);
     };
   }
 
-  private Account handle(Acc acc, AccountEvent accountEvent) {
+  private Account handle(OpenAccount openAccount, AccountEvent accountEvent) {
     return switch (accountEvent) {
-      case Credited e -> acc.withCredit(e.seqId(), e.amount());
-      case Debited e -> acc.withDebit(e.seqId(), e.amount());
-      case DebitConfirmed e -> acc.withDebitConfirmed(e.seqId());
+      case Credited e -> openAccount.withCredit(e.seqId(), e.amount());
+      case Debited e -> openAccount.withDebit(e.seqId(), e.amount());
+      case DebitConfirmed e -> openAccount.withDebitConfirmed(e.seqId());
       case AccountClosed e -> new ClosedAccount(e.accountId(), e.seqId());
-      default -> acc;
+      default -> openAccount;
     };
   }
 }

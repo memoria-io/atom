@@ -1,17 +1,15 @@
 package io.memoria.atom.eventsourcing.pipeline;
 
-public record CommandRoute(String eventTable,
-                           String eventTopic,
+public record CommandRoute(String eventTopic,
                            int eventTopicPartition,
-                           int eventTopicPartitions,
+                           int eventTotalPartitions,
                            String cmdTopic,
                            int cmdTopicPartition,
-                           int cmdTopicPartitions) {
+                           int cmdTotalPartitions) {
   public String toShortString() {
-    return "Route(eventTable[%s],eventTopic[%s:%d],commandTopic[%s,%d])".formatted(eventTable,
-                                                                                   eventTopic,
-                                                                                   eventTopicPartition,
-                                                                                   cmdTopic,
-                                                                                   cmdTopicPartition);
+    return "Route(eventTopic[%s:%d],commandTopic[%s,%d])".formatted(eventTopic,
+                                                                    eventTopicPartition,
+                                                                    cmdTopic,
+                                                                    cmdTopicPartition);
   }
 }

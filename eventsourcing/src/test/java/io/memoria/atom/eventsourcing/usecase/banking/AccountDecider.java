@@ -4,7 +4,7 @@ import io.memoria.atom.eventsourcing.exception.ESException;
 import io.memoria.atom.eventsourcing.rule.Decider;
 import io.memoria.atom.eventsourcing.usecase.banking.command.*;
 import io.memoria.atom.eventsourcing.usecase.banking.event.*;
-import io.memoria.atom.eventsourcing.usecase.banking.state.Acc;
+import io.memoria.atom.eventsourcing.usecase.banking.state.OpenAccount;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;
 import io.memoria.atom.eventsourcing.usecase.banking.state.ClosedAccount;
 import io.vavr.control.Try;
@@ -23,12 +23,12 @@ public record AccountDecider() implements Decider<Account, AccountCommand, Accou
   @Override
   public Try<AccountEvent> apply(Account state, AccountCommand command) {
     return switch (state) {
-      case Acc acc -> handle(acc, command);
+      case OpenAccount openAccount -> handle(openAccount, command);
       case ClosedAccount acc -> handle(acc, command);
     };
   }
 
-  private Try<AccountEvent> handle(Acc state, AccountCommand command) {
+  private Try<AccountEvent> handle(OpenAccount state, AccountCommand command) {
     return switch (command) {
       case CreateAccount cmd -> Try.failure(ESException.InvalidCommand.create(state, cmd));
       case ChangeName cmd -> Try.success(NameChanged.from(state, cmd));
@@ -50,9 +50,9 @@ public record AccountDecider() implements Decider<Account, AccountCommand, Accou
     };
   }
 
-  private Try<AccountEvent> tryToClose(Acc acc, CloseAccount cmd) {
-    if (acc.hasOngoingDebit())
-      return Try.success(ClosureRejected.from(acc, cmd));
-    return Try.success(AccountClosed.from(acc, cmd));
+  private Try<AccountEvent> tryToClose(OpenAccount openAccount, CloseAccount cmd) {
+    if (openAccount.hasOngoingDebit())
+      return Try.success(ClosureRejected.from(openAccount, cmd));
+    return Try.success(AccountClosed.from(openAccount, cmd));
   }
 }

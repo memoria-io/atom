@@ -25,7 +25,7 @@ class CommandStreamImpl<C extends Command> implements CommandStream<C> {
   }
 
   public Mono<C> pub(C c) {
-    var partition = c.partition(CommandRoute.cmdTopicPartitions());
+    var partition = c.partition(CommandRoute.cmdTotalPartitions());
     return toMono(transformer.serialize(c)).flatMap(cStr -> pubMsg(CommandRoute.cmdTopic(), partition, c, cStr))
                                            .map(id -> c);
   }
