@@ -35,11 +35,13 @@ class DefaultNatsESMsgStreamTest {
   void subscribe() {
     // Given
     var msgs = List.range(0, MSG_COUNT).map(this::createEsMsg);
+    var pub = Flux.fromIterable(msgs).concatMap(repo::pub);
 
     // When
     var sub = repo.sub(topic, partition).take(MSG_COUNT);
 
     // Given
+    StepVerifier.create(pub).expectNextCount(MSG_COUNT).verifyComplete();
     StepVerifier.create(sub).expectNextCount(MSG_COUNT).verifyComplete();
     StepVerifier.create(sub).expectNextSequence(msgs).verifyComplete();
   }
@@ -54,7 +56,7 @@ class DefaultNatsESMsgStreamTest {
       var m = Flux.fromIterable(msgs).concatMap(repo::pub);
       StepVerifier.create(m).expectNextCount(msgs.size()).verifyComplete();
     });
-    var sub = repo.fetchLast(topic, partition);
+    var sub = repo.getLast(topic, partition);
 
     // Then
     StepVerifier.create(sub).expectNext(msgs.last()).verifyComplete();
@@ -67,7 +69,7 @@ class DefaultNatsESMsgStreamTest {
     /* Silence is golden */
 
     // When
-    var sub = repo.fetchLast(topic, partition);
+    var sub = repo.getLast(topic, partition);
 
     // Then
     StepVerifier.create(sub).expectComplete();

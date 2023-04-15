@@ -11,7 +11,6 @@ import io.memoria.atom.eventsourcing.usecase.banking.event.AccountEvent;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;
 import io.vavr.collection.HashMap;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 class PipelinesTest {
@@ -21,14 +20,18 @@ class PipelinesTest {
   private final CommandPipeline<Account, AccountCommand, AccountEvent> pipeline = createPipeline(route);
 
   @Test
-  void sharding() {
-    // Given published commands
+  void createAccountsAndChangeNames() {
+    // Given
     int personsCount = 10;
     int nameChanges = 2;
-    int eventCount = personsCount + (personsCount * nameChanges);
+    int expectedEventCount = personsCount + (personsCount * nameChanges);
+    var scenarioCommands = DataSet.scenario(personsCount, nameChanges);
 
+    // When
+    var p = pipeline.handle(scenarioCommands);
 
-    StepVerifier.create(newEvents).expectNextCount(eventCount).verifyTimeout(timeout);
+    // Then
+    StepVerifier.create(p).expectNextCount(expectedEventCount).verifyComplete();
   }
 
   //

@@ -14,7 +14,7 @@ public interface ESMsgStream extends AutoCloseable {
    * @param partition
    * @return
    */
-  Mono<ESMsg> fetchLast(String topic, int partition);
+  Mono<ESMsg> getLast(String topic, int partition);
 
   /**
    * @return an in memory ESStream

@@ -56,7 +56,7 @@ class DefaultNatsESMsgStream implements NatsESMsgStream {
    * @return last message after maxWait expired
    */
   @Override
-  public Mono<ESMsg> fetchLast(String topic, int partition) {
+  public Mono<ESMsg> getLast(String topic, int partition) {
     var tp = Topic.create(topic, partition);
     var config = natsConfig.find(topic).get();
 
@@ -71,8 +71,12 @@ class DefaultNatsESMsgStream implements NatsESMsgStream {
   }
 
   @Override
-  public void close() throws Exception {
-    this.nc.close();
+  public void close() {
+    try {
+      this.nc.close();
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private Option<Message> pullLast(Topic topic, int maxBatchSize, Duration maxWait, int minRetries, int maxRetries)

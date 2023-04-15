@@ -1,6 +1,7 @@
 package io.memoria.atom.core.stream;
 
 import io.vavr.collection.HashMap;
+import io.vavr.control.Option;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -42,15 +43,9 @@ public final class MemESMsgStream implements ESMsgStream {
   }
 
   @Override
-  public Mono<ESMsg> fetchLast(String topic, int partition) {
-    var q = topics.get(topic).get(partition);
-    return Flux.<ESMsg>generate(c -> {
-      try {
-        c.next(q.takeLast());
-      } catch (InterruptedException e) {
-        c.error(e);
-      }
-    }).singleOrEmpty();
+  public Mono<ESMsg> getLast(String topic, int partition) {
+    var topicPartition = topics.get(topic).get(partition);
+    return Mono.fromCallable(() -> Option.of(topicPartition.peekLast())).filter(Option::isDefined).map(Option::get);
   }
 
   @Override

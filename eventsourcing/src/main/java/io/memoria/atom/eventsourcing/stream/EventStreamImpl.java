@@ -35,7 +35,8 @@ class EventStreamImpl<E extends Event> implements EventStream<E> {
 
   @Override
   public Mono<E> getLast() {
-    return null;
+    return esMsgStream.getLast(this.topic, this.partition)
+                      .flatMap(msg -> toMono(transformer.deserialize(msg.value(), cClass)));
   }
 
   private Mono<ESMsg> pubMsg(String topic, int partition, E e, String cStr) {

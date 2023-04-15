@@ -13,24 +13,24 @@ class DataSet {
 
   static Flux<AccountCommand> scenario(int nAccounts, int nameChanges) {
     var createAccounts = createAccounts(nAccounts, 0);
-    var changes = List.range(0, nameChanges).flatMap(i -> changeName(nAccounts));
+    var changes = List.range(0, nameChanges).flatMap(version -> changeName(nAccounts, version));
     return Flux.fromIterable(createAccounts.appendAll(changes));
   }
 
-  static StateId createId(int i) {
+  static StateId accountStateId(int i) {
     return StateId.of("acc_id_" + i);
   }
 
   static String createName(int i) {
-    return "name_" + i;
+    return "name_version:" + i;
   }
 
   static String createNewName(int i) {
-    return "new_name_" + i;
+    return "new_name_version:" + i;
   }
 
   static List<AccountCommand> createAccounts(int nAccounts, int balance) {
-    return List.range(0, nAccounts).map(i -> CreateAccount.of(createId(i), createName(i), balance));
+    return List.range(0, nAccounts).map(i -> CreateAccount.of(accountStateId(i), createName(i), balance));
   }
 
   static List<AccountCommand> randomClosure(int nAccounts) {
@@ -45,8 +45,8 @@ class DataSet {
     return List.range(0, nAccounts / 2).map(i -> createOutboundBalance(from.get(i), to.get(i), amounts.get(i)));
   }
 
-  private static List<ChangeName> changeName(int nAccounts) {
-    return List.range(0, nAccounts).map(i -> new ChangeName(createId(i), CommandId.randomUUID(), createNewName(i)));
+  public static List<ChangeName> changeName(int nAccounts, int version ) {
+    return List.range(0, nAccounts).map(i -> new ChangeName(accountStateId(i), CommandId.randomUUID(), createNewName(version)));
   }
 
   private static AccountCommand createOutboundBalance(StateId from, StateId to, int amount) {
@@ -54,6 +54,6 @@ class DataSet {
   }
 
   private static List<StateId> shuffledIds(int nAccounts) {
-    return List.range(0, nAccounts).shuffle().map(DataSet::createId);
+    return List.range(0, nAccounts).shuffle().map(DataSet::accountStateId);
   }
 }

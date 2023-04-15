@@ -45,7 +45,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
     this.aggregates = new HashMap<>();
   }
 
-  public Flux<E> append(Flux<C> cmds) {
+  public Flux<E> handle(Flux<C> cmds) {
     return cmds.flatMap(cmd -> this.init(cmd.stateId()).thenMany(Flux.just(cmd)))
                .map(this::handle)
                .filter(Option::isDefined)

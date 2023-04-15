@@ -41,7 +41,7 @@ class DefaultKafkaESMsgStream implements KafkaESMsgStream {
   }
 
   @Override
-  public Mono<ESMsg> fetchLast(String topic, int partition) {
+  public Mono<ESMsg> getLast(String topic, int partition) {
     return null;
   }
 
