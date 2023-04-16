@@ -22,7 +22,7 @@ class DefaultNatsESMsgStream implements NatsESMsgStream {
   DefaultNatsESMsgStream(Connection nc, NatsConfig natsConfig) {
     this.natsConfig = natsConfig;
     this.nc = nc;
-    natsConfig.configs()
+    this.natsConfig.configs()
               .map(NatsUtils::toStreamConfiguration)
               .map(c -> createOrUpdateStream(nc, c))
               .map(Try::get)

@@ -12,9 +12,10 @@ class IdTest {
 
   @Test
   void validation() {
-    UUID u = null;
-    Assertions.assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> Id.of(u));
-    Assertions.assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Id.of(UUID.randomUUID()));
+    UUID nullUUID = null;
+    var randomUUID = UUID.randomUUID();
+    Assertions.assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> Id.of(nullUUID));
+    Assertions.assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Id.of(randomUUID));
     Assertions.assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Id.of(-1L));
     Assertions.assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> Id.of(""));
   }
