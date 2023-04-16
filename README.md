@@ -91,7 +91,7 @@ Format Example: `JDK_Version.major.mino`
 
 # Architecture
 
-![](docs/atom.jpg)
+![](.docs/atom.jpg)
 
 ## Core module
 
