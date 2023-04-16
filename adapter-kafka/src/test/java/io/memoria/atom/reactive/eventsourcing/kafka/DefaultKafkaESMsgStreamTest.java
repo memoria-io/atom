@@ -6,6 +6,7 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import reactor.core.publisher.Flux;
+import reactor.kafka.sender.KafkaSender;
 import reactor.test.StepVerifier;
 
 import java.util.Random;
@@ -16,10 +17,12 @@ class DefaultKafkaESMsgStreamTest {
   private static final int MSG_COUNT = 1000;
   private final String topic = "node" + random.nextInt(1000);
   private final int partition = 0;
+  private final KafkaSender<String, String> sender;
   private final ESMsgStream repo;
 
   DefaultKafkaESMsgStreamTest() {
-    repo = KafkaESMsgStream.create(TestUtils.producerConfigs(), TestUtils.consumerConfigs(), () -> 1L);
+    sender = KafkaUtils.createSender(TestUtils.producerConfigs());
+    repo = KafkaESMsgStream.create(sender, TestUtils.producerConfigs(), TestUtils.consumerConfigs(), () -> 1L);
   }
 
   @Test

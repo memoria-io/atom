@@ -39,14 +39,15 @@ class NatsUtils {
     };
   }
 
-  static CompletableFuture<PublishAck> publishMsg(JetStream js, ESMsg msg) {
+  static CompletableFuture<PublishAck> publishMsg(Connection nc, ESMsg msg) throws IOException {
     var message = toMessage(msg);
     var opts = PublishOptions.builder().clearExpected().messageId(msg.key()).build();
-    return js.publishAsync(message, opts);
+    return nc.jetStream().publishAsync(message, opts);
   }
 
-  static JetStreamSubscription jetStreamSub(JetStream js, TopicConfig topicConfig)
+  static JetStreamSubscription jetStreamSub(Connection nc, TopicConfig topicConfig)
           throws IOException, JetStreamApiException {
+    var js = nc.jetStream();
     var config = ConsumerConfiguration.builder()
                                       .ackPolicy(AckPolicy.Explicit)
                                       .deliverPolicy(DeliverPolicy.All)

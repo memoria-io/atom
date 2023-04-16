@@ -1,7 +1,7 @@
 package io.memoria.atom.reactive.eventsourcing.nats;
 
 import io.memoria.atom.core.stream.ESMsgStream;
-import io.nats.client.JetStreamApiException;
+import io.nats.client.Nats;
 import io.vavr.collection.List;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
@@ -49,8 +49,9 @@ class DefaultNatsESMsgStreamTest {
   private ESMsgStream createRepo(String topic, int nTotalPartitions) {
     var natsConfig = new NatsConfig(natsUrl, TestUtils.createConfigs(topic, nTotalPartitions));
     try {
-      return NatsESMsgStream.create(natsConfig);
-    } catch (IOException | InterruptedException | JetStreamApiException e) {
+      var nc = Nats.connect(NatsUtils.toOptions(natsConfig));
+      return NatsESMsgStream.create(nc, natsConfig);
+    } catch (IOException | InterruptedException e) {
       throw new RuntimeException(e);
     }
   }
