@@ -50,7 +50,7 @@ class DefaultNatsESMsgStream implements NatsESMsgStream {
     try {
       this.nc.close();
     } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+      log.error(e.getMessage(), e);
     }
   }
 
