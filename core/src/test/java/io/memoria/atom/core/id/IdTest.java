@@ -21,9 +21,18 @@ class IdTest {
   }
 
   @Test
-  void ordering() {
+  void uuidOrdering() {
     TreeMap<Id, Integer> map = new TreeMap<>();
     List.range(0, 1000).forEach(i -> map.put(Id.of(), i));
+    var atomic = new AtomicInteger(0);
+    map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
+  }
+
+
+  @Test
+  void seqIdOrdering() {
+    TreeMap<Id, Integer> map = new TreeMap<>();
+    List.range(0, 1000).forEach(i -> map.put(Id.of(i), i));
     var atomic = new AtomicInteger(0);
     map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
   }

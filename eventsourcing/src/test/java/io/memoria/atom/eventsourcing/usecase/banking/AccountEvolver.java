@@ -20,17 +20,17 @@ public record AccountEvolver() implements Evolver<Account, AccountEvent> {
   @Override
   public Account apply(AccountEvent accountEvent) {
     return switch (accountEvent) {
-      case AccountCreated e -> new OpenAccount(e.stateId(), e.seqId(), e.name(), e.balance(), 0);
+      case AccountCreated e -> new OpenAccount(e.stateId(), e.name(), e.balance(), 0);
       default -> throw InvalidEvent.of(accountEvent);
     };
   }
 
   private Account handle(OpenAccount openAccount, AccountEvent accountEvent) {
     return switch (accountEvent) {
-      case Credited e -> openAccount.withCredit(e.seqId(), e.amount());
-      case Debited e -> openAccount.withDebit(e.seqId(), e.amount());
-      case DebitConfirmed e -> openAccount.withDebitConfirmed(e.seqId());
-      case AccountClosed e -> new ClosedAccount(e.accountId(), e.seqId());
+      case Credited e -> openAccount.withCredit(e.amount());
+      case Debited e -> openAccount.withDebit( e.amount());
+      case DebitConfirmed e -> openAccount.withDebitConfirmed();
+      case AccountClosed e -> new ClosedAccount(e.accountId());
       default -> openAccount;
     };
   }

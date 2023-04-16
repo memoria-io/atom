@@ -14,11 +14,11 @@ public record AccountReducer() implements Reducer<Account, AccountEvent> {
   public AccountEvent apply(Account account) {
     return switch (account) {
       case OpenAccount openAccount -> accountCreated(openAccount);
-      case ClosedAccount acc -> new AccountClosed(Id.of(), acc.seqId(), Id.of(), acc.stateId());
+      case ClosedAccount acc -> new AccountClosed(Id.of(), Id.of(), acc.stateId());
     };
   }
 
   private AccountCreated accountCreated(OpenAccount openAccount) {
-    return new AccountCreated(Id.of(), 0, Id.of(), openAccount.stateId(), openAccount.name(), openAccount.balance());
+    return new AccountCreated(Id.of(), Id.of(), openAccount.stateId(), openAccount.name(), openAccount.balance());
   }
 }

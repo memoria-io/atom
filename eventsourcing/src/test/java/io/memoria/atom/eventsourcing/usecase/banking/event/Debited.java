@@ -4,7 +4,7 @@ import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.usecase.banking.command.Debit;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;
 
-public record Debited(Id eventId, int seqId, Id commandId, Id debitedAcc, Id creditedAcc, int amount)
+public record Debited(Id eventId,  Id commandId, Id debitedAcc, Id creditedAcc, int amount)
         implements AccountEvent {
   @Override
   public Id stateId() {
@@ -13,7 +13,6 @@ public record Debited(Id eventId, int seqId, Id commandId, Id debitedAcc, Id cre
 
   public static Debited from(Account account, Debit cmd) {
     return new Debited(Id.of(),
-                       account.seqId() + 1,
                        cmd.commandId(),
                        cmd.debitedAcc(),
                        cmd.creditedAcc(),

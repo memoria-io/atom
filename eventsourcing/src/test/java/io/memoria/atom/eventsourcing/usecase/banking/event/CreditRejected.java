@@ -4,7 +4,7 @@ import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.usecase.banking.command.Credit;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;
 
-public record CreditRejected(Id eventId, int seqId, Id commandId, Id creditedAcc, Id debitedAcc, int amount)
+public record CreditRejected(Id eventId,  Id commandId, Id creditedAcc, Id debitedAcc, int amount)
         implements AccountEvent {
   @Override
   public Id stateId() {
@@ -13,7 +13,6 @@ public record CreditRejected(Id eventId, int seqId, Id commandId, Id creditedAcc
 
   public static CreditRejected from(Account acc, Credit cmd) {
     return new CreditRejected(Id.of(),
-                              acc.seqId() + 1,
                               cmd.commandId(),
                               cmd.creditedAcc(),
                               cmd.debitedAcc(),
