@@ -46,12 +46,8 @@ class DefaultNatsESMsgStream implements NatsESMsgStream {
   }
 
   @Override
-  public void close() {
-    try {
-      this.nc.close();
-    } catch (InterruptedException e) {
-      log.error(e.getMessage(), e);
-    }
+  public void close() throws InterruptedException {
+    this.nc.close();
   }
 
   private Flux<Message> fetchBatch(JetStreamSubscription sub, TopicConfig config) {
