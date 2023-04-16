@@ -92,9 +92,9 @@ class NatsUtils {
 
   static StreamConfiguration toStreamConfiguration(TopicConfig c) {
     return StreamConfiguration.builder()
-                              .storageType(c.storageType)
-                              .denyDelete(c.denyDelete)
-                              .denyPurge(c.denyPurge)
+                              .storageType(c.storageType())
+                              .denyDelete(c.denyDelete())
+                              .denyPurge(c.denyPurge())
                               .name(c.streamName())
                               .subjects(c.subjectName())
                               .build();

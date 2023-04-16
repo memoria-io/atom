@@ -11,6 +11,6 @@ public record NatsConfig(String url, Set<TopicConfig> configs) {
   }
 
   public Option<TopicConfig> find(String name, int partition) {
-    return configs.find(tp -> tp.topic.equals(name) && tp.partition == partition);
+    return configs.find(tp -> tp.topic().equals(name) && tp.partition() == partition);
   }
 }
