@@ -8,8 +8,8 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-class Tests {
-  private Tests() {}
+class TestUtils {
+  private TestUtils() {}
 
   public static Map<String, Object> consumerConfigs() {
     return HashMap.of(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,

@@ -6,8 +6,8 @@ import io.vavr.collection.List;
 
 import java.time.Duration;
 
-public class Tests {
-  private Tests() {}
+public class TestUtils {
+  private TestUtils() {}
 
   static TopicConfig createTopicConfig(String topic, int partition) {
     return TopicConfig.appendOnly(topic, partition, StorageType.File, 1, 100, Duration.ofMillis(500));

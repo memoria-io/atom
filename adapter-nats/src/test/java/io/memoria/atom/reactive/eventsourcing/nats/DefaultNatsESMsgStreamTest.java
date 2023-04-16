@@ -23,7 +23,7 @@ class DefaultNatsESMsgStreamTest {
   void publish() {
     // Given
     var partition = 0;
-    var msgs = List.range(0, MSG_COUNT).map(i -> Tests.createEsMsg(topic, partition, i));
+    var msgs = List.range(0, MSG_COUNT).map(i -> TestUtils.createEsMsg(topic, partition, i));
     // When
     var pub = Flux.fromIterable(msgs).concatMap(repo::pub);
     // Then
@@ -34,7 +34,7 @@ class DefaultNatsESMsgStreamTest {
   void subscribe() {
     // Given
     var partition = 0;
-    var msgs = List.range(0, MSG_COUNT).map(i -> Tests.createEsMsg(topic, partition, i));
+    var msgs = List.range(0, MSG_COUNT).map(i -> TestUtils.createEsMsg(topic, partition, i));
     var pub = Flux.fromIterable(msgs).concatMap(repo::pub);
 
     // When
@@ -47,7 +47,7 @@ class DefaultNatsESMsgStreamTest {
   }
 
   private ESMsgStream createRepo(String topic, int nTotalPartitions) {
-    var natsConfig = new NatsConfig(natsUrl, Tests.createConfigs(topic, nTotalPartitions));
+    var natsConfig = new NatsConfig(natsUrl, TestUtils.createConfigs(topic, nTotalPartitions));
     try {
       return NatsESMsgStream.create(natsConfig);
     } catch (IOException | InterruptedException | JetStreamApiException e) {

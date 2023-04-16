@@ -19,13 +19,13 @@ class DefaultKafkaESMsgStreamTest {
   private final ESMsgStream repo;
 
   DefaultKafkaESMsgStreamTest() {
-    repo = KafkaESMsgStream.create(Tests.producerConfigs(), Tests.consumerConfigs(), () -> 1L);
+    repo = KafkaESMsgStream.create(TestUtils.producerConfigs(), TestUtils.consumerConfigs(), () -> 1L);
   }
 
   @Test
   void publish() {
     // Given
-    var msgs = List.range(0, MSG_COUNT).map(i -> Tests.createEsMsg(topic, partition, i));
+    var msgs = List.range(0, MSG_COUNT).map(i -> TestUtils.createEsMsg(topic, partition, i));
     // When
     var pub = Flux.fromIterable(msgs).concatMap(repo::pub);
     // Then
@@ -35,7 +35,7 @@ class DefaultKafkaESMsgStreamTest {
   @Test
   void subscribe() {
     // Given
-    var msgs = List.range(0, MSG_COUNT).map(i -> Tests.createEsMsg(topic, partition, i));
+    var msgs = List.range(0, MSG_COUNT).map(i -> TestUtils.createEsMsg(topic, partition, i));
     var pub = Flux.fromIterable(msgs).concatMap(repo::pub);
 
     // When
