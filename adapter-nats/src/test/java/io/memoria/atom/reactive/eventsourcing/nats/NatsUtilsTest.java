@@ -10,15 +10,15 @@ import io.vavr.control.Try;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class NatsUtilsTest {
+class NatsUtilsTest {
   private static final Connection nc = Try.of(() -> Nats.connect("nats://localhost:4222")).get();
   private static final JetStream js = Try.of(nc::jetStream).get();
 
   @Test
   void toMessage() {
     var message = NatsUtils.toMessage(new ESMsg("topic", 0, 1000 + "", "hello world"));
-    Assertions.assertEquals(message.getHeaders().getFirst(NatsUtils.ID_HEADER), "1000");
-    Assertions.assertEquals(message.getSubject(), "topic_0.subject");
+    Assertions.assertEquals("1000", message.getHeaders().getFirst(NatsUtils.ID_HEADER));
+    Assertions.assertEquals("topic_0.subject", message.getSubject());
   }
 
   @Test

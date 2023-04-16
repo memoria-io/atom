@@ -24,7 +24,7 @@ class DefaultNatsESMsgStream implements NatsESMsgStream {
     this.natsConfig = natsConfig;
     this.nc = Nats.connect(NatsUtils.toOptions(natsConfig));
     this.js = nc.jetStream();
-    natsConfig.topics()
+    natsConfig.configs()
               .map(NatsUtils::toStreamConfiguration)
               .map(c -> createOrUpdateStream(nc, c))
               .map(Try::get)

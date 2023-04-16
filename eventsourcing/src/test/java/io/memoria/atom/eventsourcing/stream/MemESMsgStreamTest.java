@@ -33,7 +33,7 @@ class MemESMsgStreamTest {
     var latch0 = new AtomicInteger();
     stream.sub(topic, 0).take(ELEMENTS_SIZE).index().doOnNext(tup -> {
       Assertions.assertThat(tup.getT2().key()).isEqualTo(String.valueOf(tup.getT1().intValue()));
-      Assertions.assertThat(tup.getT2().partition()).isEqualTo(0);
+      Assertions.assertThat(tup.getT2().partition()).isZero();
       latch0.incrementAndGet();
     }).subscribe();
     Awaitility.await().atMost(timeout).until(() -> latch0.get() == ELEMENTS_SIZE);
