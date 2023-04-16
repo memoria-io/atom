@@ -1,10 +1,9 @@
-package io.memoria.atom.eventsourcing.pipeline.stream;
+package io.memoria.atom.eventsourcing.stream;
 
 import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.core.text.SerializableTransformer;
 import io.memoria.atom.eventsourcing.*;
 import io.memoria.atom.eventsourcing.pipeline.CommandRoute;
-import io.memoria.atom.eventsourcing.stream.CommandStream;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,7 @@ class CommandStreamImplTest {
   void publishAndSubscribe() {
     // Given
     var route = createRoute(0);
-    var esStream = ESMsgStream.inMemory(route.cmdTopic(), route.cmdTopicPartitions());
+    var esStream = ESMsgStream.inMemory(route.cmdTopic(), route.cmdTotalPartitions());
     var stream = CommandStream.create(route, esStream, new SerializableTransformer(), SomeCommand.class);
     var msgs = createMessages(S0).concatWith(createMessages(S1));
 
@@ -36,7 +35,7 @@ class CommandStreamImplTest {
     var latch0 = new AtomicInteger();
     stream.sub().take(ELEMENTS_SIZE).doOnNext(cmd -> {
       Assertions.assertThat(cmd.stateId()).isEqualTo(S0);
-      Assertions.assertThat(cmd.partition(route.cmdTopicPartitions())).isEqualTo(route.cmdTopicPartition());
+      Assertions.assertThat(cmd.partition(route.cmdTotalPartitions())).isEqualTo(route.cmdTopicPartition());
       latch0.incrementAndGet();
     }).subscribe();
     Awaitility.await().atMost(timeout).until(() -> latch0.get() == ELEMENTS_SIZE);
@@ -47,14 +46,14 @@ class CommandStreamImplTest {
     var latch1 = new AtomicInteger();
     stream1.sub().take(ELEMENTS_SIZE).doOnNext(cmd -> {
       Assertions.assertThat(cmd.stateId()).isEqualTo(S1);
-      Assertions.assertThat(cmd.partition(route.cmdTopicPartitions())).isEqualTo(route1.cmdTopicPartition());
+      Assertions.assertThat(cmd.partition(route.cmdTotalPartitions())).isEqualTo(route1.cmdTopicPartition());
       latch1.incrementAndGet();
     }).subscribe();
     Awaitility.await().atMost(timeout).until(() -> latch1.get() == ELEMENTS_SIZE);
   }
 
   private static CommandRoute createRoute(int cmdPartition) {
-    return new CommandRoute("events_table", "events_topic", 0, 1, "command_topic", cmdPartition, 2);
+    return new CommandRoute("events_topic", 0, 1, "command_topic", cmdPartition, 2);
   }
 
   private Flux<SomeCommand> createMessages(StateId stateId) {

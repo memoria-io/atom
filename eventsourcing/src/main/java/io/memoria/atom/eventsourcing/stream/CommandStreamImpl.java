@@ -12,31 +12,31 @@ import reactor.core.publisher.Mono;
 import static io.memoria.atom.core.vavr.ReactorVavrUtils.toMono;
 
 class CommandStreamImpl<C extends Command> implements CommandStream<C> {
-  private final io.memoria.atom.core.stream.ESMsgStream ESMsgStream;
+  private final io.memoria.atom.core.stream.ESMsgStream esMsgStream;
   private final TextTransformer transformer;
   private final Class<C> cClass;
   private final io.memoria.atom.eventsourcing.pipeline.CommandRoute CommandRoute;
 
-  CommandStreamImpl(CommandRoute CommandRoute, ESMsgStream ESMsgStream, TextTransformer transformer, Class<C> cClass) {
-    this.CommandRoute = CommandRoute;
-    this.ESMsgStream = ESMsgStream;
+  CommandStreamImpl(CommandRoute commandRoute, ESMsgStream esMsgStream, TextTransformer transformer, Class<C> cClass) {
+    this.CommandRoute = commandRoute;
+    this.esMsgStream = esMsgStream;
     this.transformer = transformer;
     this.cClass = cClass;
   }
 
   public Mono<C> pub(C c) {
-    var partition = c.partition(CommandRoute.cmdTopicPartitions());
+    var partition = c.partition(CommandRoute.cmdTotalPartitions());
     return toMono(transformer.serialize(c)).flatMap(cStr -> pubMsg(CommandRoute.cmdTopic(), partition, c, cStr))
                                            .map(id -> c);
   }
 
   public Flux<C> sub() {
-    return ESMsgStream.sub(CommandRoute.cmdTopic(), CommandRoute.cmdTopicPartition())
+    return esMsgStream.sub(CommandRoute.cmdTopic(), CommandRoute.cmdTopicPartition())
                       .flatMap(msg -> ReactorVavrUtils.toMono(transformer.deserialize(msg.value(), cClass)));
 
   }
 
   private Mono<ESMsg> pubMsg(String topic, int partition, C c, String cStr) {
-    return ESMsgStream.pub(new ESMsg(topic, partition, c.commandId().value(), cStr));
+    return esMsgStream.pub(new ESMsg(topic, partition, c.commandId().value(), cStr));
   }
 }

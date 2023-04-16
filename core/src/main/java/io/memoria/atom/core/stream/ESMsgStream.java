@@ -1,11 +1,10 @@
 package io.memoria.atom.core.stream;
 
+import io.vavr.collection.Map;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
-
-public interface ESMsgStream {
+public interface ESMsgStream extends AutoCloseable {
   Mono<ESMsg> pub(ESMsg esMsg);
 
   Flux<ESMsg> sub(String topic, int partition);

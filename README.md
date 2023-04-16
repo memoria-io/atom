@@ -3,7 +3,6 @@
 [![Release](https://github.com/memoria-io/atom/workflows/Release/badge.svg)](https://github.com/memoria-io/atom/actions?query=workflow%3ARelease)
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/memoria-io/atom?label=Version&logo=github)](https://github.com/orgs/memoria-io/packages?repo_name=atom)
 
-
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=bugs)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
@@ -74,7 +73,7 @@ Format Example: `JDK_Version.major.mino`
 
 ## Atom Features
 
-* Eventsourcing sdk 
+* Eventsourcing sdk
 * Kafka, Nats adapters
 * Virtual threading
 * Vavr + Reactor Functional utilities
@@ -92,7 +91,7 @@ Format Example: `JDK_Version.major.mino`
 
 # Architecture
 
-![](docs/atom.jpg)
+![](.docs/atom.jpg)
 
 ## Core module
 
@@ -124,8 +123,7 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
         * [x] Tests
         * Due to sharding (reading from **multiple** src event streams) the whole cluster should be down first before
           executing sharding, so that oldStreams are not receiving new events, while being ingested, they should be in
-          read
-          only state
+          read only state, etcd can be used as well to enforce that.
 * [x] Streaming
     * [x] Stream api for usage in event sourcing
 * [ ] Increase test coverage to >85%

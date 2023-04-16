@@ -1,5 +1,6 @@
 package io.memoria.atom.reactive.eventsourcing.kafka;
 
+import io.memoria.atom.core.stream.ESMsg;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -7,8 +8,8 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-class Dataset {
-  private Dataset() {}
+class TestUtils {
+  private TestUtils() {}
 
   public static Map<String, Object> consumerConfigs() {
     return HashMap.of(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -34,5 +35,9 @@ class Dataset {
                       StringSerializer.class,
                       ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                       StringSerializer.class);
+  }
+
+  public static ESMsg createEsMsg(String topic, int partition, int i) {
+    return new ESMsg(topic, partition, String.valueOf(i), "hello" + i);
   }
 }

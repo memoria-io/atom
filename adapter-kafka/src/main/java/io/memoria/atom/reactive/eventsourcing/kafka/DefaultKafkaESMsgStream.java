@@ -40,6 +40,11 @@ class DefaultKafkaESMsgStream implements KafkaESMsgStream {
     return receive(topic, partition).map(KafkaUtils::toMsg);
   }
 
+  @Override
+  public void close() {
+    sender.close();
+  }
+
   private Flux<ReceiverRecord<String, String>> receive(String topic, int partition) {
     var tp = new TopicPartition(topic, partition);
     var receiverOptions = ReceiverOptions.<String, String>create(consumerConfig.toJavaMap())

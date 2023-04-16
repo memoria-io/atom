@@ -9,10 +9,10 @@ public record Domain<S extends State, C extends Command, E extends Event>(Class<
                                                                           Class<C> cClass,
                                                                           Class<E> eClass,
                                                                           Decider<S, C, E> decider,
-                                                                          Saga<E, C> saga,
-                                                                          Evolver<S, E> evolver) {
+                                                                          Evolver<S, E> evolver,
+                                                                          Saga<E, C> saga) {
   public Domain(Class<S> sClass, Class<C> cClass, Class<E> eClass, Decider<S, C, E> decider, Evolver<S, E> evolver) {
-    this(sClass, cClass, eClass, decider, e -> Option.none(), evolver);
+    this(sClass, cClass, eClass, decider, evolver, e -> Option.none());
   }
 
   public String toShortString() {

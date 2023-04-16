@@ -19,7 +19,7 @@ public final class IdTransformer {
 
     private final Function<String, T> constructor;
 
-    public IdDeserializer(Class vc, Function<String, T> constructor) {
+    public IdDeserializer(Class<T> vc, Function<String, T> constructor) {
       super(vc);
       this.constructor = constructor;
     }

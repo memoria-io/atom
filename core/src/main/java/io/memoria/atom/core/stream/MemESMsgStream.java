@@ -1,5 +1,6 @@
 package io.memoria.atom.core.stream;
 
+import io.vavr.collection.HashMap;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -12,12 +13,12 @@ import java.util.stream.IntStream;
 public final class MemESMsgStream implements ESMsgStream {
   private final Map<String, List<LinkedBlockingDeque<ESMsg>>> topics = new ConcurrentHashMap<>();
 
-  public MemESMsgStream(Map<String, Integer> topicPartitions) {
+  public MemESMsgStream(io.vavr.collection.Map<String, Integer> topicPartitions) {
     topicPartitions.forEach((key, value) -> this.topics.put(key, createTopic(value)));
   }
 
   public MemESMsgStream(String topic, int totalPartitions) {
-    this(Map.of(topic, totalPartitions));
+    this(HashMap.of(topic, totalPartitions));
   }
 
   @Override
@@ -38,6 +39,11 @@ public final class MemESMsgStream implements ESMsgStream {
         c.error(e);
       }
     });
+  }
+
+  @Override
+  public void close() {
+    // Silence is golden
   }
 
   private List<LinkedBlockingDeque<ESMsg>> createTopic(int e) {

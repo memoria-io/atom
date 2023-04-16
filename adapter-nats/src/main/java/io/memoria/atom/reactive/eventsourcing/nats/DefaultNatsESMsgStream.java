@@ -8,47 +8,52 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.SynchronousSink;
 
 import java.io.IOException;
 
-import static io.memoria.atom.reactive.eventsourcing.nats.Config.DEFAULT_FETCH_WAIT;
-import static io.memoria.atom.reactive.eventsourcing.nats.Utils.createOrUpdateStream;
-import static io.memoria.atom.reactive.eventsourcing.nats.Utils.jetStreamSub;
+import static io.memoria.atom.reactive.eventsourcing.nats.NatsUtils.createOrUpdateStream;
+import static io.memoria.atom.reactive.eventsourcing.nats.NatsUtils.jetStreamSub;
 
 class DefaultNatsESMsgStream implements NatsESMsgStream {
   private static final Logger log = LoggerFactory.getLogger(DefaultNatsESMsgStream.class.getName());
-  private final Config config;
+  private final NatsConfig natsConfig;
   private final Connection nc;
   private final JetStream js;
 
-  DefaultNatsESMsgStream(Config config) throws IOException, InterruptedException {
-    this.config = config;
-    this.nc = Nats.connect(Utils.toOptions(config));
+  DefaultNatsESMsgStream(NatsConfig natsConfig) throws IOException, InterruptedException {
+    this.natsConfig = natsConfig;
+    this.nc = Nats.connect(NatsUtils.toOptions(natsConfig));
     this.js = nc.jetStream();
-    config.topics()
-          .map(Utils::toStreamConfiguration)
-          .map(c -> createOrUpdateStream(nc, c))
-          .map(Try::get)
-          .map(StreamInfo::toString)
-          .forEach(log::info);
+    natsConfig.configs()
+              .map(NatsUtils::toStreamConfiguration)
+              .map(c -> createOrUpdateStream(nc, c))
+              .map(Try::get)
+              .map(StreamInfo::toString)
+              .forEach(log::info);
   }
 
   @Override
   public Mono<ESMsg> pub(ESMsg msg) {
-    return Mono.fromCallable(() -> Utils.publishMsg(js, msg)).flatMap(Mono::fromFuture).thenReturn(msg);
+    return Mono.fromCallable(() -> NatsUtils.publishMsg(js, msg)).flatMap(Mono::fromFuture).thenReturn(msg);
   }
 
   @Override
   public Flux<ESMsg> sub(String topic, int partition) {
-    var tp = TP.create(topic, partition);
-    var waitMillis = config.find(topic).map(TPConfig::fetchWaitMillis).getOrElse(DEFAULT_FETCH_WAIT);
-    return Mono.fromCallable(() -> jetStreamSub(js, tp, 1))
-               .flatMapMany(sub -> this.fetch(sub, waitMillis))
-               .map(Utils::toMsg);
+    var topicConfig = this.natsConfig.find(topic, partition).get();
+    return Mono.fromCallable(() -> jetStreamSub(js, topicConfig))
+               .flatMapMany(sub -> this.fetchBatch(sub, topicConfig).repeat())
+               .map(NatsUtils::toMsg);
   }
 
-  private Flux<Message> fetch(JetStreamSubscription sub, long wait) {
-    return Flux.generate((SynchronousSink<Message> sink) -> Utils.fetchOnce(nc, sub, sink, wait)).repeat();
+  @Override
+  public void close() throws InterruptedException {
+    this.nc.close();
+  }
+
+  private Flux<Message> fetchBatch(JetStreamSubscription sub, TopicConfig config) {
+    return Mono.fromCallable(() -> {
+      nc.flushBuffer();
+      return sub.fetch(config.fetchBatchSize, config.fetchMaxWait);
+    }).flatMapMany(Flux::fromIterable).doOnNext(Message::ack);
   }
 }

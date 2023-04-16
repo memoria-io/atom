@@ -18,7 +18,7 @@ public final class ValueObjectTransformer {
 
     private final Function<String, B> constructor;
 
-    public ValueObjectDeserializer(Class vc, Function<String, B> constructor) {
+    public ValueObjectDeserializer(Class<B> vc, Function<String, B> constructor) {
       super(vc);
       this.constructor = constructor;
     }
