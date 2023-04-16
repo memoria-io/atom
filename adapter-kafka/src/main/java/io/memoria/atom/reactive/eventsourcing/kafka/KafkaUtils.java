@@ -6,6 +6,8 @@ import io.vavr.collection.Map;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
+import reactor.kafka.sender.KafkaSender;
+import reactor.kafka.sender.SenderOptions;
 
 class KafkaUtils {
   private KafkaUtils() {}
@@ -22,5 +24,10 @@ class KafkaUtils {
       consumer.seekToEnd(tpCol);
       return consumer.position(tp);
     }
+  }
+
+  public static KafkaSender<String, String> createSender(Map<String, Object> config) {
+    var senderOptions = SenderOptions.<String, String>create(config.toJavaMap());
+    return KafkaSender.create(senderOptions);
   }
 }

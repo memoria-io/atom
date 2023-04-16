@@ -41,11 +41,6 @@ public final class MemESMsgStream implements ESMsgStream {
     });
   }
 
-  @Override
-  public void close() {
-    // Silence is golden
-  }
-
   private List<LinkedBlockingDeque<ESMsg>> createTopic(int e) {
     return IntStream.range(0, e).mapToObj(i -> new LinkedBlockingDeque<ESMsg>()).toList();
   }

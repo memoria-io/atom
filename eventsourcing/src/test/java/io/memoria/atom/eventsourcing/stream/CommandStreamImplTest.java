@@ -1,8 +1,9 @@
 package io.memoria.atom.eventsourcing.stream;
 
+import io.memoria.atom.core.id.Id;
 import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.core.text.SerializableTransformer;
-import io.memoria.atom.eventsourcing.*;
+import io.memoria.atom.eventsourcing.Command;
 import io.memoria.atom.eventsourcing.pipeline.CommandRoute;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
@@ -17,8 +18,8 @@ class CommandStreamImplTest {
   private static final Duration timeout = Duration.ofSeconds(5);
 
   private static final int ELEMENTS_SIZE = 1000;
-  private static final StateId S0 = StateId.of(0);
-  private static final StateId S1 = StateId.of(1);
+  private static final Id S0 = Id.of(0);
+  private static final Id S1 = Id.of(1);
 
   @Test
   void publishAndSubscribe() {
@@ -56,11 +57,11 @@ class CommandStreamImplTest {
     return new CommandRoute("events_topic", 0, 1, "command_topic", cmdPartition, 2);
   }
 
-  private Flux<SomeCommand> createMessages(StateId stateId) {
-    return Flux.range(0, ELEMENTS_SIZE).map(i -> new SomeCommand(EventId.of(i), stateId, CommandId.of(i)));
+  private Flux<SomeCommand> createMessages(Id stateId) {
+    return Flux.range(0, ELEMENTS_SIZE).map(i -> new SomeCommand(Id.of(i), stateId, Id.of(i)));
   }
 
-  private record SomeCommand(EventId eventId, StateId stateId, CommandId commandId) implements Command {
+  private record SomeCommand(Id eventId, Id stateId, Id commandId) implements Command {
     @Override
     public long timestamp() {
       return 0;

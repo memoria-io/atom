@@ -1,15 +1,14 @@
 package io.memoria.atom.eventsourcing.usecase.banking.command;
 
-import io.memoria.atom.eventsourcing.CommandId;
-import io.memoria.atom.eventsourcing.StateId;
+import io.memoria.atom.core.id.Id;
 
-public record ConfirmDebit(CommandId commandId, StateId debitedAcc) implements AccountCommand {
+public record ConfirmDebit(Id commandId, Id debitedAcc) implements AccountCommand {
   @Override
-  public StateId accountId() {
+  public Id accountId() {
     return debitedAcc;
   }
 
-  public static ConfirmDebit of(StateId debitedAcc) {
-    return new ConfirmDebit(CommandId.randomUUID(), debitedAcc);
+  public static ConfirmDebit of(Id debitedAcc) {
+    return new ConfirmDebit(Id.of(), debitedAcc);
   }
 }

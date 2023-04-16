@@ -8,25 +8,28 @@ import reactor.core.publisher.Mono;
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
 import reactor.kafka.receiver.ReceiverRecord;
-import reactor.kafka.sender.*;
+import reactor.kafka.sender.KafkaSender;
+import reactor.kafka.sender.SenderRecord;
+import reactor.kafka.sender.SenderResult;
 
 import java.util.function.Supplier;
 
 import static java.util.Collections.singleton;
 
 class DefaultKafkaESMsgStream implements KafkaESMsgStream {
+  private final KafkaSender<String, String> sender;
   public final Map<String, Object> producerConfig;
   public final Map<String, Object> consumerConfig;
   private final Supplier<Long> timeSupplier;
-  private final KafkaSender<String, String> sender;
 
-  DefaultKafkaESMsgStream(Map<String, Object> producerConfig,
+  DefaultKafkaESMsgStream(KafkaSender<String, String> sender,
+                          Map<String, Object> producerConfig,
                           Map<String, Object> consumerConfig,
                           Supplier<Long> timeSupplier) {
+    this.sender = sender;
     this.producerConfig = producerConfig;
     this.consumerConfig = consumerConfig;
     this.timeSupplier = timeSupplier;
-    this.sender = createSender();
   }
 
   @Override
@@ -40,11 +43,6 @@ class DefaultKafkaESMsgStream implements KafkaESMsgStream {
     return receive(topic, partition).map(KafkaUtils::toMsg);
   }
 
-  @Override
-  public void close() {
-    sender.close();
-  }
-
   private Flux<ReceiverRecord<String, String>> receive(String topic, int partition) {
     var tp = new TopicPartition(topic, partition);
     var receiverOptions = ReceiverOptions.<String, String>create(consumerConfig.toJavaMap())
@@ -52,11 +50,6 @@ class DefaultKafkaESMsgStream implements KafkaESMsgStream {
                                          .addAssignListener(partitions -> partitions.forEach(p -> p.seek(0)))
                                          .assignment(singleton(tp));
     return KafkaReceiver.create(receiverOptions).receive();
-  }
-
-  private KafkaSender<String, String> createSender() {
-    var senderOptions = SenderOptions.<String, String>create(producerConfig.toJavaMap());
-    return KafkaSender.create(senderOptions);
   }
 
   private SenderRecord<String, String, ESMsg> toRecord(ESMsg ESMsg) {

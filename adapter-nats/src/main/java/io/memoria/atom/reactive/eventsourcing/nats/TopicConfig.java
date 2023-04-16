@@ -8,39 +8,20 @@ import io.vavr.Tuple2;
 import java.time.Duration;
 import java.util.Objects;
 
-/**
- *
- */
-public final class TopicConfig {
+public record TopicConfig(String topic,
+                          int partition,
+                          StorageType storageType,
+                          int replicationFactor,
+                          int fetchBatchSize,
+                          Duration fetchMaxWait,
+                          boolean denyDelete,
+                          boolean denyPurge) {
 
   public static final String SPLIT_TOKEN = "_";
   public static final String SUBJECT_EXT = ".subject";
-  public final String topic;
-  public final int partition;
-  public final StorageType storageType;
-  public final int replicationFactor;
-  public final int fetchBatchSize;
-  public final Duration fetchMaxWait;
-  public final boolean denyDelete;
-  public final boolean denyPurge;
 
-  public TopicConfig(String topic,
-                     int partition,
-                     StorageType storageType,
-                     int replicationFactor,
-                     int fetchBatchSize,
-                     Duration fetchMaxWait,
-                     boolean denyDelete,
-                     boolean denyPurge) {
+  public TopicConfig {
     validateName(topic, partition);
-    this.topic = topic;
-    this.partition = partition;
-    this.storageType = storageType;
-    this.replicationFactor = replicationFactor;
-    this.fetchBatchSize = fetchBatchSize;
-    this.fetchMaxWait = fetchMaxWait;
-    this.denyDelete = denyDelete;
-    this.denyPurge = denyPurge;
   }
 
   public String streamName() {

@@ -1,12 +1,12 @@
 package io.memoria.atom.eventsourcing.usecase.banking.state;
 
+import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.State;
-import io.memoria.atom.eventsourcing.StateId;
 
 public sealed interface Account extends State permits OpenAccount, ClosedAccount {
-  StateId accountId();
+  Id accountId();
 
-  default StateId stateId() {
+  default Id stateId() {
     return accountId();
   }
 }

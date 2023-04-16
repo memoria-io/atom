@@ -1,6 +1,9 @@
 package io.memoria.atom.eventsourcing.exception;
 
-import io.memoria.atom.eventsourcing.*;
+import io.memoria.atom.core.id.Id;
+import io.memoria.atom.eventsourcing.Command;
+import io.memoria.atom.eventsourcing.Event;
+import io.memoria.atom.eventsourcing.State;
 
 public interface ESException {
   class InvalidCommand extends IllegalArgumentException implements ESException {
@@ -42,7 +45,7 @@ public interface ESException {
       super(msg);
     }
 
-    public static MismatchingStateId of(StateId stateId, StateId cmdStateId) {
+    public static MismatchingStateId of(Id stateId, Id cmdStateId) {
       var msg = "The Command's stateId:%s doesn't match stream stateId:%s";
       return new MismatchingStateId(msg.formatted(cmdStateId.value(), stateId.value()));
     }
