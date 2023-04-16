@@ -2,7 +2,6 @@ package io.memoria.atom.reactive.eventsourcing.nats;
 
 import io.memoria.atom.core.stream.ESMsg;
 import io.nats.client.Connection;
-import io.nats.client.JetStream;
 import io.nats.client.Nats;
 import io.nats.client.impl.Headers;
 import io.nats.client.impl.NatsMessage;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 class NatsUtilsTest {
   private static final Connection nc = Try.of(() -> Nats.connect("nats://localhost:4222")).get();
-  private static final JetStream js = Try.of(nc::jetStream).get();
 
   @Test
   void toMessage() {
