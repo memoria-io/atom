@@ -54,7 +54,6 @@ class DefaultNatsESMsgStream implements NatsESMsgStream {
     return Mono.fromCallable(() -> {
       nc.flushBuffer();
       var msgs = sub.fetch(config.fetchBatchSize, config.fetchMaxWait);
-      System.out.println(msgs.size());
       return msgs;
     }).flatMapMany(Flux::fromIterable).doOnNext(Message::ack);
   }
