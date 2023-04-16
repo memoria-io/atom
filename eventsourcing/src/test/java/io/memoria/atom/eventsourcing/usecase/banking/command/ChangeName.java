@@ -1,6 +1,5 @@
 package io.memoria.atom.eventsourcing.usecase.banking.command;
 
-import io.memoria.atom.eventsourcing.CommandId;
-import io.memoria.atom.eventsourcing.StateId;
+import io.memoria.atom.core.id.Id;
 
-public record ChangeName(StateId accountId, CommandId commandId, String name) implements AccountCommand {}
+public record ChangeName(Id accountId, Id commandId, String name) implements AccountCommand {}

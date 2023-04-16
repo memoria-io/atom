@@ -1,9 +1,9 @@
 package io.memoria.atom.eventsourcing.stream;
 
+import io.memoria.atom.core.id.Id;
 import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.core.text.TextTransformer;
 import io.memoria.atom.eventsourcing.Event;
-import io.memoria.atom.eventsourcing.EventId;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -18,7 +18,7 @@ public interface EventStream<E extends Event> {
   /**
    * @return subscribe until eventId (key) is matched
    */
-  default Flux<E> subUntil(EventId eventId) {
+  default Flux<E> subUntil(Id eventId) {
     return sub().takeUntil(e -> e.eventId().equals(eventId));
   }
 

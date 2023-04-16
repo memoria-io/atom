@@ -1,8 +1,8 @@
 package io.memoria.atom.eventsourcing.usecase.banking.state;
 
-import io.memoria.atom.eventsourcing.StateId;
+import io.memoria.atom.core.id.Id;
 
-public record OpenAccount(StateId accountId, int seqId, String name, int balance, int debitCount) implements Account {
+public record OpenAccount(Id accountId, int seqId, String name, int balance, int debitCount) implements Account {
 
   public boolean hasOngoingDebit() {
     return debitCount != 0;

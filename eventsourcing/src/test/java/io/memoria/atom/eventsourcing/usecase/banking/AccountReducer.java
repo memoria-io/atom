@@ -1,7 +1,6 @@
 package io.memoria.atom.eventsourcing.usecase.banking;
 
-import io.memoria.atom.eventsourcing.CommandId;
-import io.memoria.atom.eventsourcing.EventId;
+import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.rule.Reducer;
 import io.memoria.atom.eventsourcing.usecase.banking.event.AccountClosed;
 import io.memoria.atom.eventsourcing.usecase.banking.event.AccountCreated;
@@ -15,17 +14,11 @@ public record AccountReducer() implements Reducer<Account, AccountEvent> {
   public AccountEvent apply(Account account) {
     return switch (account) {
       case OpenAccount openAccount -> accountCreated(openAccount);
-      case ClosedAccount acc ->
-              new AccountClosed(EventId.randomUUID(), acc.seqId(), CommandId.randomUUID(), acc.stateId());
+      case ClosedAccount acc -> new AccountClosed(Id.of(), acc.seqId(), Id.of(), acc.stateId());
     };
   }
 
   private AccountCreated accountCreated(OpenAccount openAccount) {
-    return new AccountCreated(EventId.randomUUID(),
-                              0,
-                              CommandId.randomUUID(),
-                              openAccount.stateId(),
-                              openAccount.name(),
-                              openAccount.balance());
+    return new AccountCreated(Id.of(), 0, Id.of(), openAccount.stateId(), openAccount.name(), openAccount.balance());
   }
 }

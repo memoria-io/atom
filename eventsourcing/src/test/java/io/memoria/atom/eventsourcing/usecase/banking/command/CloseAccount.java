@@ -1,10 +1,9 @@
 package io.memoria.atom.eventsourcing.usecase.banking.command;
 
-import io.memoria.atom.eventsourcing.CommandId;
-import io.memoria.atom.eventsourcing.StateId;
+import io.memoria.atom.core.id.Id;
 
-public record CloseAccount(CommandId commandId, StateId accountId) implements AccountCommand {
-  public static CloseAccount of(StateId accountId) {
-    return new CloseAccount(CommandId.randomUUID(), accountId);
+public record CloseAccount(Id commandId, Id accountId) implements AccountCommand {
+  public static CloseAccount of(Id accountId) {
+    return new CloseAccount(Id.of(), accountId);
   }
 }

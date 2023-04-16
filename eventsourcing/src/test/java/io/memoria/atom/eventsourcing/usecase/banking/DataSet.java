@@ -1,7 +1,6 @@
 package io.memoria.atom.eventsourcing.usecase.banking;
 
-import io.memoria.atom.eventsourcing.CommandId;
-import io.memoria.atom.eventsourcing.StateId;
+import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.usecase.banking.command.*;
 import io.vavr.collection.List;
 import reactor.core.publisher.Flux;
@@ -17,8 +16,8 @@ class DataSet {
     return Flux.fromIterable(createAccounts.appendAll(changes));
   }
 
-  static StateId accountStateId(int i) {
-    return StateId.of("acc_id_" + i);
+  static Id accountId(int i) {
+    return Id.of("acc_id_" + i);
   }
 
   static String createName(int i) {
@@ -30,7 +29,7 @@ class DataSet {
   }
 
   static List<AccountCommand> createAccounts(int nAccounts, int balance) {
-    return List.range(0, nAccounts).map(i -> CreateAccount.of(accountStateId(i), createName(i), balance));
+    return List.range(0, nAccounts).map(i -> CreateAccount.of(accountId(i), createName(i), balance));
   }
 
   static List<AccountCommand> randomClosure(int nAccounts) {
@@ -46,15 +45,14 @@ class DataSet {
   }
 
   public static List<ChangeName> changeName(int nAccounts, int version) {
-    return List.range(0, nAccounts)
-               .map(i -> new ChangeName(accountStateId(i), CommandId.randomUUID(), createNewName(version)));
+    return List.range(0, nAccounts).map(i -> new ChangeName(accountId(i), Id.of(), createNewName(version)));
   }
 
-  private static AccountCommand createOutboundBalance(StateId from, StateId to, int amount) {
+  private static AccountCommand createOutboundBalance(Id from, Id to, int amount) {
     return Debit.of(from, to, amount);
   }
 
-  private static List<StateId> shuffledIds(int nAccounts) {
-    return List.range(0, nAccounts).shuffle().map(DataSet::accountStateId);
+  private static List<Id> shuffledIds(int nAccounts) {
+    return List.range(0, nAccounts).shuffle().map(DataSet::accountId);
   }
 }

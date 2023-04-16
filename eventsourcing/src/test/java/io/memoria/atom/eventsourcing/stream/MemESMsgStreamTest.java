@@ -1,9 +1,9 @@
 package io.memoria.atom.eventsourcing.stream;
 
+import io.memoria.atom.core.id.Id;
 import io.memoria.atom.core.stream.ESMsg;
 import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.core.stream.MemESMsgStream;
-import io.memoria.atom.eventsourcing.StateId;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -17,8 +17,8 @@ class MemESMsgStreamTest {
   private static final Duration timeout = Duration.ofSeconds(5);
   private static final int ELEMENTS_SIZE = 1000;
   private static final String topic = "some_topic";
-  private static final StateId S0 = StateId.of(0);
-  private static final StateId S1 = StateId.of(1);
+  private static final Id S0 = Id.of(0);
+  private static final Id S1 = Id.of(1);
   private static final int TOTAL_PARTITIONS = 2;
 
   private final ESMsgStream stream = new MemESMsgStream(topic, TOTAL_PARTITIONS);
@@ -48,11 +48,11 @@ class MemESMsgStreamTest {
     Awaitility.await().atMost(timeout).until(() -> latch1.get() == ELEMENTS_SIZE);
   }
 
-  private Flux<ESMsg> createMessages(StateId stateId) {
+  private Flux<ESMsg> createMessages(Id stateId) {
     return Flux.range(0, ELEMENTS_SIZE).map(i -> new ESMsg(topic, getPartition(stateId), String.valueOf(i), "hello"));
   }
 
-  private static int getPartition(StateId stateId) {
+  private static int getPartition(Id stateId) {
     return Integer.parseInt(stateId.value()) % TOTAL_PARTITIONS;
   }
 }

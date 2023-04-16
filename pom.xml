@@ -70,9 +70,21 @@
             <!--======================================================================================== -->
             <dependency>
                 <groupId>io.vavr</groupId>
+                <artifactId>vavr</artifactId>
+                <version>0.10.4</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vavr</groupId>
                 <artifactId>vavr-jackson</artifactId>
                 <version>0.10.3</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.github.f4b6a3</groupId>
+                <artifactId>uuid-creator</artifactId>
+                <version>5.2.0</version>
+            </dependency>
+
             <!--======================================================================================== -->
             <!-- Reactive Dependencies -->
             <!--======================================================================================== -->
@@ -140,7 +152,10 @@
         <dependency>
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
-            <version>0.10.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.f4b6a3</groupId>
+            <artifactId>uuid-creator</artifactId>
         </dependency>
         <!--======================================================================================== -->
         <!-- Reactive Dependencies -->

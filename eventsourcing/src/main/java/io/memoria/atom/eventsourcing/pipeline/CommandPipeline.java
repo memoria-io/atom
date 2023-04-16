@@ -1,5 +1,6 @@
 package io.memoria.atom.eventsourcing.pipeline;
 
+import io.memoria.atom.core.id.Id;
 import io.memoria.atom.core.repo.KVStore;
 import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.core.text.TextTransformer;
@@ -24,9 +25,9 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   private final KVStore kvStore;
   private final String kvStoreKey;
   // In memory
-  private final Set<CommandId> processedCommands;
-  private final Set<EventId> processedEvents;
-  private final Map<StateId, S> aggregates;
+  private final Set<Id> processedCommands;
+  private final Set<Id> processedEvents;
+  private final Map<Id, S> aggregates;
 
   public CommandPipeline(Domain<S, C, E> domain,
                          CommandRoute commandRoute,
@@ -71,11 +72,11 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   /**
    * Used internally for lazy loading, and can be called for warmups
    */
-  public Flux<E> init(StateId stateId) {
+  public Flux<E> init(Id stateId) {
     if (this.aggregates.containsKey(stateId)) {
       return Flux.empty();
     } else {
-      return kvStore.get(this.kvStoreKey).map(EventId::of).flatMapMany(eventStream::subUntil).map(this::evolve);
+      return kvStore.get(this.kvStoreKey).map(Id::of).flatMapMany(eventStream::subUntil).map(this::evolve);
     }
   }
 

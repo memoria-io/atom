@@ -1,7 +1,7 @@
 package io.memoria.atom.eventsourcing.usecase.banking;
 
 /*import io.memoria.atom.core.eventsourcing.Command;
-import io.memoria.atom.core.eventsourcing.StateId;
+import io.memoria.atom.core.eventsourcing.Id;
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.core.text.SerializableTransformer;
 import io.memoria.atom.core.text.TextTransformer;
@@ -45,8 +45,8 @@ class SagaPipelineTest {
   //  @Test
   //  void simple() {
   //    // Given
-  //    var bobId = StateId.of("bob");
-  //    var janId = StateId.of("jan");
+  //    var bobId = Id.of("bob");
+  //    var janId = Id.of("jan");
   //    var createBob = CreateAccount.of(bobId, "bob", 100);
   //    var createJan = CreateAccount.of(janId, "jan", 100);
   //    var sendMoneyFromBobToJan = Debit.of(bobId, janId, 50);
