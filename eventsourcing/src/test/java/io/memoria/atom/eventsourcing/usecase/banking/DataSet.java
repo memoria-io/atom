@@ -45,8 +45,9 @@ class DataSet {
     return List.range(0, nAccounts / 2).map(i -> createOutboundBalance(from.get(i), to.get(i), amounts.get(i)));
   }
 
-  public static List<ChangeName> changeName(int nAccounts, int version ) {
-    return List.range(0, nAccounts).map(i -> new ChangeName(accountStateId(i), CommandId.randomUUID(), createNewName(version)));
+  public static List<ChangeName> changeName(int nAccounts, int version) {
+    return List.range(0, nAccounts)
+               .map(i -> new ChangeName(accountStateId(i), CommandId.randomUUID(), createNewName(version)));
   }
 
   private static AccountCommand createOutboundBalance(StateId from, StateId to, int amount) {

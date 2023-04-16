@@ -1,6 +1,5 @@
 package io.memoria.atom.reactive.eventsourcing.kafka;
 
-import io.memoria.atom.core.stream.ESMsg;
 import io.memoria.atom.core.stream.ESMsgStream;
 import io.vavr.collection.List;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -20,15 +19,15 @@ class DefaultKafkaESMsgStreamTest {
   private final ESMsgStream repo;
 
   DefaultKafkaESMsgStreamTest() {
-    repo = KafkaESMsgStream.create(Dataset.producerConfigs(), Dataset.consumerConfigs(), () -> 1L);
+    repo = KafkaESMsgStream.create(Tests.producerConfigs(), Tests.consumerConfigs(), () -> 1L);
   }
 
   @Test
   void publish() {
     // Given
-    var msgs = Flux.range(0, MSG_COUNT).map(this::createEsMsg);
+    var msgs = List.range(0, MSG_COUNT).map(i -> Tests.createEsMsg(topic, partition, i));
     // When
-    var pub = msgs.concatMap(repo::pub);
+    var pub = Flux.fromIterable(msgs).concatMap(repo::pub);
     // Then
     StepVerifier.create(pub).expectNextCount(MSG_COUNT).verifyComplete();
   }
@@ -36,7 +35,7 @@ class DefaultKafkaESMsgStreamTest {
   @Test
   void subscribe() {
     // Given
-    var msgs = List.range(0, MSG_COUNT).map(this::createEsMsg);
+    var msgs = List.range(0, MSG_COUNT).map(i -> Tests.createEsMsg(topic, partition, i));
     var pub = Flux.fromIterable(msgs).concatMap(repo::pub);
 
     // When
@@ -46,9 +45,5 @@ class DefaultKafkaESMsgStreamTest {
     StepVerifier.create(pub).expectNextCount(MSG_COUNT).verifyComplete();
     StepVerifier.create(sub).expectNextCount(MSG_COUNT).verifyComplete();
     StepVerifier.create(sub).expectNextSequence(msgs).verifyComplete();
-  }
-
-  private ESMsg createEsMsg(Integer i) {
-    return new ESMsg(topic, partition, String.valueOf(i), "hello" + i);
   }
 }

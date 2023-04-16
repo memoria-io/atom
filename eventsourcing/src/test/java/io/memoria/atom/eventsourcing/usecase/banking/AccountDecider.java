@@ -4,9 +4,9 @@ import io.memoria.atom.eventsourcing.exception.ESException;
 import io.memoria.atom.eventsourcing.rule.Decider;
 import io.memoria.atom.eventsourcing.usecase.banking.command.*;
 import io.memoria.atom.eventsourcing.usecase.banking.event.*;
-import io.memoria.atom.eventsourcing.usecase.banking.state.OpenAccount;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;
 import io.memoria.atom.eventsourcing.usecase.banking.state.ClosedAccount;
+import io.memoria.atom.eventsourcing.usecase.banking.state.OpenAccount;
 import io.vavr.control.Try;
 
 public record AccountDecider() implements Decider<Account, AccountCommand, AccountEvent> {

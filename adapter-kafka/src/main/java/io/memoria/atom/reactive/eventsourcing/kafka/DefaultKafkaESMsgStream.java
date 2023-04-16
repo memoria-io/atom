@@ -5,10 +5,11 @@ import io.vavr.collection.Map;
 import org.apache.kafka.common.TopicPartition;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.kafka.receiver.*;
+import reactor.kafka.receiver.KafkaReceiver;
+import reactor.kafka.receiver.ReceiverOptions;
+import reactor.kafka.receiver.ReceiverRecord;
 import reactor.kafka.sender.*;
 
-import java.util.Collections;
 import java.util.function.Supplier;
 
 import static java.util.Collections.singleton;

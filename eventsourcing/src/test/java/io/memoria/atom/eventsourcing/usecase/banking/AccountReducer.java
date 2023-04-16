@@ -6,9 +6,9 @@ import io.memoria.atom.eventsourcing.rule.Reducer;
 import io.memoria.atom.eventsourcing.usecase.banking.event.AccountClosed;
 import io.memoria.atom.eventsourcing.usecase.banking.event.AccountCreated;
 import io.memoria.atom.eventsourcing.usecase.banking.event.AccountEvent;
-import io.memoria.atom.eventsourcing.usecase.banking.state.OpenAccount;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;
 import io.memoria.atom.eventsourcing.usecase.banking.state.ClosedAccount;
+import io.memoria.atom.eventsourcing.usecase.banking.state.OpenAccount;
 
 public record AccountReducer() implements Reducer<Account, AccountEvent> {
   @Override

@@ -1,7 +1,6 @@
 package io.memoria.atom.core.stream;
 
 import io.vavr.collection.HashMap;
-import io.vavr.control.Option;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
