@@ -14,6 +14,16 @@ class KafkaUtils {
     return new ESMsg(record.topic(), record.partition(), record.key(), record.value());
   }
 
+//  public static ConsumerRecord<> last(String topic, int partition, Map<String, Object> conf) {
+//    try (var consumer = new KafkaConsumer<Long, String>(conf.toJavaMap())) {
+//      var tp = new TopicPartition(topic, partition);
+//      var tpCol = List.of(tp).toJavaList();
+//      consumer.assign(tpCol);
+//      consumer.seekToEnd(tpCol);
+//      consumer.poll(1000).records()
+//    }
+//  }
+
   public static long topicSize(String topic, int partition, Map<String, Object> conf) {
     try (var consumer = new KafkaConsumer<Long, String>(conf.toJavaMap())) {
       var tp = new TopicPartition(topic, partition);

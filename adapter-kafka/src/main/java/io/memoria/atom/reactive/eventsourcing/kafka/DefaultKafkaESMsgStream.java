@@ -5,11 +5,10 @@ import io.vavr.collection.Map;
 import org.apache.kafka.common.TopicPartition;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.kafka.receiver.KafkaReceiver;
-import reactor.kafka.receiver.ReceiverOptions;
-import reactor.kafka.receiver.ReceiverRecord;
+import reactor.kafka.receiver.*;
 import reactor.kafka.sender.*;
 
+import java.util.Collections;
 import java.util.function.Supplier;
 
 import static java.util.Collections.singleton;
@@ -38,11 +37,6 @@ class DefaultKafkaESMsgStream implements KafkaESMsgStream {
   @Override
   public Flux<ESMsg> sub(String topic, int partition) {
     return receive(topic, partition).map(KafkaUtils::toMsg);
-  }
-
-  @Override
-  public Mono<ESMsg> getLast(String topic, int partition) {
-    return null;
   }
 
   @Override

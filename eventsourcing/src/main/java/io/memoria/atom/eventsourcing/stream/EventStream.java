@@ -15,8 +15,6 @@ public interface EventStream<E extends Event> {
    */
   Flux<E> sub();
 
-  Mono<E> getLast();
-
   /**
    * @return subscribe until eventId (key) is matched
    */

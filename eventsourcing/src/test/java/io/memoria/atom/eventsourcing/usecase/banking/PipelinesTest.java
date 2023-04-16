@@ -1,5 +1,6 @@
 package io.memoria.atom.eventsourcing.usecase.banking;
 
+import io.memoria.atom.core.repo.KVStore;
 import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.core.text.SerializableTransformer;
 import io.memoria.atom.core.text.TextTransformer;
@@ -17,7 +18,7 @@ class PipelinesTest {
   private static final TextTransformer transformer = new SerializableTransformer();
   private static final CommandRoute route = new CommandRoute("events", 0, 1, "commands", 0, 1);
   // pipeline
-  private final CommandPipeline<Account, AccountCommand, AccountEvent> pipeline = createPipeline(route);
+  private final CommandPipeline<Account, AccountCommand, AccountEvent> pipeline = createPipeline();
 
   @Test
   void createAccountsAndChangeNames() {
@@ -69,8 +70,8 @@ class PipelinesTest {
   //    StepVerifier.create(Flux.merge(oldPipeline.map(Pipeline::run))).expectNextCount(eventCount).verifyTimeout(timeout);
   //  }
   //
-  private CommandPipeline<Account, AccountCommand, AccountEvent> createPipeline(CommandRoute route) {
-    return new CommandPipeline<>(stateDomain(), route, createMsgStream(route), transformer);
+  private CommandPipeline<Account, AccountCommand, AccountEvent> createPipeline() {
+    return new CommandPipeline<>(stateDomain(), route, createMsgStream(route), KVStore.inMemory(), transformer);
   }
 
   private static ESMsgStream createMsgStream(CommandRoute route) {

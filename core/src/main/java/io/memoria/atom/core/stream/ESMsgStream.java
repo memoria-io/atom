@@ -10,13 +10,6 @@ public interface ESMsgStream extends AutoCloseable {
   Flux<ESMsg> sub(String topic, int partition);
 
   /**
-   * @param topic
-   * @param partition
-   * @return
-   */
-  Mono<ESMsg> getLast(String topic, int partition);
-
-  /**
    * @return an in memory ESStream
    */
   static ESMsgStream inMemory(Map<String, Integer> topicPartitions) {

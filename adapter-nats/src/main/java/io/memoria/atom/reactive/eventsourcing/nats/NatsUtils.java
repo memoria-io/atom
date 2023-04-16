@@ -5,8 +5,6 @@ import io.nats.client.*;
 import io.nats.client.api.*;
 import io.nats.client.impl.Headers;
 import io.nats.client.impl.NatsMessage;
-import io.vavr.collection.List;
-import io.vavr.control.Option;
 import io.vavr.control.Try;
 
 import java.io.IOException;
@@ -47,42 +45,44 @@ class NatsUtils {
     return js.publishAsync(message, opts);
   }
 
-  static JetStreamSubscription jetStreamSub(JetStream js, Topic topic, long offset)
+  static JetStreamSubscription jetStreamSub(JetStream js, TopicConfig topicConfig)
           throws IOException, JetStreamApiException {
     var config = ConsumerConfiguration.builder()
-                                      .ackPolicy(AckPolicy.None)
-                                      .startSequence(offset)
+                                      .ackPolicy(AckPolicy.Explicit)
+                                      .deliverPolicy(DeliverPolicy.All)
                                       .replayPolicy(ReplayPolicy.Instant)
-                                      .deliverPolicy(DeliverPolicy.ByStartSequence)
                                       .build();
-    var subscribeOptions = PushSubscribeOptions.builder()
-                                               .ordered(true)
-                                               .stream(topic.streamName())
+    var subscribeOptions = PullSubscribeOptions.builder()
+                                               .stream(topicConfig.streamName())
                                                .configuration(config)
                                                .build();
-    return js.subscribe(topic.subjectName(), subscribeOptions);
+    return js.subscribe(topicConfig.subjectName(), subscribeOptions);
   }
 
-  static JetStreamSubscription jetStreamSubLatest(JetStream js, Topic topic) throws IOException, JetStreamApiException {
+  static JetStreamSubscription jetStreamSubLatest(JetStream js, TopicConfig topicConfig)
+          throws IOException, JetStreamApiException {
     var config = ConsumerConfiguration.builder()
                                       .ackPolicy(AckPolicy.Explicit)
                                       .deliverPolicy(DeliverPolicy.LastPerSubject)
                                       .build();
-    var subscribeOptions = PullSubscribeOptions.builder().stream(topic.streamName()).configuration(config).build();
-    return js.subscribe(topic.subjectName(), subscribeOptions);
+    var subscribeOptions = PullSubscribeOptions.builder()
+                                               .stream(topicConfig.streamName())
+                                               .configuration(config)
+                                               .build();
+    return js.subscribe(topicConfig.subjectName(), subscribeOptions);
   }
 
-  static Message toMessage(ESMsg ESMsg) {
-    var tp = Topic.fromMsg(ESMsg);
+  static Message toMessage(ESMsg msg) {
+    var subjectName = TopicConfig.toSubjectName(msg);
     var headers = new Headers();
-    headers.add(ID_HEADER, ESMsg.key());
-    return NatsMessage.builder().subject(tp.subjectName()).headers(headers).data(ESMsg.value()).build();
+    headers.add(ID_HEADER, msg.key());
+    return NatsMessage.builder().subject(subjectName).headers(headers).data(msg.value()).build();
   }
 
   static ESMsg toMsg(Message message) {
     var value = new String(message.getData(), StandardCharsets.UTF_8);
-    var tp = Topic.fromSubject(message.getSubject());
-    return new ESMsg(tp.topic(), tp.partition(), message.getHeaders().getFirst(ID_HEADER), value);
+    var tp = TopicConfig.topicPartition(message.getSubject());
+    return new ESMsg(tp._1, tp._2, message.getHeaders().getFirst(ID_HEADER), value);
   }
 
   static Options toOptions(NatsConfig natsConfig) {
@@ -91,11 +91,11 @@ class NatsUtils {
 
   static StreamConfiguration toStreamConfiguration(TopicConfig c) {
     return StreamConfiguration.builder()
-                              .storageType(c.storageType())
-                              .denyDelete(c.denyDelete())
-                              .denyPurge(c.denyPurge())
-                              .name(c.topic().streamName())
-                              .subjects(c.topic().subjectName())
+                              .storageType(c.storageType)
+                              .denyDelete(c.denyDelete)
+                              .denyPurge(c.denyPurge)
+                              .name(c.streamName())
+                              .subjects(c.subjectName())
                               .build();
   }
 }

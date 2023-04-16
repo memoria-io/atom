@@ -1,14 +1,25 @@
 package io.memoria.atom.reactive.eventsourcing.nats;
 
+import io.memoria.atom.core.stream.ESMsg;
 import io.nats.client.api.StorageType;
+import io.vavr.collection.List;
 
 import java.time.Duration;
 
 public class Tests {
   private Tests() {}
 
-  public static TopicConfig topicConfig(String topicName, int partitions) {
-    var topic = Topic.create(topicName, partitions);
-    return TopicConfig.appendOnly(topic, StorageType.File, 1, 256, Duration.ofMillis(500), 5, 10);
+  static TopicConfig createTopicConfig(String topic, int partition) {
+    return TopicConfig.appendOnly(topic, partition, StorageType.File, 1, 100, Duration.ofMillis(500));
+  }
+
+  static TopicConfig[] createConfigs(String topic, int nTotalPartitions) {
+    return List.range(0, nTotalPartitions)
+               .map(partition -> createTopicConfig(topic, partition))
+               .toJavaArray(TopicConfig[]::new);
+  }
+
+  static ESMsg createEsMsg(String topic, int partition, int i) {
+    return new ESMsg(topic, partition, String.valueOf(i), "hello" + i);
   }
 }

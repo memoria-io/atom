@@ -10,7 +10,7 @@ public record NatsConfig(String url, Set<TopicConfig> topics) {
     this(url, HashSet.of(topic));
   }
 
-  public Option<TopicConfig> find(String name) {
-    return topics.find(tp -> tp.topic().topic().equals(name));
+  public Option<TopicConfig> find(String name, int partition) {
+    return topics.find(tp -> tp.topic.equals(name) && tp.partition == partition);
   }
 }

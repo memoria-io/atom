@@ -43,12 +43,6 @@ public final class MemESMsgStream implements ESMsgStream {
   }
 
   @Override
-  public Mono<ESMsg> getLast(String topic, int partition) {
-    var topicPartition = topics.get(topic).get(partition);
-    return Mono.fromCallable(() -> Option.of(topicPartition.peekLast())).filter(Option::isDefined).map(Option::get);
-  }
-
-  @Override
   public void close() {
     // Silence is golden
   }

@@ -1,5 +1,6 @@
 package io.memoria.atom.eventsourcing.pipeline;
 
+import io.memoria.atom.core.repo.KVStore;
 import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.core.text.TextTransformer;
 import io.memoria.atom.core.vavr.ReactorVavrUtils;
@@ -16,10 +17,12 @@ import java.util.*;
 public class CommandPipeline<S extends State, C extends Command, E extends Event> {
   // Core
   public final Domain<S, C, E> domain;
-  public final CommandRoute CommandRoute;
+  public final CommandRoute commandRoute;
   // Infra
   private final CommandStream<C> commandStream;
   private final EventStream<E> eventStream;
+  private final KVStore kvStore;
+  private final String kvStoreKey;
   // In memory
   private final Set<CommandId> processedCommands;
   private final Set<EventId> processedEvents;
@@ -28,10 +31,11 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   public CommandPipeline(Domain<S, C, E> domain,
                          CommandRoute commandRoute,
                          ESMsgStream esMsgStream,
+                         KVStore kvStore,
                          TextTransformer transformer) {
     // Core
     this.domain = domain;
-    this.CommandRoute = commandRoute;
+    this.commandRoute = commandRoute;
     // Infra
     this.commandStream = CommandStream.create(commandRoute, esMsgStream, transformer, domain.cClass());
     this.eventStream = EventStream.create(commandRoute.eventTopic(),
@@ -39,6 +43,8 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
                                           esMsgStream,
                                           transformer,
                                           domain.eClass());
+    this.kvStore = kvStore;
+    this.kvStoreKey = commandRoute.eventTopic() + commandRoute.eventTopicPartition();
     // In memory
     this.processedCommands = new HashSet<>();
     this.processedEvents = new HashSet<>();
@@ -52,9 +58,14 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
                .map(Option::get)
                .flatMap(ReactorVavrUtils::toMono)
                .skipWhile(e -> this.processedEvents.contains(e.eventId()))
-               .map(this::evolve)
-               .flatMap(this::saga)
-               .flatMap(eventStream::pub);
+               .map(this::evolve) // evolve in memory
+               .flatMap(this::storeLastEventId) // then store latest eventId even if possibly not persisted
+               .flatMap(eventStream::pub) // publish event
+               .flatMap(this::saga); // publish a command based on such event
+  }
+
+  private Mono<E> storeLastEventId(E e) {
+    return kvStore.set(this.kvStoreKey, e.eventId().value()).map(k -> e);
   }
 
   /**
@@ -64,7 +75,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
     if (this.aggregates.containsKey(stateId)) {
       return Flux.empty();
     } else {
-      return eventStream.getLast().flatMapMany(last -> eventStream.subUntil(last.eventId())).map(this::evolve);
+      return kvStore.get(this.kvStoreKey).map(EventId::of).flatMapMany(eventStream::subUntil).map(this::evolve);
     }
   }
 
