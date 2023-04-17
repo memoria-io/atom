@@ -17,7 +17,7 @@ public final class IdTransformer {
 
   public static class IdDeserializer<T extends Id> extends StdDeserializer<T> {
 
-    private final Function<String, T> constructor;
+    private final transient Function<String, T> constructor;
 
     public IdDeserializer(Class<T> vc, Function<String, T> constructor) {
       super(vc);
