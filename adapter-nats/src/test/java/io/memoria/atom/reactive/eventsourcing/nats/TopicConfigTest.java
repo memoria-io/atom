@@ -12,6 +12,15 @@ public class TopicConfigTest {
     Assertions.assertThatIllegalArgumentException()
               .isThrownBy(() -> new TopicConfig("", 0, StorageType.File, 1, 100, Duration.ofMillis(100), false, false));
     Assertions.assertThatIllegalArgumentException()
+              .isThrownBy(() -> new TopicConfig(null,
+                                                -1,
+                                                StorageType.File,
+                                                1,
+                                                100,
+                                                Duration.ofMillis(100),
+                                                false,
+                                                false));
+    Assertions.assertThatIllegalArgumentException()
               .isThrownBy(() -> new TopicConfig("topic",
                                                 -1,
                                                 StorageType.File,
@@ -25,6 +34,15 @@ public class TopicConfigTest {
                                                 0,
                                                 StorageType.File,
                                                 0,
+                                                100,
+                                                Duration.ofMillis(100),
+                                                false,
+                                                false));
+    Assertions.assertThatIllegalArgumentException()
+              .isThrownBy(() -> new TopicConfig("topic",
+                                                0,
+                                                StorageType.File,
+                                                6,
                                                 100,
                                                 Duration.ofMillis(100),
                                                 false,
