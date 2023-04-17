@@ -128,7 +128,6 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
 
 * ~~`20.1.0` Fixing Jacoco and sonar to work with `--enable-preview`~~ was not published
 * `20.2.0`
-    * To be published soon
     * Nats pull based reactive approach instead of server push
     * Introducing etcd adapter as a KV repo
     * New mechanism for getting latest committed eventId
