@@ -9,14 +9,14 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 class EvolverTest {
+  private final Id id = Id.of(0);
+  private final AccountCreated accCreated = new AccountCreated(id, id, Id.of("bob"), "bob0", 0);
+  private final NameChanged nameChanged1 = new NameChanged(id, id, Id.of("bob"), "bob1");
+  private final NameChanged nameChanged2 = new NameChanged(id, id, Id.of("bob"), "bob2");
+  private final Credited credited = new Credited(id, id, Id.of("bob"), Id.of("jan"), 10);
+
   @Test
   void reduce() {
-    // Given
-    var accCreated = new AccountCreated(Id.of(0), Id.of(0), Id.of("bob"), "bob0", 0);
-    var nameChanged1 = new NameChanged(Id.of(0), Id.of(0), Id.of("bob"), "bob1");
-    var nameChanged2 = new NameChanged(Id.of(0), Id.of(0), Id.of("bob"), "bob2");
-    var credited = new Credited(Id.of(0), Id.of(0), Id.of("bob"), Id.of("jan"), 10);
-
     // When
     var events = Flux.<AccountEvent>just(accCreated, nameChanged1, nameChanged2, credited);
     var evolver = new AccountEvolver();
@@ -25,17 +25,10 @@ class EvolverTest {
     StepVerifier.create(evolver.reduce(events))
                 .expectNext(new OpenAccount(Id.of("bob"), "bob2", 10, 0))
                 .verifyComplete();
-
   }
 
   @Test
   void accumulate() {
-    // Given
-    var accCreated = new AccountCreated(Id.of(0), Id.of(0), Id.of("bob"), "bob0", 0);
-    var nameChanged1 = new NameChanged(Id.of(0), Id.of(0), Id.of("bob"), "bob1");
-    var nameChanged2 = new NameChanged(Id.of(0), Id.of(0), Id.of("bob"), "bob2");
-    var credited = new Credited(Id.of(0), Id.of(0), Id.of("bob"), Id.of("jan"), 10);
-
     // When
     var events = Flux.<AccountEvent>just(accCreated, nameChanged1, nameChanged2, credited);
     var evolver = new AccountEvolver();
@@ -47,6 +40,5 @@ class EvolverTest {
                 .expectNext(new OpenAccount(Id.of("bob"), "bob2", 0, 0))
                 .expectNext(new OpenAccount(Id.of("bob"), "bob2", 10, 0))
                 .verifyComplete();
-
   }
 }
