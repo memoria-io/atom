@@ -68,7 +68,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
                .map(this::handle)
                .filter(Option::isDefined)
                .map(Option::get)
-               .flatMap(ReactorVavrUtils::toMono)
+               .flatMap(t -> ReactorVavrUtils.tryToMono(()-> t))
                .skipWhile(e -> this.processedEvents.contains(e.eventId()))
                .map(this::evolve) // evolve in memory
                .flatMap(this::storeLastEventId) // then store latest eventId even if possibly not persisted

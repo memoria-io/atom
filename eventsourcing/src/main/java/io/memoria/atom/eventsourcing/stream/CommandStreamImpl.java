@@ -9,8 +9,6 @@ import io.memoria.atom.eventsourcing.pipeline.CommandRoute;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static io.memoria.atom.core.vavr.ReactorVavrUtils.toMono;
-
 class CommandStreamImpl<C extends Command> implements CommandStream<C> {
   private final io.memoria.atom.core.stream.ESMsgStream esMsgStream;
   private final TextTransformer transformer;
@@ -26,13 +24,13 @@ class CommandStreamImpl<C extends Command> implements CommandStream<C> {
 
   public Mono<C> pub(C c) {
     var partition = c.partition(commandRoute.cmdTotalPartitions());
-    return toMono(transformer.serialize(c)).flatMap(cStr -> pubMsg(commandRoute.cmdTopic(), partition, c, cStr))
-                                           .map(id -> c);
+    return ReactorVavrUtils.tryToMono(()-> transformer.serialize(c)).flatMap(cStr -> pubMsg(commandRoute.cmdTopic(), partition, c, cStr))
+                           .map(id -> c);
   }
 
   public Flux<C> sub() {
     return esMsgStream.sub(commandRoute.cmdTopic(), commandRoute.cmdTopicPartition())
-                      .flatMap(msg -> ReactorVavrUtils.toMono(transformer.deserialize(msg.value(), cClass)));
+                      .flatMap(msg -> ReactorVavrUtils.tryToMono(()-> transformer.deserialize(msg.value(), cClass)));
 
   }
 

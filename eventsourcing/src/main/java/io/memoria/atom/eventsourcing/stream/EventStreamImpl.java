@@ -3,11 +3,10 @@ package io.memoria.atom.eventsourcing.stream;
 import io.memoria.atom.core.stream.ESMsg;
 import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.core.text.TextTransformer;
+import io.memoria.atom.core.vavr.ReactorVavrUtils;
 import io.memoria.atom.eventsourcing.Event;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import static io.memoria.atom.core.vavr.ReactorVavrUtils.toMono;
 
 class EventStreamImpl<E extends Event> implements EventStream<E> {
   private final ESMsgStream esMsgStream;
@@ -25,11 +24,11 @@ class EventStreamImpl<E extends Event> implements EventStream<E> {
   }
 
   public Mono<E> pub(E e) {
-    return toMono(transformer.serialize(e)).flatMap(cStr -> pubMsg(topic, partition, e, cStr)).map(id -> e);
+    return ReactorVavrUtils.tryToMono(() -> transformer.serialize(e)).flatMap(cStr -> pubMsg(topic, partition, e, cStr)).map(id -> e);
   }
 
   public Flux<E> sub() {
-    return esMsgStream.sub(topic, partition).flatMap(msg -> toMono(transformer.deserialize(msg.value(), cClass)));
+    return esMsgStream.sub(topic, partition).flatMap(msg -> ReactorVavrUtils.tryToMono(() -> transformer.deserialize(msg.value(), cClass)));
 
   }
 
