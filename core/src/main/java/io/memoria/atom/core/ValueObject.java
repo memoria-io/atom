@@ -1,5 +1,6 @@
 package io.memoria.atom.core;
 
-public interface ValueObject<E> {
-  E value();
+@FunctionalInterface
+public interface ValueObject<T> {
+  T value();
 }

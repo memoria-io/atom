@@ -3,18 +3,18 @@ package io.memoria.atom.text.jackson.adapters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.memoria.atom.text.jackson.JacksonUtils;
 import io.memoria.atom.text.jackson.JsonJackson;
-import io.memoria.atom.text.jackson.adapters.value.Person;
-import io.memoria.atom.text.jackson.adapters.value.SomeId;
+import io.memoria.atom.text.jackson.adapters.generic.Person;
+import io.memoria.atom.text.jackson.adapters.generic.SomeId;
 import io.vavr.collection.HashMap;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ValueObjectTransformerTest {
+class GenericObjectTransformerTest {
   private static final JsonJackson json = new JsonJackson(createMapper());
 
   @Test
-  void valueObjectDirectMapping() {
+  void genericValueObjectDirectMapping() {
     // Given
     var jsonStr = "\"some_id\"";
     var obj = new SomeId("some_id");
@@ -29,7 +29,7 @@ class ValueObjectTransformerTest {
   }
 
   @Test
-  void valueObjectInsideAnother() {
+  void genericValueObjectInsideAnother() {
     // Given
     var jsonStr = """
             {
@@ -49,7 +49,7 @@ class ValueObjectTransformerTest {
   }
 
   private static ObjectMapper createMapper() {
-    var subIdModule = JacksonUtils.valueObjectsModule(SomeId.class, SomeId::new);
+    var subIdModule = JacksonUtils.genericValueObjectsModule(SomeId.class, SomeId::new, SomeId::myValue);
     var om = JacksonUtils.json(subIdModule);
     JacksonUtils.prettyJson(om);
     JacksonUtils.addMixInPropertyFormat(om, Person.class);
