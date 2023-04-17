@@ -79,6 +79,7 @@ class NatsUtils {
 
   static StreamConfiguration toStreamConfiguration(TopicConfig c) {
     return StreamConfiguration.builder()
+                              .replicas(c.replicas())
                               .storageType(c.storageType())
                               .denyDelete(c.denyDelete())
                               .denyPurge(c.denyPurge())

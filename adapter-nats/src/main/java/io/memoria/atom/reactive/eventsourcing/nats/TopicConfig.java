@@ -11,7 +11,7 @@ import java.util.Objects;
 public record TopicConfig(String topic,
                           int partition,
                           StorageType storageType,
-                          int replicationFactor,
+                          int replicas,
                           int fetchBatchSize,
                           Duration fetchMaxWait,
                           boolean denyDelete,
@@ -21,7 +21,18 @@ public record TopicConfig(String topic,
   public static final String SUBJECT_EXT = ".subject";
 
   public TopicConfig {
-    validateName(topic, partition);
+    if (topic == null || topic.isEmpty()) {
+      throw new IllegalArgumentException("Name can't be null or empty string");
+    }
+    if (partition < 0) {
+      throw new IllegalArgumentException("Partition can't be less than 0");
+    }
+    if (replicas < 1 || replicas > 5) {
+      throw new IllegalArgumentException("Replicas must be from 1 to 5 inclusive.");
+    }
+    if (fetchBatchSize < 1) {
+      throw new IllegalArgumentException("fetchBatchSize can't be less than 1");
+    }
   }
 
   public String streamName() {
@@ -61,15 +72,6 @@ public record TopicConfig(String topic,
     return new TopicConfig(topic, partition, storageType, replicationFactor, fetchBatch, fetchMaxWait, true, true);
   }
 
-  private static void validateName(String name, int partition) {
-    if (name == null || name.isEmpty()) {
-      throw new IllegalArgumentException("Name can't be null or empty string");
-    }
-    if (partition < 0) {
-      throw new IllegalArgumentException("Partition can't be less than 0");
-    }
-  }
-
   @Override
   public boolean equals(Object obj) {
     if (obj == this)
@@ -98,7 +100,7 @@ public record TopicConfig(String topic,
            + storageType
            + ", "
            + "replicationFactor="
-           + replicationFactor
+           + replicas
            + ", "
            + "fetchBatchSize="
            + fetchBatchSize
