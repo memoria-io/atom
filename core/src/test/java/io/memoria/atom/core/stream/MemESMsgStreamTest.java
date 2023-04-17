@@ -1,4 +1,4 @@
-package io.memoria.atom.eventsourcing.stream;
+package io.memoria.atom.core.stream;
 
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.core.stream.ESMsg;
