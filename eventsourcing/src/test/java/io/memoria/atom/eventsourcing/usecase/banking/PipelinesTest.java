@@ -33,6 +33,7 @@ class PipelinesTest {
 
     var createAccounts = DataSet.createAccounts(nAccounts, initialBalance);
     var creditAccounts = DataSet.credit(Id.of("SomeFakeDebitId"), nAccounts, creditBalance);
+    creditAccounts = createAccounts.appendAll(creditAccounts); // Handling duplicates (at least once messaging)
     var commands = Flux.fromIterable(createAccounts).concatWith(Flux.fromIterable(creditAccounts));
 
     // When
