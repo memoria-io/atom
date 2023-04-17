@@ -33,7 +33,7 @@ public final class ValueObjectTransformer {
 
   public static class ValueObjectSerializer<A, B extends A> extends StdSerializer<B> {
 
-    private final Function<B, String> valueExtractor;
+    private final transient Function<B, String> valueExtractor;
 
     public ValueObjectSerializer(Class<B> vc, Function<B, String> valueExtractor) {
       super(vc);
