@@ -12,8 +12,8 @@ import reactor.kafka.sender.SenderOptions;
 class KafkaUtils {
   private KafkaUtils() {}
 
-  public static ESMsg toMsg(ConsumerRecord<String, String> record) {
-    return new ESMsg(record.topic(), record.partition(), record.key(), record.value());
+  public static ESMsg toMsg(ConsumerRecord<String, String> rec) {
+    return new ESMsg(rec.topic(), rec.partition(), rec.key(), rec.value());
   }
 
   public static long topicSize(String topic, int partition, Map<String, Object> conf) {

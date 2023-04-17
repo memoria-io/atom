@@ -34,8 +34,8 @@ class DefaultKafkaESMsgStream implements KafkaESMsgStream {
 
   @Override
   public Mono<ESMsg> pub(ESMsg msg) {
-    var record = this.toRecord(msg);
-    return this.sender.send(Mono.just(record)).map(SenderResult::correlationMetadata).singleOrEmpty();
+    var rec = this.toRecord(msg);
+    return this.sender.send(Mono.just(rec)).map(SenderResult::correlationMetadata).singleOrEmpty();
   }
 
   @Override
@@ -52,7 +52,7 @@ class DefaultKafkaESMsgStream implements KafkaESMsgStream {
     return KafkaReceiver.create(receiverOptions).receive();
   }
 
-  private SenderRecord<String, String, ESMsg> toRecord(ESMsg ESMsg) {
-    return SenderRecord.create(ESMsg.topic(), ESMsg.partition(), timeSupplier.get(), ESMsg.key(), ESMsg.value(), ESMsg);
+  private SenderRecord<String, String, ESMsg> toRecord(ESMsg esMsg) {
+    return SenderRecord.create(esMsg.topic(), esMsg.partition(), timeSupplier.get(), esMsg.key(), esMsg.value(), esMsg);
   }
 }

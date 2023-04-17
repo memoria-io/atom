@@ -50,20 +50,4 @@ public interface ESException {
       return new MismatchingStateId(msg.formatted(cmdStateId.value(), stateId.value()));
     }
   }
-
-  class MismatchingEventSeqId extends Exception implements ESException {
-    private MismatchingEventSeqId(String msg) {
-      super(msg);
-    }
-
-    public static MismatchingStateId of(int seqId) {
-      var msg = "The expected event sequence id: %d already exists";
-      return new MismatchingStateId(msg.formatted(seqId));
-    }
-
-    public static MismatchingStateId of(int expectedSeqId, int actualSeqId) {
-      var msg = "The expected event sequence id: %d doesn't match actual sequence id: %d";
-      return new MismatchingStateId(msg.formatted(expectedSeqId, actualSeqId));
-    }
-  }
 }
