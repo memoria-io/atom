@@ -12,6 +12,7 @@ import io.memoria.atom.eventsourcing.usecase.banking.event.AccountEvent;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;
 import io.vavr.collection.HashMap;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 class PipelinesTest {
@@ -35,41 +36,23 @@ class PipelinesTest {
     StepVerifier.create(p).expectNextCount(expectedEventCount).verifyComplete();
   }
 
-  //
-  //  @Test
-  //  void reduction() {
-  //    // Given published commands
-  //    int personsCount = 10;
-  //    int nameChanges = 2;
-  //    int eventCount = personsCount + (personsCount * nameChanges);
-  //
-  //    // When simple pipeline is activated
-  //    runOldPipeline(personsCount, nameChanges, eventCount);
-  //
-  //    // Then events are published to old pipeline topic, with number of totalPartitions = prevPartitions
-  //    var oldEvents = Flux.range(0, oldPartitions).flatMap(i -> accountCreatedStream(oldEventTopic, i));
-  //    StepVerifier.create(oldEvents).expectNextCount(eventCount).verifyTimeout(timeout);
-  //
-  //    // And When new pipelines are run with reduction
-  //    StepVerifier.create(Flux.merge(pipeline1.map(Pipeline::runReduced)))
-  //                .expectNextCount(personsCount)
-  //                .verifyTimeout(timeout);
-  //
-  //    /*
-  //     * Then events are published to the new pipeline topic, with number of totalPartitions = totalPartitions,
-  //     * and only one event per user
-  //     */
-  //    var newEvents = Flux.range(0, newPartitions).flatMap(i -> accountCreatedStream(newEventTopic, i));
-  //    StepVerifier.create(newEvents).expectNextCount(personsCount).verifyTimeout(timeout);
-  //  }
-  //
-  //  private void runOldPipeline(int personsCount, int nameChanges, int eventCount) {
-  //    ESStream.publish(DataSet.scenario(personsCount, nameChanges).map(PipelinesTest::toMsg))
-  //            .delaySubscription(Duration.ofMillis(100))
-  //            .subscribe();
-  //    StepVerifier.create(Flux.merge(oldPipeline.map(Pipeline::run))).expectNextCount(eventCount).verifyTimeout(timeout);
-  //  }
-  //
+  @Test
+  void withInitialEvents() {
+    // Given published commands
+    int personsCount = 10;
+    int nameChanges = 2;
+    int expectedEventCount = personsCount + (personsCount * nameChanges);
+    var scenarioCommands = DataSet.scenario(personsCount, nameChanges);
+
+    // When
+    var p = pipeline.handle(scenarioCommands);
+    StepVerifier.create(p).expectNextCount(expectedEventCount).verifyComplete();
+
+    // Then
+
+  }
+
+
   private CommandPipeline<Account, AccountCommand, AccountEvent> createPipeline() {
     return new CommandPipeline<>(stateDomain(), route, createMsgStream(route), KVStore.inMemory(), transformer);
   }
