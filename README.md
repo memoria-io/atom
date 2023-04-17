@@ -126,7 +126,17 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
 
 ## Release notes
 
-* `20.1.0` Fixing Jacoco and sonar to work with `--enable-preview`
+* ~~`20.1.0` Fixing Jacoco and sonar to work with `--enable-preview`~~ was not published
+* `20.2.0`
+    * To be published soon
+    * Nats pull based reactive approach instead of server push
+    * Introducing etcd adapter as a KV repo
+    * New mechanism for getting latest committed eventId
+    * Test coverage increase
+    * Removal of CommandId, StateId, EventId value objects
+        * Despite the benefits of value objects they were hard to maintain and had to copy almost all logic in Id
+        * Having to implement Jackson SimpleModule for them meant I needed to create a new project module which inherits
+          from EventSourcing and text which was too much of a hassle for couple of value objects
 
 ## Contribution
 
