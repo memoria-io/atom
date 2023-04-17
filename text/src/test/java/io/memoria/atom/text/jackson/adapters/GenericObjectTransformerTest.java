@@ -5,7 +5,6 @@ import io.memoria.atom.text.jackson.JacksonUtils;
 import io.memoria.atom.text.jackson.JsonJackson;
 import io.memoria.atom.text.jackson.adapters.generic.Person;
 import io.memoria.atom.text.jackson.adapters.generic.SomeId;
-import io.vavr.collection.HashMap;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
