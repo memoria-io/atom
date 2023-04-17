@@ -116,14 +116,10 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
     * [x] State decider, evolver, Stream commandAggregate
     * [x] Sagas decider, Stream commandAggregate
     * [x] id safety with typed classed (StateId, CommandId, EventId)
-    * [x] Events reduction
+    * [x] Reducer
         * If using reduction the event reducer should map all states to creation event
-        * Init states can't have creation events.
-    * [x] Stream sharding to be used later for scaling
-        * [x] Tests
-        * Due to sharding (reading from **multiple** src event streams) the whole cluster should be down first before
-          executing sharding, so that oldStreams are not receiving new events, while being ingested, they should be in
-          read only state, etcd can be used as well to enforce that.
+        * Reducer can use the Evolver.reduce() to get to final state in which it would derive a creation event for the
+          new compacted topic
 * [x] Streaming
     * [x] Stream api for usage in event sourcing
 * [ ] Increase test coverage to >85%
