@@ -15,9 +15,14 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import io.memoria.atom.core.ValueObject;
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.text.jackson.adapters.GenericValueObjectTransformer.GenericValueObjectDeserializer;
+import io.memoria.atom.text.jackson.adapters.GenericValueObjectTransformer.GenericValueObjectSerializer;
 import io.memoria.atom.text.jackson.adapters.IdTransformer.IdDeserializer;
 import io.memoria.atom.text.jackson.adapters.IdTransformer.IdSerializer;
+import io.memoria.atom.text.jackson.adapters.ValueObjectTransformer.ValueObjectDeserializer;
+import io.memoria.atom.text.jackson.adapters.ValueObjectTransformer.ValueObjectSerializer;
 import io.vavr.collection.Map;
 import io.vavr.jackson.datatype.VavrModule;
 
@@ -126,8 +131,28 @@ public class JacksonUtils {
 
   public static <T extends Id> SimpleModule subIdValueObjectsModule(Map<Class<T>, Function<String, T>> eClasses) {
     var atomModule = new SimpleModule();
-    eClasses.forEach(tup -> atomModule.addDeserializer(tup._1, new IdDeserializer<>(tup._1, tup._2)));
+    eClasses.forEach(tup -> atomModule.addDeserializer(tup._1, new IdDeserializer<T>(tup._1, tup._2)));
     eClasses.forEach(tup -> atomModule.addSerializer(tup._1, new IdSerializer<>(tup._1.asSubclass(Id.class))));
     return atomModule;
   }
+
+  public static <E, T extends ValueObject<E>> SimpleModule valueObjectsModule(Map<Class<T>, Function<String, T>> eClasses) {
+    var atomModule = new SimpleModule();
+    eClasses.forEach(tup -> atomModule.addDeserializer(tup._1, new ValueObjectDeserializer<>(tup._1, tup._2)));
+    eClasses.forEach(tup -> atomModule.addSerializer(tup._1,
+                                                     new ValueObjectSerializer<>(tup._1.asSubclass(ValueObject.class))));
+    return atomModule;
+  }
+
+//  public static <A, B extends A> SimpleModule genericValueObjectsModule(Map<Class<B>, Function<String, B>> deserializers,
+//                                                                        Map<Class<B>, Function<B, String>> serializers,
+//                                                                        Class<A> aClass) {
+//    var atomModule = new SimpleModule();
+//    deserializers.forEach(tup -> atomModule.addDeserializer(tup._1,
+//                                                            new GenericValueObjectDeserializer<A, B>(tup._1, tup._2)));
+//    serializers.forEach(tup -> atomModule.addSerializer(tup._1,
+//                                                        new GenericValueObjectSerializer<>(tup._1.asSubclass(aClass),
+//                                                                                           tup._2)));
+//    return atomModule;
+//  }
 }

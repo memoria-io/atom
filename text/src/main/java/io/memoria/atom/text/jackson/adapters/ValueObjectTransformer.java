@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import io.memoria.atom.core.ValueObject;
 
 import java.io.IOException;
 import java.util.function.Function;
@@ -14,37 +15,32 @@ public final class ValueObjectTransformer {
 
   private ValueObjectTransformer() {}
 
-  public static class ValueObjectDeserializer<A, B extends A> extends StdDeserializer<B> {
+  public static class ValueObjectDeserializer<E, T extends ValueObject<E>> extends StdDeserializer<T> {
 
-    private final transient Function<String, B> constructor;
+    private final transient Function<String, T> constructor;
 
-    public ValueObjectDeserializer(Class<B> vc, Function<String, B> constructor) {
+    public ValueObjectDeserializer(Class<T> vc, Function<String, T> constructor) {
       super(vc);
       this.constructor = constructor;
     }
 
     @Override
-    public B deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
+    public T deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
       var value = p.readValueAs(String.class);
       return constructor.apply(value);
     }
-
   }
 
-  public static class ValueObjectSerializer<A, B extends A> extends StdSerializer<B> {
+  public static class ValueObjectSerializer<E, T extends ValueObject<E>> extends StdSerializer<T> {
 
-    private final transient Function<B, String> valueExtractor;
-
-    public ValueObjectSerializer(Class<B> vc, Function<B, String> valueExtractor) {
+    public ValueObjectSerializer(Class<T> vc) {
       super(vc);
-      this.valueExtractor = valueExtractor;
     }
 
     @Override
-    public void serialize(B value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-      gen.writeString(valueExtractor.apply(value));
+    public void serialize(T t, JsonGenerator gen, SerializerProvider provider) throws IOException {
+      gen.writeString(t.value().toString());
     }
-
   }
 }
 
