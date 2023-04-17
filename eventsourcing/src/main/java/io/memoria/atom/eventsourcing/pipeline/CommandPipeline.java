@@ -34,9 +34,19 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
                          ESMsgStream esMsgStream,
                          KVStore kvStore,
                          TextTransformer transformer) {
+    this(domain, commandRoute, esMsgStream, kvStore, CommandPipeline.class.getSimpleName(), transformer);
+  }
+
+  public CommandPipeline(Domain<S, C, E> domain,
+                         CommandRoute commandRoute,
+                         ESMsgStream esMsgStream,
+                         KVStore kvStore,
+                         String kvStoreKeyPrefix,
+                         TextTransformer transformer) {
     // Core
     this.domain = domain;
     this.commandRoute = commandRoute;
+
     // Infra
     this.commandStream = CommandStream.create(commandRoute, esMsgStream, transformer, domain.cClass());
     this.eventStream = EventStream.create(commandRoute.eventTopic(),
@@ -45,7 +55,8 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
                                           transformer,
                                           domain.eClass());
     this.kvStore = kvStore;
-    this.kvStoreKey = commandRoute.eventTopic() + commandRoute.eventTopicPartition();
+    this.kvStoreKey = kvStoreKeyPrefix + commandRoute.eventTopic() + commandRoute.eventTopicPartition();
+
     // In memory
     this.processedCommands = new HashSet<>();
     this.processedEvents = new HashSet<>();
