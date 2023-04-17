@@ -15,10 +15,14 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import io.memoria.atom.core.ValueObject;
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.text.jackson.adapters.GenericValueObjectTransformer.GenericValueObjectDeserializer;
+import io.memoria.atom.text.jackson.adapters.GenericValueObjectTransformer.GenericValueObjectSerializer;
 import io.memoria.atom.text.jackson.adapters.IdTransformer.IdDeserializer;
 import io.memoria.atom.text.jackson.adapters.IdTransformer.IdSerializer;
-import io.vavr.collection.Map;
+import io.memoria.atom.text.jackson.adapters.ValueObjectTransformer.ValueObjectDeserializer;
+import io.memoria.atom.text.jackson.adapters.ValueObjectTransformer.ValueObjectSerializer;
 import io.vavr.jackson.datatype.VavrModule;
 
 import java.text.SimpleDateFormat;
@@ -124,10 +128,27 @@ public class JacksonUtils {
     om.setDefaultPrettyPrinter(printer);
   }
 
-  public static <T extends Id> SimpleModule subIdValueObjectsModule(Map<Class<T>, Function<String, T>> eClasses) {
+  public static <T extends Id> SimpleModule subIdValueObjectsModule(Class<T> tClass, Function<String, T> fromString) {
     var atomModule = new SimpleModule();
-    eClasses.forEach(tup -> atomModule.addDeserializer(tup._1, new IdDeserializer<>(tup._1, tup._2)));
-    eClasses.forEach(tup -> atomModule.addSerializer(tup._1, new IdSerializer<>(tup._1.asSubclass(Id.class))));
+    atomModule.addDeserializer(tClass, new IdDeserializer<>(tClass, fromString));
+    atomModule.addSerializer(tClass, new IdSerializer<>(tClass));
+    return atomModule;
+  }
+
+  public static <E, T extends ValueObject<E>> SimpleModule valueObjectsModule(Class<T> tClass,
+                                                                              Function<String, T> fromString) {
+    var atomModule = new SimpleModule();
+    atomModule.addDeserializer(tClass, new ValueObjectDeserializer<>(tClass, fromString));
+    atomModule.addSerializer(tClass, new ValueObjectSerializer<>(tClass));
+    return atomModule;
+  }
+
+  public static <A, B extends A> SimpleModule genericValueObjectsModule(Class<B> tClass,
+                                                                        Function<String, B> fromString,
+                                                                        Function<B, String> toString) {
+    var atomModule = new SimpleModule();
+    atomModule.addDeserializer(tClass, new GenericValueObjectDeserializer<>(tClass, fromString));
+    atomModule.addSerializer(tClass, new GenericValueObjectSerializer<>(tClass, toString));
     return atomModule;
   }
 }

@@ -1,8 +1,8 @@
-package io.memoria.atom.text.jackson.adapters;
+package io.memoria.atom.text.jackson.adapters.id;
 
 import io.memoria.atom.core.id.Id;
 
-record SomeId(String value) implements Id {
+public record AnotherId(String value) implements Id {
   @Override
   public int compareTo(Id o) {
     return value.compareTo(o.value());

@@ -1,21 +1,19 @@
 package io.memoria.atom.text.jackson.adapters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.memoria.atom.core.id.Id;
 import io.memoria.atom.text.jackson.JacksonUtils;
 import io.memoria.atom.text.jackson.JsonJackson;
-import io.memoria.atom.text.jackson.adapters.id.AnotherId;
-import io.memoria.atom.text.jackson.adapters.id.Person;
-import io.memoria.atom.text.jackson.adapters.id.SomeId;
+import io.memoria.atom.text.jackson.adapters.value.Person;
+import io.memoria.atom.text.jackson.adapters.value.SomeId;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class IdTransformerTest {
+class ValueObjectTransformerTest {
   private static final JsonJackson json = new JsonJackson(createMapper());
 
   @Test
-  void idSubTypesDirectMapping() {
+  void valueObjectDirectMapping() {
     // Given
     var jsonStr = "\"some_id\"";
     var obj = new SomeId("some_id");
@@ -30,17 +28,15 @@ class IdTransformerTest {
   }
 
   @Test
-  void idSubTypesInObject() {
+  void valueObjectInsideAnother() {
     // Given
     var jsonStr = """
             {
               "$type":"Person",
-              "id":"0",
               "someId":"some_id",
-              "anotherId":"another_id",
               "name":"jack"
             }""";
-    var obj = new Person(Id.of(0), new SomeId("some_id"), new AnotherId("another_id"), "jack");
+    var obj = new Person(new SomeId("some_id"), "jack");
 
     // When
     var serResult = json.serialize(obj).get();
@@ -52,9 +48,8 @@ class IdTransformerTest {
   }
 
   private static ObjectMapper createMapper() {
-    var subIdModule = JacksonUtils.subIdValueObjectsModule(SomeId.class, SomeId::new);
-    var anotherIdModule = JacksonUtils.subIdValueObjectsModule(AnotherId.class, AnotherId::new);
-    var om = JacksonUtils.json(subIdModule, anotherIdModule);
+    var subIdModule = JacksonUtils.valueObjectsModule(SomeId.class, SomeId::new);
+    var om = JacksonUtils.json(subIdModule);
     JacksonUtils.prettyJson(om);
     JacksonUtils.addMixInPropertyFormat(om, Person.class);
     return om;
