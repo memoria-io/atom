@@ -12,10 +12,10 @@ public interface CommandStream<C extends Command> {
 
   Flux<C> sub();
 
-  static <C extends Command> CommandStream<C> create(CommandRoute CommandRoute,
-                                                     ESMsgStream ESMsgStream,
+  static <C extends Command> CommandStream<C> create(CommandRoute commandRoute,
+                                                     ESMsgStream esMsgStream,
                                                      TextTransformer transformer,
                                                      Class<C> cClass) {
-    return new CommandStreamImpl<>(CommandRoute, ESMsgStream, transformer, cClass);
+    return new CommandStreamImpl<>(commandRoute, esMsgStream, transformer, cClass);
   }
 }
