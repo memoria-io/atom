@@ -132,7 +132,7 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
     * Nats pull based reactive approach instead of server push
     * Introducing etcd adapter as a KV repo
     * New mechanism for getting latest committed eventId
-    * Test coverage increase
+    * Test coverage increase (especially for the banking Use case)
     * Removal of CommandId, StateId, EventId value objects
         * Despite the benefits of value objects they were hard to maintain and had to copy almost all logic in Id
         * Having to implement Jackson SimpleModule for them meant I needed to create a new project module which inherits
