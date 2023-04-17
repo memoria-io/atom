@@ -76,6 +76,10 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
                .flatMap(this::saga); // publish a command based on such event
   }
 
+  public Flux<E> sub() {
+    return this.eventStream.sub();
+  }
+
   private Mono<E> storeLastEventId(E e) {
     return kvStore.set(this.kvStoreKey, e.eventId().value()).map(k -> e);
   }

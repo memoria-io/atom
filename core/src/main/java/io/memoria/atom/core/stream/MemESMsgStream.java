@@ -3,45 +3,50 @@ package io.memoria.atom.core.stream;
 import io.vavr.collection.HashMap;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
+import reactor.core.publisher.Sinks.Many;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.IntStream;
 
 public final class MemESMsgStream implements ESMsgStream {
-  private final Map<String, List<LinkedBlockingDeque<ESMsg>>> topics = new ConcurrentHashMap<>();
-
-  public MemESMsgStream(io.vavr.collection.Map<String, Integer> topicPartitions) {
-    topicPartitions.forEach((key, value) -> this.topics.put(key, createTopic(value)));
-  }
+  private final Map<String, List<Many<ESMsg>>> topics = new ConcurrentHashMap<>();
 
   public MemESMsgStream(String topic, int totalPartitions) {
     this(HashMap.of(topic, totalPartitions));
   }
 
+  public MemESMsgStream(io.vavr.collection.Map<String, Integer> topicPartitions) {
+    topicPartitions.forEach((topicName, nPartitions) -> setup(topicName, nPartitions, Integer.MAX_VALUE));
+  }
+
+  public MemESMsgStream(io.vavr.collection.Map<String, Integer> topicPartitions, int history) {
+    topicPartitions.forEach((topicName, nPartitions) -> setup(topicName, nPartitions, history));
+  }
+
   @Override
   public Mono<ESMsg> pub(ESMsg msg) {
-    return Mono.fromCallable(() -> {
-      topics.get(msg.topic()).get(msg.partition()).offer(msg);
-      return msg;
-    });
+    return Mono.fromCallable(() -> this.publishFn(msg));
   }
 
   @Override
   public Flux<ESMsg> sub(String topic, int partition) {
-    var q = topics.get(topic).get(partition);
-    return Flux.generate(c -> {
-      try {
-        c.next(q.take());
-      } catch (InterruptedException e) {
-        c.error(e);
-      }
-    });
+    return this.topics.get(topic).get(partition).asFlux();
   }
 
-  private List<LinkedBlockingDeque<ESMsg>> createTopic(int e) {
-    return IntStream.range(0, e).mapToObj(i -> new LinkedBlockingDeque<ESMsg>()).toList();
+  private void setup(String topic, int nPartitions, int history) {
+    var partitions = IntStream.range(0, nPartitions)
+                              .mapToObj(i -> Sinks.many().replay().<ESMsg>limit(history))
+                              .toList();
+    this.topics.put(topic, partitions);
+  }
+
+  private ESMsg publishFn(ESMsg msg) {
+    String topic = msg.topic();
+    int partition = msg.partition();
+    this.topics.get(topic).get(partition).tryEmitNext(msg);
+    return msg;
   }
 }
