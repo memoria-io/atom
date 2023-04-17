@@ -17,7 +17,9 @@ class MemKVStoreTest {
 
     // Then
     StepVerifier.create(setKV).expectNextCount(count).verifyComplete();
-    StepVerifier.create(Flux.range(0,count).concatMap(i -> kvStore.get(toKey(i)))).expectNext(expectedValues).verifyComplete();
+    StepVerifier.create(Flux.range(0, count).concatMap(i -> kvStore.get(toKey(i))))
+                .expectNext(expectedValues)
+                .verifyComplete();
   }
 
   private static String toKey(Integer i) {

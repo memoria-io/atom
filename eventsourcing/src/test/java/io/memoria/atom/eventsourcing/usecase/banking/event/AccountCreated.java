@@ -3,8 +3,7 @@ package io.memoria.atom.eventsourcing.usecase.banking.event;
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.usecase.banking.command.CreateAccount;
 
-public record AccountCreated(Id eventId, Id commandId, Id accountId, String name, int balance)
-        implements AccountEvent {
+public record AccountCreated(Id eventId, Id commandId, Id accountId, String name, int balance) implements AccountEvent {
   @Override
   public Id stateId() {
     return accountId;

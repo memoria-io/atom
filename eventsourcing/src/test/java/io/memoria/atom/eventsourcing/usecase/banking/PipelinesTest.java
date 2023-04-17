@@ -12,7 +12,6 @@ import io.memoria.atom.eventsourcing.usecase.banking.event.AccountEvent;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;
 import io.vavr.collection.HashMap;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 class PipelinesTest {
@@ -51,7 +50,6 @@ class PipelinesTest {
     // Then
 
   }
-
 
   private CommandPipeline<Account, AccountCommand, AccountEvent> createPipeline() {
     return new CommandPipeline<>(stateDomain(), route, createMsgStream(route), KVStore.inMemory(), transformer);

@@ -29,7 +29,7 @@ public record AccountEvolver() implements Evolver<Account, AccountEvent> {
     return switch (accountEvent) {
       case Credited e -> openAccount.withCredit(e.amount());
       case NameChanged e -> openAccount.withName(e.newName());
-      case Debited e -> openAccount.withDebit( e.amount());
+      case Debited e -> openAccount.withDebit(e.amount());
       case DebitConfirmed e -> openAccount.withDebitConfirmed();
       case AccountClosed e -> new ClosedAccount(e.accountId());
       default -> openAccount;

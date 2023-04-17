@@ -11,13 +11,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 class IdTest {
   @Test
-  void happyPath(){
+  void happyPath() {
     var id = Id.of(UuidCreator.getTimeOrderedEpoch());
     Assertions.assertThat(id.value()).isNotEmpty();
   }
 
   @Test
-  void implementationTypes(){
+  void implementationTypes() {
     Assertions.assertThat(Id.of("0")).isInstanceOf(SeqId.class);
     Assertions.assertThat(Id.of(UuidCreator.getTimeOrderedEpoch())).isInstanceOf(TimedUUID.class);
     Assertions.assertThat(Id.of("bob")).isInstanceOf(StringId.class);
@@ -40,7 +40,6 @@ class IdTest {
     var atomic = new AtomicInteger(0);
     map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
   }
-
 
   @Test
   void seqIdOrdering() {

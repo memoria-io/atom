@@ -23,11 +23,11 @@ class DefaultNatsESMsgStream implements NatsESMsgStream {
     this.natsConfig = natsConfig;
     this.nc = nc;
     this.natsConfig.configs()
-              .map(NatsUtils::toStreamConfiguration)
-              .map(c -> createOrUpdateStream(nc, c))
-              .map(Try::get)
-              .map(StreamInfo::toString)
-              .forEach(log::info);
+                   .map(NatsUtils::toStreamConfiguration)
+                   .map(c -> createOrUpdateStream(nc, c))
+                   .map(Try::get)
+                   .map(StreamInfo::toString)
+                   .forEach(log::info);
   }
 
   @Override
