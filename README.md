@@ -122,7 +122,8 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
           new compacted topic
 * [x] Streaming
     * [x] Stream api for usage in event sourcing
-* [ ] Increase test coverage to >85%
+* [x] Increase test coverage to >85%
+* [ ] Use cases module to be used for integration tests
 
 ## Release notes
 
