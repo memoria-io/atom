@@ -124,6 +124,7 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
     * [x] Stream api for usage in event sourcing
 * [x] Increase test coverage to >85%
 * [ ] Use cases module to be used for integration tests
+* [ ] More structured releases based on PRs
 
 ## Release notes
 
@@ -139,6 +140,7 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
           from EventSourcing and text which was too much of a hassle for couple of value objects
 
 ## Contribution
+
 
 You can just do pull requests, and I will check them asap.
 
