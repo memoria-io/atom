@@ -64,7 +64,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   }
 
   public Flux<E> handle() {
-    return handle(commandStream.sub());//.doOnNext(System.out::println));
+    return handle(commandStream.sub());
   }
 
   public Flux<E> handle(Flux<C> cmds) {
