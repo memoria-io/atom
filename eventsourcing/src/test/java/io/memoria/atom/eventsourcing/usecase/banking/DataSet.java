@@ -37,8 +37,16 @@ class DataSet {
     return List.range(0, nAccounts).map(i -> new ChangeName(accountId(i), Id.of(), createName(version)));
   }
 
-  public static List<AccountCommand> credit(Id debitedAccount, int nAccounts, int balance) {
-    return List.range(0, nAccounts).map(i -> new Credit(Id.of(), accountId(i), debitedAccount, balance));
+  public static List<AccountCommand> credit(int nAccounts, int balance) {
+    return List.range(0, nAccounts).map(i -> new Credit(Id.of(), accountId(i), Id.of("SomeFakeDebitId"), balance));
+  }
+
+  /**
+   * Send money from first half to second half of accounts
+   */
+  public static List<AccountCommand> debit(int nAccounts, int balance) {
+    int maxDebitIds = nAccounts / 2;
+    return List.range(0, maxDebitIds).map(i -> new Debit(Id.of(), accountId(i), accountId(nAccounts - i - 1), balance));
   }
 
   private static AccountCommand createOutboundBalance(Id from, Id to, int amount) {

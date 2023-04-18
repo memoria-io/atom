@@ -20,7 +20,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   public final Domain<S, C, E> domain;
   public final CommandRoute commandRoute;
   // Infra
-  private final CommandStream<C> commandStream;
+  public final CommandStream<C> commandStream;
   private final EventStream<E> eventStream;
   private final KVStore kvStore;
   private final String kvStoreKey;
@@ -63,12 +63,16 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
     this.aggregates = new HashMap<>();
   }
 
+  public Flux<E> handle() {
+    return handle(commandStream.sub());//.doOnNext(System.out::println));
+  }
+
   public Flux<E> handle(Flux<C> cmds) {
     return cmds.flatMap(cmd -> this.init(cmd.stateId()).thenMany(Flux.just(cmd)))
                .map(this::handle)
                .filter(Option::isDefined)
                .map(Option::get)
-               .flatMap(t -> ReactorVavrUtils.tryToMono(()-> t))
+               .flatMap(t -> ReactorVavrUtils.tryToMono(() -> t))
                .skipWhile(e -> this.processedEvents.contains(e.eventId()))
                .map(this::evolve) // evolve in memory
                .flatMap(this::storeLastEventId) // then store latest eventId even if possibly not persisted
@@ -108,7 +112,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
 
   Mono<E> saga(E e) {
     var sagaCmd = domain.saga().apply(e);
-    if (!this.processedCommands.contains(e.commandId()) && sagaCmd.isDefined()) {
+    if (sagaCmd.isDefined() && !this.processedCommands.contains(sagaCmd.get().commandId())) {
       C cmd = sagaCmd.get();
       return commandStream.pub(cmd).map(c -> e);
     } else {

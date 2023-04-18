@@ -54,7 +54,7 @@ class CommandStreamImplTest {
   }
 
   private static CommandRoute createRoute(int cmdPartition) {
-    return new CommandRoute("events_topic", 0, 1, "command_topic", cmdPartition, 2);
+    return new CommandRoute("command_topic", cmdPartition, 2, "events_topic", 0, 1);
   }
 
   private Flux<SomeCommand> createMessages(Id stateId) {

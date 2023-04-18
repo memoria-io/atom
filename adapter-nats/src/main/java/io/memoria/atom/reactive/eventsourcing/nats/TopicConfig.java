@@ -22,7 +22,7 @@ public record TopicConfig(String topic,
 
   public TopicConfig {
     if (topic == null || topic.isEmpty()) {
-      throw new IllegalArgumentException("Name can't be null or empty string");
+      throw new IllegalArgumentException("Topic name can't be null or empty string");
     }
     if (partition < 0) {
       throw new IllegalArgumentException("Partition can't be less than 0");
