@@ -11,12 +11,12 @@ public interface ESException {
       super(msg);
     }
 
-    public static InvalidCommand create(Command command) {
+    public static InvalidCommand of(Command command) {
       var msg = "Invalid initializer command (%s)".formatted(command.getClass().getSimpleName());
       return new InvalidCommand(msg);
     }
 
-    public static InvalidCommand create(State state, Command command) {
+    public static InvalidCommand of(State state, Command command) {
       var msg = "Invalid command (%s) for the state (%s)".formatted(command.getClass().getSimpleName(),
                                                                     state.getClass().getSimpleName());
       return new InvalidCommand(msg);
