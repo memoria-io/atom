@@ -19,6 +19,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
+import java.util.Map;
 
 class PipelinesTest {
   private static final TextTransformer transformer = new SerializableTransformer();
@@ -91,7 +92,10 @@ class PipelinesTest {
   }
 
   private static ESMsgStream createMsgStream() {
-    return ESMsgStream.inMemory(route.totalPartitions(), route.cmdTopic(), route.eventTopic());
+    return ESMsgStream.inMemory(Map.of(route.cmdTopic(),
+                                       route.totalPartitions(),
+                                       route.eventTopic(),
+                                       route.totalPartitions()));
   }
 
   private static Domain<Account, AccountCommand, AccountEvent> stateDomain() {

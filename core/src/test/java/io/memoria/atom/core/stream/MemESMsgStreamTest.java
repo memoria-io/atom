@@ -8,6 +8,7 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class MemESMsgStreamTest {
@@ -18,7 +19,7 @@ class MemESMsgStreamTest {
   private static final Id S1 = Id.of(1);
   private static final int TOTAL_PARTITIONS = 2;
 
-  private final ESMsgStream stream = new MemESMsgStream(TOTAL_PARTITIONS, topic);
+  private final ESMsgStream stream = new MemESMsgStream(Map.of(topic, TOTAL_PARTITIONS));
 
   @Test
   void publishAndSubscribe() {

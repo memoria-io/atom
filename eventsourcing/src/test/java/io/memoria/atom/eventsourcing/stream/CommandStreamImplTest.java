@@ -25,7 +25,7 @@ class CommandStreamImplTest {
   void publishAndSubscribe() {
     // Given
     var route = createRoute(0);
-    var esStream = ESMsgStream.inMemory(route.totalPartitions(), route.cmdTopic());
+    var esStream = ESMsgStream.inMemory(route.cmdTopic(), route.totalPartitions());
     var stream = CommandStream.create(route, esStream, new SerializableTransformer(), SomeCommand.class);
     var msgs = createMessages(S0).concatWith(createMessages(S1));
 

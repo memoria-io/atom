@@ -5,7 +5,6 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.Many;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,14 +13,12 @@ import java.util.stream.IntStream;
 public final class MemESMsgStream implements ESMsgStream {
   private final Map<String, List<Many<ESMsg>>> topics = new ConcurrentHashMap<>();
 
-  public MemESMsgStream(int totalPartitions, String... topics) {
-    this(Integer.MAX_VALUE, totalPartitions, topics);
+  public MemESMsgStream(Map<String, Integer> topics) {
+    this(topics, Integer.MAX_VALUE);
   }
 
-  public MemESMsgStream(int capacity, int totalPartitions, String... topics) {
-    if (topics.length < 1)
-      throw new IllegalArgumentException("Must have at least one topic");
-    Arrays.stream(topics).forEach(topicName -> setup(topicName, totalPartitions, capacity));
+  public MemESMsgStream(Map<String, Integer> topics, int capacity) {
+    topics.forEach((k, v) -> setup(k, v, capacity));
   }
 
   @Override

@@ -3,6 +3,8 @@ package io.memoria.atom.core.stream;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 public interface ESMsgStream {
   Mono<ESMsg> pub(ESMsg esMsg);
 
@@ -11,7 +13,21 @@ public interface ESMsgStream {
   /**
    * @return an in memory ESStream
    */
-  static ESMsgStream inMemory(int totalPartition, String... topics) {
-    return new MemESMsgStream(totalPartition, topics);
+  static ESMsgStream inMemory(String topic, int totalPartitions) {
+    return new MemESMsgStream(Map.of(topic, totalPartitions));
+  }
+
+  /**
+   * @return an in memory ESStream
+   */
+  static ESMsgStream inMemory(Map<String, Integer> topics) {
+    return new MemESMsgStream(topics);
+  }
+
+  /**
+   * @return an in memory ESStream
+   */
+  static ESMsgStream inMemory(Map<String, Integer> topics, int capacity) {
+    return new MemESMsgStream(topics, capacity);
   }
 }
