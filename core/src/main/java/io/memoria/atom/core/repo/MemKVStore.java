@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class MemKVStore implements KVStore {
+class MemKVStore implements KVStore {
   private final Map<String, String> store;
 
   public MemKVStore() {
