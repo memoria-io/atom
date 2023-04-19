@@ -36,7 +36,7 @@ class CommandStreamImplTest {
     var latch0 = new AtomicInteger();
     stream.sub().take(ELEMENTS_SIZE).doOnNext(cmd -> {
       Assertions.assertThat(cmd.stateId()).isEqualTo(S0);
-      Assertions.assertThat(cmd.partition(route.totalPartitions())).isEqualTo(route.topicPartition());
+      Assertions.assertThat(cmd.partition(route.totalPartitions())).isEqualTo(route.partition());
       latch0.incrementAndGet();
     }).subscribe();
     Awaitility.await().atMost(timeout).until(() -> latch0.get() == ELEMENTS_SIZE);
@@ -47,7 +47,7 @@ class CommandStreamImplTest {
     var latch1 = new AtomicInteger();
     stream1.sub().take(ELEMENTS_SIZE).doOnNext(cmd -> {
       Assertions.assertThat(cmd.stateId()).isEqualTo(S1);
-      Assertions.assertThat(cmd.partition(route.totalPartitions())).isEqualTo(route1.topicPartition());
+      Assertions.assertThat(cmd.partition(route.totalPartitions())).isEqualTo(route1.partition());
       latch1.incrementAndGet();
     }).subscribe();
     Awaitility.await().atMost(timeout).until(() -> latch1.get() == ELEMENTS_SIZE);

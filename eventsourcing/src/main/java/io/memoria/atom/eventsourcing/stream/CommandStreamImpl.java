@@ -30,7 +30,7 @@ class CommandStreamImpl<C extends Command> implements CommandStream<C> {
   }
 
   public Flux<C> sub() {
-    return esMsgStream.sub(commandRoute.cmdTopic(), commandRoute.topicPartition())
+    return esMsgStream.sub(commandRoute.cmdTopic(), commandRoute.partition())
                       .flatMap(msg -> ReactorVavrUtils.tryToMono(() -> transformer.deserialize(msg.value(), cClass)));
 
   }

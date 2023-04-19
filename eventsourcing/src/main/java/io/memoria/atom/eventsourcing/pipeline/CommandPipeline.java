@@ -50,12 +50,12 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
     // Infra
     this.commandStream = CommandStream.create(commandRoute, esMsgStream, transformer, domain.cClass());
     this.eventStream = EventStream.create(commandRoute.eventTopic(),
-                                          commandRoute.topicPartition(),
+                                          commandRoute.partition(),
                                           esMsgStream,
                                           transformer,
                                           domain.eClass());
     this.kvStore = kvStore;
-    this.kvStoreKey = kvStoreKeyPrefix + commandRoute.eventTopic() + commandRoute.topicPartition();
+    this.kvStoreKey = kvStoreKeyPrefix + commandRoute.eventTopic() + commandRoute.partition();
 
     // In memory
     this.processedCommands = new HashSet<>();
