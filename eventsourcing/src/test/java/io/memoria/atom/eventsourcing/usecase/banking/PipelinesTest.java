@@ -11,7 +11,6 @@ import io.memoria.atom.eventsourcing.usecase.banking.command.AccountCommand;
 import io.memoria.atom.eventsourcing.usecase.banking.event.AccountEvent;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;
 import io.memoria.atom.eventsourcing.usecase.banking.state.OpenAccount;
-import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ import java.time.Duration;
 
 class PipelinesTest {
   private static final TextTransformer transformer = new SerializableTransformer();
-  private static final CommandRoute route = new CommandRoute("commands", 0, 1, "events", 0, 1);
+  private static final CommandRoute route = new CommandRoute("commands", "events", 0, 1);
   private final CommandPipeline<Account, AccountCommand, AccountEvent> pipeline = createPipeline();
 
   @Test
@@ -92,11 +91,7 @@ class PipelinesTest {
   }
 
   private static ESMsgStream createMsgStream() {
-    var topics = HashMap.of(route.cmdTopic(),
-                            route.cmdTotalPartitions(),
-                            route.eventTopic(),
-                            route.eventTotalPartitions());
-    return ESMsgStream.inMemory(topics);
+    return ESMsgStream.inMemory(route.totalPartitions(), route.cmdTopic(), route.eventTopic());
   }
 
   private static Domain<Account, AccountCommand, AccountEvent> stateDomain() {

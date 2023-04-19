@@ -23,14 +23,15 @@ class CommandStreamImpl<C extends Command> implements CommandStream<C> {
   }
 
   public Mono<C> pub(C c) {
-    var partition = c.partition(commandRoute.cmdTotalPartitions());
-    return ReactorVavrUtils.tryToMono(()-> transformer.serialize(c)).flatMap(cStr -> pubMsg(commandRoute.cmdTopic(), partition, c, cStr))
+    var partition = c.partition(commandRoute.totalPartitions());
+    return ReactorVavrUtils.tryToMono(() -> transformer.serialize(c))
+                           .flatMap(cStr -> pubMsg(commandRoute.cmdTopic(), partition, c, cStr))
                            .map(id -> c);
   }
 
   public Flux<C> sub() {
-    return esMsgStream.sub(commandRoute.cmdTopic(), commandRoute.cmdTopicPartition())
-                      .flatMap(msg -> ReactorVavrUtils.tryToMono(()-> transformer.deserialize(msg.value(), cClass)));
+    return esMsgStream.sub(commandRoute.cmdTopic(), commandRoute.topicPartition())
+                      .flatMap(msg -> ReactorVavrUtils.tryToMono(() -> transformer.deserialize(msg.value(), cClass)));
 
   }
 

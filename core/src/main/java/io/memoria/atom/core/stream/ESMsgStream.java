@@ -1,6 +1,5 @@
 package io.memoria.atom.core.stream;
 
-import io.vavr.collection.Map;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -12,14 +11,7 @@ public interface ESMsgStream {
   /**
    * @return an in memory ESStream
    */
-  static ESMsgStream inMemory(Map<String, Integer> topicPartitions) {
-    return new MemESMsgStream(topicPartitions);
-  }
-
-  /**
-   * @return an in memory ESStream
-   */
-  static ESMsgStream inMemory(String topic, int totalPartitions) {
-    return new MemESMsgStream(topic, totalPartitions);
+  static ESMsgStream inMemory(int totalPartition, String... topics) {
+    return new MemESMsgStream(totalPartition, topics);
   }
 }

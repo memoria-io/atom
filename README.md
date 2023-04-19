@@ -143,7 +143,6 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
 
 ## Contribution
 
-
 You can just do pull requests, and I will check them asap.
 
 ## Related Articles

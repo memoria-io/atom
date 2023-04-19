@@ -24,11 +24,14 @@ class EventStreamImpl<E extends Event> implements EventStream<E> {
   }
 
   public Mono<E> pub(E e) {
-    return ReactorVavrUtils.tryToMono(() -> transformer.serialize(e)).flatMap(cStr -> pubMsg(topic, partition, e, cStr)).map(id -> e);
+    return ReactorVavrUtils.tryToMono(() -> transformer.serialize(e))
+                           .flatMap(cStr -> pubMsg(topic, partition, e, cStr))
+                           .map(id -> e);
   }
 
   public Flux<E> sub() {
-    return esMsgStream.sub(topic, partition).flatMap(msg -> ReactorVavrUtils.tryToMono(() -> transformer.deserialize(msg.value(), cClass)));
+    return esMsgStream.sub(topic, partition)
+                      .flatMap(msg -> ReactorVavrUtils.tryToMono(() -> transformer.deserialize(msg.value(), cClass)));
 
   }
 

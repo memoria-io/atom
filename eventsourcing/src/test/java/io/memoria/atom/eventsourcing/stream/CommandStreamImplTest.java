@@ -25,7 +25,7 @@ class CommandStreamImplTest {
   void publishAndSubscribe() {
     // Given
     var route = createRoute(0);
-    var esStream = ESMsgStream.inMemory(route.cmdTopic(), route.cmdTotalPartitions());
+    var esStream = ESMsgStream.inMemory(route.totalPartitions(), route.cmdTopic());
     var stream = CommandStream.create(route, esStream, new SerializableTransformer(), SomeCommand.class);
     var msgs = createMessages(S0).concatWith(createMessages(S1));
 
@@ -36,7 +36,7 @@ class CommandStreamImplTest {
     var latch0 = new AtomicInteger();
     stream.sub().take(ELEMENTS_SIZE).doOnNext(cmd -> {
       Assertions.assertThat(cmd.stateId()).isEqualTo(S0);
-      Assertions.assertThat(cmd.partition(route.cmdTotalPartitions())).isEqualTo(route.cmdTopicPartition());
+      Assertions.assertThat(cmd.partition(route.totalPartitions())).isEqualTo(route.topicPartition());
       latch0.incrementAndGet();
     }).subscribe();
     Awaitility.await().atMost(timeout).until(() -> latch0.get() == ELEMENTS_SIZE);
@@ -47,14 +47,14 @@ class CommandStreamImplTest {
     var latch1 = new AtomicInteger();
     stream1.sub().take(ELEMENTS_SIZE).doOnNext(cmd -> {
       Assertions.assertThat(cmd.stateId()).isEqualTo(S1);
-      Assertions.assertThat(cmd.partition(route.cmdTotalPartitions())).isEqualTo(route1.cmdTopicPartition());
+      Assertions.assertThat(cmd.partition(route.totalPartitions())).isEqualTo(route1.topicPartition());
       latch1.incrementAndGet();
     }).subscribe();
     Awaitility.await().atMost(timeout).until(() -> latch1.get() == ELEMENTS_SIZE);
   }
 
-  private static CommandRoute createRoute(int cmdPartition) {
-    return new CommandRoute("command_topic", cmdPartition, 2, "events_topic", 0, 1);
+  private static CommandRoute createRoute(int partition) {
+    return new CommandRoute("command_topic", "events_topic", partition, 1);
   }
 
   private Flux<SomeCommand> createMessages(Id stateId) {

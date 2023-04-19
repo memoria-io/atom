@@ -1,9 +1,6 @@
 package io.memoria.atom.core.stream;
 
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.core.stream.ESMsg;
-import io.memoria.atom.core.stream.ESMsgStream;
-import io.memoria.atom.core.stream.MemESMsgStream;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -21,7 +18,7 @@ class MemESMsgStreamTest {
   private static final Id S1 = Id.of(1);
   private static final int TOTAL_PARTITIONS = 2;
 
-  private final ESMsgStream stream = new MemESMsgStream(topic, TOTAL_PARTITIONS);
+  private final ESMsgStream stream = new MemESMsgStream(TOTAL_PARTITIONS, topic);
 
   @Test
   void publishAndSubscribe() {
