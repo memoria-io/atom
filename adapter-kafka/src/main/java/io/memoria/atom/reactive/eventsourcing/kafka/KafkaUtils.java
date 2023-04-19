@@ -9,10 +9,10 @@ import org.apache.kafka.common.TopicPartition;
 import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderOptions;
 
-class KafkaUtils {
+public class KafkaUtils {
   private KafkaUtils() {}
 
-  public static ESMsg toMsg(ConsumerRecord<String, String> rec) {
+  static ESMsg toMsg(ConsumerRecord<String, String> rec) {
     return new ESMsg(rec.topic(), rec.partition(), rec.key(), rec.value());
   }
 
