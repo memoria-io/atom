@@ -5,7 +5,7 @@ import io.nats.client.Connection;
 
 public interface NatsESMsgStream extends ESMsgStream {
 
-  static ESMsgStream create(Connection nc, NatsConfig natsConfig) {
+  static NatsESMsgStream create(Connection nc, NatsConfig natsConfig) {
     return new DefaultNatsESMsgStream(nc, natsConfig);
   }
 }
