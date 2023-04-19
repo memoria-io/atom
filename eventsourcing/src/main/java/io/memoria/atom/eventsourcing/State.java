@@ -4,6 +4,6 @@ import io.memoria.atom.core.id.Id;
 
 import java.io.Serializable;
 
-public interface State extends Serializable {
+public interface State extends Shardable, Serializable {
   Id stateId();
 }
