@@ -12,24 +12,19 @@ import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderRecord;
 import reactor.kafka.sender.SenderResult;
 
-import java.util.function.Supplier;
-
 import static java.util.Collections.singleton;
 
 class DefaultKafkaESMsgStream implements KafkaESMsgStream {
-  private final KafkaSender<String, String> sender;
   public final Map<String, Object> producerConfig;
   public final Map<String, Object> consumerConfig;
-  private final Supplier<Long> timeSupplier;
+  private final KafkaSender<String, String> sender;
 
-  DefaultKafkaESMsgStream(KafkaSender<String, String> sender,
-                          Map<String, Object> producerConfig,
+  DefaultKafkaESMsgStream(Map<String, Object> producerConfig,
                           Map<String, Object> consumerConfig,
-                          Supplier<Long> timeSupplier) {
+                          KafkaSender<String, String> sender) {
     this.sender = sender;
     this.producerConfig = producerConfig;
     this.consumerConfig = consumerConfig;
-    this.timeSupplier = timeSupplier;
   }
 
   @Override
@@ -53,6 +48,6 @@ class DefaultKafkaESMsgStream implements KafkaESMsgStream {
   }
 
   private SenderRecord<String, String, ESMsg> toRecord(ESMsg esMsg) {
-    return SenderRecord.create(esMsg.topic(), esMsg.partition(), timeSupplier.get(), esMsg.key(), esMsg.value(), esMsg);
+    return SenderRecord.create(esMsg.topic(), esMsg.partition(), null, esMsg.key(), esMsg.value(), esMsg);
   }
 }

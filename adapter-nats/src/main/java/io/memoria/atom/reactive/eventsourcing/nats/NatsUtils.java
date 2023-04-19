@@ -70,7 +70,8 @@ class NatsUtils {
   static ESMsg toMsg(Message message) {
     var value = new String(message.getData(), StandardCharsets.UTF_8);
     var tp = TopicConfig.topicPartition(message.getSubject());
-    return new ESMsg(tp._1, tp._2, message.getHeaders().getFirst(ID_HEADER), value);
+    String key = message.getHeaders().getFirst(ID_HEADER);
+    return new ESMsg(tp._1, tp._2, key, value);
   }
 
   static Options toOptions(NatsConfig natsConfig) {
