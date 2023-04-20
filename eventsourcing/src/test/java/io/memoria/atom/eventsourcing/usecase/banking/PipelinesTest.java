@@ -34,8 +34,8 @@ class PipelinesTest {
     int creditBalance = 300;
     int endBalance = initialBalance + creditBalance;
 
-    var createAccounts = DataSet.createAccounts(nAccounts, initialBalance);
-    var creditAccounts = DataSet.credit(nAccounts, creditBalance);
+    var createAccounts = Data.createAccounts(nAccounts, initialBalance);
+    var creditAccounts = Data.credit(nAccounts, creditBalance);
     creditAccounts = createAccounts.appendAll(creditAccounts); // Handling duplicates (at least once messaging)
     var commands = Flux.fromIterable(createAccounts).concatWith(Flux.fromIterable(creditAccounts));
 
@@ -56,8 +56,8 @@ class PipelinesTest {
     int expectedCreditedAccountsBalance = initialBalance + debitBalance;
     int expectedTotalBalance = nAccounts * initialBalance;
 
-    var createAccounts = DataSet.createAccounts(nAccounts, initialBalance);
-    var debitAccounts = DataSet.debit(nAccounts, debitBalance);
+    var createAccounts = Data.createAccounts(nAccounts, initialBalance);
+    var debitAccounts = Data.debit(nAccounts, debitBalance);
     var commands = Flux.fromIterable(createAccounts).concatWith(Flux.fromIterable(debitAccounts));
     commands.flatMap(pipeline.commandStream::pub).subscribe();
 
@@ -83,7 +83,7 @@ class PipelinesTest {
   }
 
   private Mono<OpenAccount> account(int accountId) {
-    var account0Events = pipeline.sub().filter(e -> e.stateId().equals(DataSet.accountId(accountId))).take(2);
+    var account0Events = pipeline.sub().filter(e -> e.stateId().equals(Data.accountId(accountId))).take(2);
     return pipeline.domain.evolver().reduce(account0Events).map(acc -> (OpenAccount) acc);
   }
 

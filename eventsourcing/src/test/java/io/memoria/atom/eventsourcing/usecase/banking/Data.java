@@ -6,7 +6,7 @@ import io.vavr.collection.List;
 
 import java.util.Random;
 
-class DataSet {
+class Data {
   public static final String NAME_PREFIX = "name_version:";
 
   static Id accountId(int i) {
@@ -54,8 +54,8 @@ class DataSet {
   }
 
   private static List<Id> shuffledIds(int nAccounts) {
-    return List.range(0, nAccounts).shuffle().map(DataSet::accountId);
+    return List.range(0, nAccounts).shuffle().map(Data::accountId);
   }
 
-  private DataSet() {}
+  private Data() {}
 }
