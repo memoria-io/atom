@@ -5,37 +5,41 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.Many;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.IntStream;
 
 public final class MemESMsgStream implements ESMsgStream {
-  private final Map<String, List<Many<ESMsg>>> topics = new ConcurrentHashMap<>();
+  private final int historySize;
+  private final Map<String, Map<Integer, Many<ESMsg>>> topics = new ConcurrentHashMap<>();
 
-  public MemESMsgStream(Map<String, Integer> topics) {
-    this(topics, Integer.MAX_VALUE);
+  public MemESMsgStream() {
+    this(Integer.MAX_VALUE);
   }
 
-  public MemESMsgStream(Map<String, Integer> topics, int capacity) {
-    topics.forEach((k, v) -> setup(k, v, capacity));
+  public MemESMsgStream(int historySize) {
+    this.historySize = historySize;
   }
 
   @Override
   public Mono<ESMsg> pub(ESMsg msg) {
-    return Mono.fromCallable(() -> this.publishFn(msg));
+    return Mono.fromCallable(() -> addPartitionSink(msg.topic(), msg.partition()))
+               .flatMap(k -> Mono.fromCallable(() -> this.publishFn(msg)));
   }
 
   @Override
   public Flux<ESMsg> sub(String topic, int partition) {
-    return this.topics.get(topic).get(partition).asFlux();
+    return Mono.fromCallable(() -> addPartitionSink(topic, partition))
+               .flatMapMany(i -> this.topics.get(topic).get(partition).asFlux());
   }
 
-  private void setup(String topic, int nPartitions, int history) {
-    var partitions = IntStream.range(0, nPartitions)
-                              .mapToObj(i -> Sinks.many().replay().<ESMsg>limit(history))
-                              .toList();
-    this.topics.put(topic, partitions);
+  private int addPartitionSink(String topic, int partition) {
+    this.topics.computeIfAbsent(topic, x -> new ConcurrentHashMap<>());
+    this.topics.computeIfPresent(topic, (k, v) -> {
+      var sink = Sinks.many().replay().<ESMsg>limit(historySize);
+      v.computeIfAbsent(partition, x -> sink);
+      return v;
+    });
+    return partition;
   }
 
   private ESMsg publishFn(ESMsg msg) {

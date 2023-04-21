@@ -19,7 +19,7 @@ class MemESMsgStreamTest {
   private static final Id S1 = Id.of(1);
   private static final int TOTAL_PARTITIONS = 2;
 
-  private final ESMsgStream stream = new MemESMsgStream(Map.of(topic, TOTAL_PARTITIONS));
+  private final ESMsgStream stream = new MemESMsgStream();
 
   @Test
   void publishAndSubscribe() {
