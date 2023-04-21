@@ -5,32 +5,40 @@ import io.memoria.atom.core.stream.ESMsgStream;
 import io.memoria.atom.core.text.TextTransformer;
 import io.memoria.atom.core.vavr.ReactorVavrUtils;
 import io.memoria.atom.eventsourcing.Command;
-import io.memoria.atom.eventsourcing.pipeline.CommandRoute;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 class CommandStreamImpl<C extends Command> implements CommandStream<C> {
-  private final io.memoria.atom.core.stream.ESMsgStream esMsgStream;
+  private final String topic;
+  private final int subPartition;
+  private final int totalPubPartitions;
+  private final ESMsgStream esMsgStream;
   private final TextTransformer transformer;
   private final Class<C> cClass;
-  private final io.memoria.atom.eventsourcing.pipeline.CommandRoute commandRoute;
 
-  CommandStreamImpl(CommandRoute commandRoute, ESMsgStream esMsgStream, TextTransformer transformer, Class<C> cClass) {
-    this.commandRoute = commandRoute;
+  CommandStreamImpl(String topic,
+                    int subPartition,
+                    int totalPubPartitions,
+                    ESMsgStream esMsgStream,
+                    TextTransformer transformer,
+                    Class<C> cClass) {
+    this.topic = topic;
+    this.subPartition = subPartition;
+    this.totalPubPartitions = totalPubPartitions;
     this.esMsgStream = esMsgStream;
     this.transformer = transformer;
     this.cClass = cClass;
   }
 
   public Mono<C> pub(C c) {
-    var partition = c.partition(commandRoute.totalPartitions());
+    var partition = c.partition(totalPubPartitions);
     return ReactorVavrUtils.tryToMono(() -> transformer.serialize(c))
-                           .flatMap(cStr -> pubMsg(commandRoute.cmdTopic(), partition, c, cStr))
+                           .flatMap(cStr -> pubMsg(topic, partition, c, cStr))
                            .map(id -> c);
   }
 
   public Flux<C> sub() {
-    return esMsgStream.sub(commandRoute.cmdTopic(), commandRoute.partition())
+    return esMsgStream.sub(topic, subPartition)
                       .flatMap(msg -> ReactorVavrUtils.tryToMono(() -> transformer.deserialize(msg.value(), cClass)));
 
   }

@@ -6,7 +6,7 @@ import io.memoria.atom.core.text.SerializableTransformer;
 import io.memoria.atom.core.text.TextTransformer;
 import io.memoria.atom.eventsourcing.Domain;
 import io.memoria.atom.eventsourcing.pipeline.CommandPipeline;
-import io.memoria.atom.eventsourcing.pipeline.CommandRoute;
+import io.memoria.atom.eventsourcing.pipeline.PipelineRoute;
 import io.memoria.atom.eventsourcing.usecase.banking.command.AccountCommand;
 import io.memoria.atom.eventsourcing.usecase.banking.event.AccountEvent;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;
@@ -19,11 +19,10 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
-import java.util.Map;
 
 class PipelinesTest {
   private static final TextTransformer transformer = new SerializableTransformer();
-  private static final CommandRoute route = new CommandRoute("commands", "events", 0, 1);
+  private static final PipelineRoute PIPELINE_ROUTE = new PipelineRoute("commands", 0, 1, "events", 0);
   private final CommandPipeline<Account, AccountCommand, AccountEvent> pipeline = createPipeline();
 
   @Test
@@ -83,19 +82,16 @@ class PipelinesTest {
   }
 
   private Mono<OpenAccount> account(int accountId) {
-    var account0Events = pipeline.sub().filter(e -> e.stateId().equals(Data.accountId(accountId))).take(2);
+    var account0Events = pipeline.eventStream.sub().filter(e -> e.stateId().equals(Data.accountId(accountId))).take(2);
     return pipeline.domain.evolver().reduce(account0Events).map(acc -> (OpenAccount) acc);
   }
 
   private CommandPipeline<Account, AccountCommand, AccountEvent> createPipeline() {
-    return new CommandPipeline<>(stateDomain(), route, createMsgStream(), KVStore.inMemory(), transformer);
+    return new CommandPipeline<>(stateDomain(), PIPELINE_ROUTE, createMsgStream(), KVStore.inMemory(), transformer);
   }
 
   private static ESMsgStream createMsgStream() {
-    return ESMsgStream.inMemory(Map.of(route.cmdTopic(),
-                                       route.totalPartitions(),
-                                       route.eventTopic(),
-                                       route.totalPartitions()));
+    return ESMsgStream.inMemory();
   }
 
   private static Domain<Account, AccountCommand, AccountEvent> stateDomain() {

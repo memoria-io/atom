@@ -18,10 +18,10 @@ import java.util.*;
 public class CommandPipeline<S extends State, C extends Command, E extends Event> {
   // Core
   public final Domain<S, C, E> domain;
-  public final CommandRoute commandRoute;
+  public final PipelineRoute route;
   // Infra
   public final CommandStream<C> commandStream;
-  private final EventStream<E> eventStream;
+  public final EventStream<E> eventStream;
   private final KVStore kvStore;
   private final String kvStoreKey;
   // In memory
@@ -30,32 +30,28 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   private final Map<Id, S> aggregates;
 
   public CommandPipeline(Domain<S, C, E> domain,
-                         CommandRoute commandRoute,
+                         PipelineRoute route,
                          ESMsgStream esMsgStream,
                          KVStore kvStore,
                          TextTransformer transformer) {
-    this(domain, commandRoute, esMsgStream, kvStore, CommandPipeline.class.getSimpleName(), transformer);
+    this(domain, route, esMsgStream, kvStore, CommandPipeline.class.getSimpleName(), transformer);
   }
 
   public CommandPipeline(Domain<S, C, E> domain,
-                         CommandRoute commandRoute,
+                         PipelineRoute route,
                          ESMsgStream esMsgStream,
                          KVStore kvStore,
                          String kvStoreKeyPrefix,
                          TextTransformer transformer) {
     // Core
     this.domain = domain;
-    this.commandRoute = commandRoute;
+    this.route = route;
 
     // Infra
-    this.commandStream = CommandStream.create(commandRoute, esMsgStream, transformer, domain.cClass());
-    this.eventStream = EventStream.create(commandRoute.eventTopic(),
-                                          commandRoute.partition(),
-                                          esMsgStream,
-                                          transformer,
-                                          domain.eClass());
+    this.commandStream = CommandStream.create(route, esMsgStream, transformer, domain.cClass());
+    this.eventStream = EventStream.create(route, esMsgStream, transformer, domain.eClass());
     this.kvStore = kvStore;
-    this.kvStoreKey = kvStoreKeyPrefix + commandRoute.eventTopic() + commandRoute.partition();
+    this.kvStoreKey = kvStoreKeyPrefix + route.eventTopic() + route.eventSubPubPartition();
 
     // In memory
     this.processedCommands = new HashSet<>();
@@ -68,24 +64,19 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   }
 
   public Flux<E> handle(Flux<C> cmds) {
-    return cmds.flatMap(cmd -> this.init(cmd.stateId()).thenMany(Flux.just(cmd)))
+    return cmds.flatMap(this::redirectIfNotBelong) // Redirection allows location transparency and auto sharding
+               .filter(Option::isDefined)
+               .map(Option::get)
+               .flatMap(cmd -> this.init(cmd.stateId()).thenMany(Flux.just(cmd)))
                .map(this::handle)
                .filter(Option::isDefined)
                .map(Option::get)
                .flatMap(t -> ReactorVavrUtils.tryToMono(() -> t))
-               .skipWhile(e -> this.processedEvents.contains(e.eventId()))
+               .skipWhile(e -> processedEvents.contains(e.eventId()))
                .map(this::evolve) // evolve in memory
                .flatMap(this::storeLastEventId) // then store latest eventId even if possibly not persisted
                .flatMap(eventStream::pub) // publish event
                .flatMap(this::saga); // publish a command based on such event
-  }
-
-  public Flux<E> sub() {
-    return this.eventStream.sub();
-  }
-
-  private Mono<E> storeLastEventId(E e) {
-    return kvStore.set(this.kvStoreKey, e.eventId().value()).map(k -> e);
   }
 
   /**
@@ -97,6 +88,18 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
     } else {
       return kvStore.get(this.kvStoreKey).map(Id::of).flatMapMany(eventStream::subUntil).map(this::evolve);
     }
+  }
+
+  Mono<Option<C>> redirectIfNotBelong(C cmd) {
+    if (cmd.isInPartition(route.cmdSubPartition(), route.cmdTotalPubPartitions())) {
+      return Mono.just(Option.some(cmd));
+    } else {
+      return this.commandStream.pub(cmd).map(c -> Option.none());
+    }
+  }
+
+  Mono<E> storeLastEventId(E e) {
+    return kvStore.set(this.kvStoreKey, e.eventId().value()).map(k -> e);
   }
 
   Option<Try<E>> handle(C cmd) {
