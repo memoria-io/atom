@@ -8,6 +8,10 @@ import java.util.UUID;
 public interface Id extends Serializable, Comparable<Id> {
   String value();
 
+  default UUID toUUID() {
+    return UUID.fromString(value());
+  }
+
   /**
    * <p>
    * Creates UUID v7 generator based on <a
