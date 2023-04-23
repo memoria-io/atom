@@ -23,6 +23,7 @@ import java.time.Duration;
 class PipelinesTest {
   private static final TextTransformer transformer = new SerializableTransformer();
   private static final PipelineRoute PIPELINE_ROUTE = new PipelineRoute("commands", 0, 1, "events", 0);
+  private static final ESMsgStream esStream = ESMsgStream.inMemory();
   private final CommandPipeline<Account, AccountCommand, AccountEvent> pipeline = createPipeline();
 
   @Test
@@ -58,7 +59,7 @@ class PipelinesTest {
     var createAccounts = Data.createAccounts(nAccounts, initialBalance);
     var debitAccounts = Data.debit(nAccounts, debitBalance);
     var commands = Flux.fromIterable(createAccounts).concatWith(Flux.fromIterable(debitAccounts));
-    commands.flatMap(pipeline.commandStream::pub).subscribe();
+    commands.flatMap(pipeline::pub).subscribe();
 
     // When
     StepVerifier.create(pipeline.handle()).expectNextCount(25).expectTimeout(Duration.ofMillis(100)).verify();
@@ -82,7 +83,7 @@ class PipelinesTest {
   }
 
   private Mono<OpenAccount> account(int accountId) {
-    var account0Events = pipeline.eventStream.sub().filter(e -> e.stateId().equals(Data.accountId(accountId))).take(2);
+    var account0Events = pipeline.subToEvents().filter(e -> e.stateId().equals(Data.accountId(accountId))).take(2);
     return pipeline.domain.evolver().reduce(account0Events).map(acc -> (OpenAccount) acc);
   }
 

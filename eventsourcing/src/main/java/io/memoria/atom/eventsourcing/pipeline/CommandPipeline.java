@@ -20,8 +20,8 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   public final Domain<S, C, E> domain;
   public final PipelineRoute route;
   // Infra
-  public final CommandStream<C> commandStream;
-  public final EventStream<E> eventStream;
+  private final CommandStream<C> commandStream;
+  private final EventStream<E> eventStream;
   private final KVStore kvStore;
   private final String kvStoreKey;
   // In memory
@@ -48,8 +48,8 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
     this.route = route;
 
     // Infra
-    this.commandStream = CommandStream.create(route, esMsgStream, transformer, domain.cClass());
-    this.eventStream = EventStream.create(route, esMsgStream, transformer, domain.eClass());
+    this.commandStream = CommandStream.create(esMsgStream, transformer, domain.cClass());
+    this.eventStream = EventStream.create(esMsgStream, transformer, domain.eClass());
     this.kvStore = kvStore;
     this.kvStoreKey = kvStoreKeyPrefix + route.eventTopic() + route.eventSubPubPartition();
 
@@ -60,7 +60,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   }
 
   public Flux<E> handle() {
-    return handle(commandStream.sub());
+    return handle(commandStream.sub(route.cmdTopic(), route.cmdSubPartition()));
   }
 
   public Flux<E> handle(Flux<C> cmds) {
@@ -75,7 +75,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
                .skipWhile(e -> processedEvents.contains(e.eventId()))
                .map(this::evolve) // evolve in memory
                .flatMap(this::storeLastEventId) // then store latest eventId even if possibly not persisted
-               .flatMap(eventStream::pub) // publish event
+               .flatMap(this::pub) // publish event
                .flatMap(this::saga); // publish a command based on such event
   }
 
@@ -86,15 +86,35 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
     if (this.aggregates.containsKey(stateId)) {
       return Flux.empty();
     } else {
-      return kvStore.get(this.kvStoreKey).map(Id::of).flatMapMany(eventStream::subUntil).map(this::evolve);
+      return kvStore.get(this.kvStoreKey)
+                    .map(Id::of)
+                    .flatMapMany(id -> eventStream.subUntil(route.eventTopic(), route.eventSubPubPartition(), id))
+                    .map(this::evolve);
     }
+  }
+
+  public Flux<E> subToEvents() {
+    return this.eventStream.sub(route.eventTopic(), route.eventSubPubPartition());
+  }
+
+  public Flux<C> subToCommands() {
+    return this.commandStream.sub(route.cmdTopic(), route.cmdSubPartition());
+  }
+
+  public Mono<C> pub(C cmd) {
+    var partition = cmd.partition(route.cmdTotalPubPartitions());
+    return this.commandStream.pub(route.cmdTopic(), partition, cmd);
+  }
+
+  public Mono<E> pub(E e) {
+    return this.eventStream.pub(route.eventTopic(), route.eventSubPubPartition(), e);
   }
 
   Mono<Option<C>> redirectIfNotBelong(C cmd) {
     if (cmd.isInPartition(route.cmdSubPartition(), route.cmdTotalPubPartitions())) {
       return Mono.just(Option.some(cmd));
     } else {
-      return this.commandStream.pub(cmd).map(c -> Option.none());
+      return this.pub(cmd).map(c -> Option.none());
     }
   }
 
@@ -117,7 +137,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
     var sagaCmd = domain.saga().apply(e);
     if (sagaCmd.isDefined() && !this.processedCommands.contains(sagaCmd.get().commandId())) {
       C cmd = sagaCmd.get();
-      return commandStream.pub(cmd).map(c -> e);
+      return this.pub(cmd).map(c -> e);
     } else {
       return Mono.just(e);
     }

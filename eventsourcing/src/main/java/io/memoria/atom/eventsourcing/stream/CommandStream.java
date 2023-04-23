@@ -8,28 +8,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface CommandStream<C extends Command> {
-  Mono<C> pub(C c);
+  Mono<C> pub(String topic, int partition, C c);
 
-  Flux<C> sub();
+  Flux<C> sub(String topic, int partition);
 
-  static <C extends Command> CommandStream<C> create(PipelineRoute route,
-                                                     ESMsgStream esMsgStream,
+  static <C extends Command> CommandStream<C> create(ESMsgStream esMsgStream,
                                                      TextTransformer transformer,
                                                      Class<C> cClass) {
-    return new CommandStreamImpl<>(route.cmdTopic(),
-                                   route.cmdSubPartition(),
-                                   route.cmdTotalPubPartitions(),
-                                   esMsgStream,
-                                   transformer,
-                                   cClass);
-  }
-
-  static <C extends Command> CommandStream<C> create(String topic,
-                                                     int subPartition,
-                                                     int totalPubPartitions,
-                                                     ESMsgStream esMsgStream,
-                                                     TextTransformer transformer,
-                                                     Class<C> cClass) {
-    return new CommandStreamImpl<>(topic, subPartition, totalPubPartitions, esMsgStream, transformer, cClass);
+    return new CommandStreamImpl<>(esMsgStream, transformer, cClass);
   }
 }

@@ -9,36 +9,24 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 class CommandStreamImpl<C extends Command> implements CommandStream<C> {
-  private final String topic;
-  private final int subPartition;
-  private final int totalPubPartitions;
   private final ESMsgStream esMsgStream;
   private final TextTransformer transformer;
   private final Class<C> cClass;
 
-  CommandStreamImpl(String topic,
-                    int subPartition,
-                    int totalPubPartitions,
-                    ESMsgStream esMsgStream,
-                    TextTransformer transformer,
-                    Class<C> cClass) {
-    this.topic = topic;
-    this.subPartition = subPartition;
-    this.totalPubPartitions = totalPubPartitions;
+  CommandStreamImpl(ESMsgStream esMsgStream, TextTransformer transformer, Class<C> cClass) {
     this.esMsgStream = esMsgStream;
     this.transformer = transformer;
     this.cClass = cClass;
   }
 
-  public Mono<C> pub(C c) {
-    var partition = c.partition(totalPubPartitions);
+  public Mono<C> pub(String topic, int partition, C c) {
     return ReactorVavrUtils.tryToMono(() -> transformer.serialize(c))
                            .flatMap(cStr -> pubMsg(topic, partition, c, cStr))
                            .map(id -> c);
   }
 
-  public Flux<C> sub() {
-    return esMsgStream.sub(topic, subPartition)
+  public Flux<C> sub(String topic, int partition) {
+    return esMsgStream.sub(topic, partition)
                       .flatMap(msg -> ReactorVavrUtils.tryToMono(() -> transformer.deserialize(msg.value(), cClass)));
 
   }

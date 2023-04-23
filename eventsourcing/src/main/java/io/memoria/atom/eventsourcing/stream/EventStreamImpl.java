@@ -12,24 +12,20 @@ class EventStreamImpl<E extends Event> implements EventStream<E> {
   private final ESMsgStream esMsgStream;
   private final TextTransformer transformer;
   private final Class<E> cClass;
-  private final String topic;
-  private final int partition;
 
-  EventStreamImpl(String topic, int partition, ESMsgStream esMsgStream, TextTransformer transformer, Class<E> cClass) {
-    this.topic = topic;
-    this.partition = partition;
+  EventStreamImpl(ESMsgStream esMsgStream, TextTransformer transformer, Class<E> cClass) {
     this.esMsgStream = esMsgStream;
     this.transformer = transformer;
     this.cClass = cClass;
   }
 
-  public Mono<E> pub(E e) {
+  public Mono<E> pub(String topic, int partition, E e) {
     return ReactorVavrUtils.tryToMono(() -> transformer.serialize(e))
                            .flatMap(cStr -> pubMsg(topic, partition, e, cStr))
                            .map(id -> e);
   }
 
-  public Flux<E> sub() {
+  public Flux<E> sub(String topic, int partition) {
     return esMsgStream.sub(topic, partition)
                       .flatMap(msg -> ReactorVavrUtils.tryToMono(() -> transformer.deserialize(msg.value(), cClass)));
 
