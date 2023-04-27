@@ -59,7 +59,7 @@ class PipelinesTest {
     var createAccounts = Data.createAccounts(nAccounts, initialBalance);
     var debitAccounts = Data.debit(nAccounts, debitBalance);
     var commands = Flux.fromIterable(createAccounts).concatWith(Flux.fromIterable(debitAccounts));
-    commands.flatMap(pipeline::pub).subscribe();
+    commands.flatMap(pipeline::pubCommand).subscribe();
 
     // When
     StepVerifier.create(pipeline.handle()).expectNextCount(25).expectTimeout(Duration.ofMillis(100)).verify();

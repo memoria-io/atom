@@ -75,7 +75,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
                              .skipWhile(e -> processedEvents.contains(e.eventId()))
                              .map(this::evolve) // evolve in memory
                              .flatMap(this::storeLastEventId) // then store latest eventId even if possibly not persisted
-                             .flatMap(this::pub) // publish event
+                             .flatMap(this::pubEvent) // publish event
                              .flatMap(this::saga); // publish a command based on such event
     return init().concatWith(handleCommands);
   }
@@ -98,12 +98,12 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
     return this.commandStream.sub(route.cmdTopic(), route.cmdSubPartition());
   }
 
-  public Mono<C> pub(C cmd) {
+  public Mono<C> pubCommand(C cmd) {
     return Mono.fromCallable(() -> cmd.partition(route.cmdTotalPubPartitions()))
                .flatMap(partition -> this.commandStream.pub(route.cmdTopic(), partition, cmd));
   }
 
-  public Mono<E> pub(E e) {
+  public Mono<E> pubEvent(E e) {
     return this.eventStream.pub(route.eventTopic(), route.eventSubPubPartition(), e);
   }
 
@@ -112,7 +112,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
       if (cmd.isInPartition(route.cmdSubPartition(), route.cmdTotalPubPartitions())) {
         return Mono.just(Option.some(cmd));
       } else {
-        return this.pub(cmd).map(c -> Option.<C>none());
+        return this.pubCommand(cmd).map(c -> Option.<C>none());
       }
     }).flatMap(Function.identity());
   }
@@ -137,7 +137,7 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
       var sagaCmd = domain.saga().apply(e);
       if (sagaCmd.isDefined() && !this.processedCommands.contains(sagaCmd.get().commandId())) {
         C cmd = sagaCmd.get();
-        return this.pub(cmd).map(c -> e);
+        return this.pubCommand(cmd).map(c -> e);
       } else {
         return Mono.just(e);
       }
