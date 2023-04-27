@@ -1,12 +1,12 @@
 package io.memoria.atom.core.file;
 
-import io.vavr.collection.HashMap;
-import io.vavr.collection.List;
-import io.vavr.collection.Map;
+import io.vavr.Tuple;
+import io.vavr.collection.*;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.function.BinaryOperator;
 import java.util.regex.Pattern;
 
@@ -17,23 +17,30 @@ public class ConfigFileOps {
   public static final BinaryOperator<String> JOIN_LINES = (a, b) -> a + System.lineSeparator() + b;
   public static final String VAR_PREFIX = "${";
   public static final String VAR_POSTFIX = "}";
-
   private final Option<String> nestingPrefix;
-  private final boolean resolveSystemEnv;
-  private final Map<String, String> systemEnv;
+  private final boolean enableVariableInterpolation;
+  private final Map<String, String> envVars;
 
-  public ConfigFileOps(boolean resolveSystemEnv) {
-    this(null, resolveSystemEnv);
+  public ConfigFileOps(boolean enableVariableInterpolation) {
+    this(null, enableVariableInterpolation);
   }
 
   /**
-   * @param resolveSystemEnv when true, any line which contains ${ENV_VALUE:-defaultValue} will be resolved from system
-   *                         environment
+   * @param enableVariableInterpolation when true, any line which contains ${ENV_VALUE:-defaultValue} will be resolved
+   *                                    from system environment then from java systemProperties
    */
-  public ConfigFileOps(String nestingPrefix, boolean resolveSystemEnv) {
-    this.resolveSystemEnv = resolveSystemEnv;
-    this.systemEnv = (resolveSystemEnv) ? HashMap.ofAll(System.getenv()) : HashMap.empty();
+  public ConfigFileOps(String nestingPrefix, boolean enableVariableInterpolation) {
+    this.enableVariableInterpolation = enableVariableInterpolation;
+    this.envVars = (enableVariableInterpolation) ? toMap(System.getProperties()).merge(HashMap.ofAll(System.getenv()))
+                                                 : HashMap.empty();
     this.nestingPrefix = Option.of(nestingPrefix).flatMap(s -> (s.isEmpty()) ? none() : some(s));
+  }
+
+  Map<String, String> toMap(Properties props) {
+    return HashSet.ofAll(props.keySet())
+                  .filter(k -> k instanceof String)
+                  .map(k -> (String) k)
+                  .toMap(k -> Tuple.of(k, props.getProperty(k)));
   }
 
   /**
@@ -72,18 +79,18 @@ public class ConfigFileOps {
     var split = expression.split(":-");
     if (split.length == 1) {
       var key = split[0];
-      return this.systemEnv.get(key).orElse(none());
+      return this.envVars.get(key).orElse(none());
     }
     if (split.length == 2) {
       var key = split[0];
       var defaultValue = split[1];
-      return this.systemEnv.get(key).orElse(some(defaultValue));
+      return this.envVars.get(key).orElse(some(defaultValue));
     }
     return none();
   }
 
   private String resolveLineExpression(String line) {
-    if (this.resolveSystemEnv) {
+    if (this.enableVariableInterpolation) {
       var p = Pattern.compile("\\$\\{[\\sa-zA-Z_0-9]+(:-)?.+}");//NOSONAR
       var f = p.matcher(line);
       var matches = new java.util.HashMap<String, String>();

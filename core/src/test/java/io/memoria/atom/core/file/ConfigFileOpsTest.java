@@ -10,7 +10,12 @@ import java.util.stream.Stream;
 
 class ConfigFileOpsTest {
   private static final String TEST_DIR = "file/configFileOps/";
-  private static final ConfigFileOps configOps = new ConfigFileOps("#include:", true);
+  private final ConfigFileOps configOps;
+
+  ConfigFileOpsTest() {
+    System.setProperty("MY_SYSTEM_PROPERTY", "2000");
+    configOps = new ConfigFileOps("#include:", true);
+  }
 
   @ParameterizedTest
   @MethodSource("paths")
@@ -35,6 +40,8 @@ class ConfigFileOpsTest {
     Assertions.assertEquals("otherValue: defaultValue", lines[1]);
     Assertions.assertEquals("routeValue: /defaultValue/{paramName}/someOther", lines[2]);
     Assertions.assertEquals("routeValueWithSpace: /defaultValue/{paramName}/someOther", lines[3]);
+    Assertions.assertEquals("javaVersionSystemProperty: 20", lines[4]);
+    Assertions.assertEquals("mySysProp: 2000", lines[5]);
   }
 
   private static Stream<String> paths() {
