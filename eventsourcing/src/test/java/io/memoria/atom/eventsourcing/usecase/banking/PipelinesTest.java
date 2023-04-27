@@ -23,7 +23,7 @@ import java.time.Duration;
 class PipelinesTest {
   private static final TextTransformer transformer = new SerializableTransformer();
   private static final PipelineRoute PIPELINE_ROUTE = new PipelineRoute("commands", 0, 1, "events", 0);
-  private static final ESMsgStream esStream = ESMsgStream.inMemory();
+  private final ESMsgStream esStream = ESMsgStream.inMemory();
   private final CommandPipeline<Account, AccountCommand, AccountEvent> pipeline = createPipeline();
 
   @Test
@@ -88,11 +88,7 @@ class PipelinesTest {
   }
 
   private CommandPipeline<Account, AccountCommand, AccountEvent> createPipeline() {
-    return new CommandPipeline<>(stateDomain(), PIPELINE_ROUTE, createMsgStream(), KVStore.inMemory(), transformer);
-  }
-
-  private static ESMsgStream createMsgStream() {
-    return ESMsgStream.inMemory();
+    return new CommandPipeline<>(stateDomain(), PIPELINE_ROUTE, esStream, KVStore.inMemory(), transformer);
   }
 
   private static Domain<Account, AccountCommand, AccountEvent> stateDomain() {

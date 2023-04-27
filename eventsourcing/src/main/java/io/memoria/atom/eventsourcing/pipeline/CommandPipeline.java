@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class CommandPipeline<S extends State, C extends Command, E extends Event> {
   // Core
@@ -64,33 +65,29 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   }
 
   public Flux<E> handle(Flux<C> cmds) {
-    return cmds.flatMap(this::redirectIfNotBelong) // Redirection allows location transparency and auto sharding
-               .filter(Option::isDefined)
-               .map(Option::get)
-               .flatMap(cmd -> this.init(cmd.stateId()).thenMany(Flux.just(cmd)))
-               .map(this::handle)
-               .filter(Option::isDefined)
-               .map(Option::get)
-               .flatMap(t -> ReactorVavrUtils.tryToMono(() -> t))
-               .skipWhile(e -> processedEvents.contains(e.eventId()))
-               .map(this::evolve) // evolve in memory
-               .flatMap(this::storeLastEventId) // then store latest eventId even if possibly not persisted
-               .flatMap(this::pub) // publish event
-               .flatMap(this::saga); // publish a command based on such event
+    var handleCommands = cmds.flatMap(this::redirectIfNotBelong) // Redirection allows location transparency and auto sharding
+                             .filter(Option::isDefined)
+                             .map(Option::get)
+                             .map(this::handle)
+                             .filter(Option::isDefined)
+                             .map(Option::get)
+                             .flatMap(t -> ReactorVavrUtils.tryToMono(() -> t))
+                             .skipWhile(e -> processedEvents.contains(e.eventId()))
+                             .map(this::evolve) // evolve in memory
+                             .flatMap(this::storeLastEventId) // then store latest eventId even if possibly not persisted
+                             .flatMap(this::pub) // publish event
+                             .flatMap(this::saga); // publish a command based on such event
+    return init().concatWith(handleCommands);
   }
 
   /**
-   * Used internally for lazy loading, and can be called for warmups
+   * Load previous events and build the state
    */
-  public Flux<E> init(Id stateId) {
-    if (this.aggregates.containsKey(stateId)) {
-      return Flux.empty();
-    } else {
-      return kvStore.get(this.kvStoreKey)
-                    .map(Id::of)
-                    .flatMapMany(id -> eventStream.subUntil(route.eventTopic(), route.eventSubPubPartition(), id))
-                    .map(this::evolve);
-    }
+  private Flux<E> init() {
+    return kvStore.get(this.kvStoreKey)
+                  .map(Id::of)
+                  .flatMapMany(id -> eventStream.subUntil(route.eventTopic(), route.eventSubPubPartition(), id))
+                  .map(this::evolve);
   }
 
   public Flux<E> subToEvents() {
@@ -102,8 +99,8 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   }
 
   public Mono<C> pub(C cmd) {
-    var partition = cmd.partition(route.cmdTotalPubPartitions());
-    return this.commandStream.pub(route.cmdTopic(), partition, cmd);
+    return Mono.fromCallable(() -> cmd.partition(route.cmdTotalPubPartitions()))
+               .flatMap(partition -> this.commandStream.pub(route.cmdTopic(), partition, cmd));
   }
 
   public Mono<E> pub(E e) {
@@ -111,11 +108,13 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   }
 
   Mono<Option<C>> redirectIfNotBelong(C cmd) {
-    if (cmd.isInPartition(route.cmdSubPartition(), route.cmdTotalPubPartitions())) {
-      return Mono.just(Option.some(cmd));
-    } else {
-      return this.pub(cmd).map(c -> Option.none());
-    }
+    return Mono.fromCallable(() -> {
+      if (cmd.isInPartition(route.cmdSubPartition(), route.cmdTotalPubPartitions())) {
+        return Mono.just(Option.some(cmd));
+      } else {
+        return this.pub(cmd).map(c -> Option.<C>none());
+      }
+    }).flatMap(Function.identity());
   }
 
   Mono<E> storeLastEventId(E e) {
@@ -134,13 +133,15 @@ public class CommandPipeline<S extends State, C extends Command, E extends Event
   }
 
   Mono<E> saga(E e) {
-    var sagaCmd = domain.saga().apply(e);
-    if (sagaCmd.isDefined() && !this.processedCommands.contains(sagaCmd.get().commandId())) {
-      C cmd = sagaCmd.get();
-      return this.pub(cmd).map(c -> e);
-    } else {
-      return Mono.just(e);
-    }
+    return Mono.fromCallable(() -> {
+      var sagaCmd = domain.saga().apply(e);
+      if (sagaCmd.isDefined() && !this.processedCommands.contains(sagaCmd.get().commandId())) {
+        C cmd = sagaCmd.get();
+        return this.pub(cmd).map(c -> e);
+      } else {
+        return Mono.just(e);
+      }
+    }).flatMap(Function.identity());
   }
 
   E evolve(E e) {
