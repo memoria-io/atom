@@ -9,7 +9,7 @@ import java.util.Random;
 class Data {
   public static final String NAME_PREFIX = "name_version:";
 
-  static Id accountId(int i) {
+  static Id createAccountId(int i) {
     return Id.of("acc_id_" + i);
   }
 
@@ -18,7 +18,7 @@ class Data {
   }
 
   static List<AccountCommand> createAccounts(int nAccounts, int balance) {
-    return List.range(0, nAccounts).map(i -> CreateAccount.of(accountId(i), createName(i), balance));
+    return List.range(0, nAccounts).map(i -> CreateAccount.of(createAccountId(i), createName(i), balance));
   }
 
   static List<AccountCommand> randomClosure(int nAccounts) {
@@ -34,11 +34,11 @@ class Data {
   }
 
   public static List<AccountCommand> changeName(int nAccounts, int version) {
-    return List.range(0, nAccounts).map(i -> new ChangeName(accountId(i), Id.of(), createName(version)));
+    return List.range(0, nAccounts).map(i -> new ChangeName(createAccountId(i), Id.of(), createName(version)));
   }
 
   public static List<AccountCommand> credit(int nAccounts, int balance) {
-    return List.range(0, nAccounts).map(i -> new Credit(Id.of(), accountId(i), Id.of("SomeFakeDebitId"), balance));
+    return List.range(0, nAccounts).map(i -> new Credit(Id.of(), createAccountId(i), Id.of("SomeFakeDebitId"), balance));
   }
 
   /**
@@ -46,7 +46,7 @@ class Data {
    */
   public static List<AccountCommand> debit(int nAccounts, int balance) {
     int maxDebitIds = nAccounts / 2;
-    return List.range(0, maxDebitIds).map(i -> new Debit(Id.of(), accountId(i), accountId(nAccounts - i - 1), balance));
+    return List.range(0, maxDebitIds).map(i -> new Debit(Id.of(), createAccountId(i), createAccountId(nAccounts - i - 1), balance));
   }
 
   private static AccountCommand createOutboundBalance(Id from, Id to, int amount) {
@@ -54,7 +54,7 @@ class Data {
   }
 
   private static List<Id> shuffledIds(int nAccounts) {
-    return List.range(0, nAccounts).shuffle().map(Data::accountId);
+    return List.range(0, nAccounts).shuffle().map(Data::createAccountId);
   }
 
   private Data() {}

@@ -1,5 +1,6 @@
 package io.memoria.atom.eventsourcing.rule;
 
+import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.eventsourcing.State;
 import io.vavr.Function2;
@@ -12,13 +13,31 @@ import java.util.concurrent.atomic.AtomicReference;
 public interface Evolver<S extends State, E extends Event> extends Function2<S, E, S> {
   S apply(E e);
 
-  default Mono<S> reduce(Flux<E> events) {
-    return events.reduce(Option.none(), this::applyOpt).filter(Option::isDefined).map(Option::get);
+  /**
+   * Use this method only when the events flux is known to terminate at certain point
+   */
+  default Mono<S> reduce(Id stateId, Flux<E> events) {
+    return events.filter(e -> e.stateId().equals(stateId))
+                 .reduce(Option.none(), this::applyOpt)
+                 .filter(Option::isDefined)
+                 .map(Option::get);
   }
 
-  default Flux<S> accumulate(Flux<E> events) {
+  /**
+   * Filters the events for certain state(stateId) and reducing them into one state after taking (take) number of
+   * events
+   */
+  default Mono<S> reduce(Id stateId, Flux<E> events, int take) {
+    return events.filter(e -> e.stateId().equals(stateId))
+                 .take(take)
+                 .reduce(Option.none(), this::applyOpt)
+                 .filter(Option::isDefined)
+                 .map(Option::get);
+  }
+
+  default Flux<S> accumulate(Id stateId, Flux<E> events) {
     var atomicReference = new AtomicReference<S>();
-    return events.map(event -> {
+    return events.filter(e -> e.stateId().equals(stateId)).map(event -> {
       if (atomicReference.get() == null) {
         S newState = apply(event);
         atomicReference.compareAndExchange(null, newState);

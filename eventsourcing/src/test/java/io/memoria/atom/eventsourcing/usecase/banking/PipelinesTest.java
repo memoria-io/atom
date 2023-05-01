@@ -83,8 +83,9 @@ class PipelinesTest {
   }
 
   private Mono<OpenAccount> account(int accountId) {
-    var account0Events = pipeline.subToEvents().filter(e -> e.stateId().equals(Data.accountId(accountId))).take(2);
-    return pipeline.domain.evolver().reduce(account0Events).map(acc -> (OpenAccount) acc);
+    var stateEvents = pipeline.subToEvents();
+    var stateId = Data.createAccountId(accountId);
+    return pipeline.domain.evolver().reduce(stateId, stateEvents, 2).map(acc -> (OpenAccount) acc);
   }
 
   private CommandPipeline<Account, AccountCommand, AccountEvent> createPipeline() {
