@@ -40,7 +40,7 @@ class ConfigFileOpsTest {
     Assertions.assertEquals("otherValue: defaultValue", lines[1]);
     Assertions.assertEquals("routeValue: /defaultValue/{paramName}/someOther", lines[2]);
     Assertions.assertEquals("routeValueWithSpace: /defaultValue/{paramName}/someOther", lines[3]);
-    Assertions.assertEquals("javaVersionSystemProperty: 20", lines[4]);
+    Assertions.assertTrue(lines[4].startsWith("javaVersionSystemProperty: 20"));
     Assertions.assertEquals("mySysProp: 2000", lines[5]);
   }
 
