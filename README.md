@@ -123,8 +123,7 @@ Adapter initially were built to implement eventsourcing infra ports, but might l
 * [x] Streaming
     * [x] Stream api for usage in event sourcing
 * [x] Increase test coverage to >85%
-* [ ] Use cases module to be used for integration tests
-* [ ] Performance and benchmarks module
+* [ ] Performance and benchmarks project "atom-performance"
 * [ ] JVM Profiling
 * [ ] More structured releases based on PRs
 
