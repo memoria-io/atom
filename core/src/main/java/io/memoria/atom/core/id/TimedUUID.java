@@ -6,7 +6,7 @@ import com.github.f4b6a3.uuid.util.UuidUtil;
 import java.util.Objects;
 import java.util.UUID;
 
-record TimedUUID(UUID uuid) implements Id {
+public record TimedUUID(UUID uuid) implements Id {
 
   public TimedUUID {
     Objects.requireNonNull(uuid);
