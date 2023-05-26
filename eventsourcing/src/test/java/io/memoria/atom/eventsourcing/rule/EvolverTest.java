@@ -35,7 +35,7 @@ class EvolverTest {
     var evolver = new AccountEvolver();
 
     // Then
-    StepVerifier.create(evolver.accumulate(bobId, events))
+    StepVerifier.create(evolver.allStates(bobId, events))
                 .expectNext(new OpenAccount(bobId, "bob0", 0, 0))
                 .expectNext(new OpenAccount(bobId, "bob1", 0, 0))
                 .expectNext(new OpenAccount(bobId, "bob2", 0, 0))

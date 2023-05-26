@@ -4,14 +4,30 @@ import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.eventsourcing.State;
 import io.vavr.Function2;
+import io.vavr.collection.HashMap;
+import io.vavr.collection.Map;
 import io.vavr.control.Option;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 public interface Evolver<S extends State, E extends Event> extends Function2<S, E, S> {
   S apply(E e);
+
+  /**
+   * Use this method only when the events flux is known to terminate at certain point
+   */
+  default Mono<Map<Id, S>> reduce(Flux<E> events) {
+    java.util.Map<Id, S> initial = new ConcurrentHashMap<>();
+    var result = events.reduce(initial, (map, event) -> {
+      map.computeIfPresent(event.stateId(), (k, st) -> apply(st, event));
+      map.computeIfAbsent(event.stateId(), (k) -> apply(event));
+      return map;
+    });
+    return result.map(HashMap::ofAll);
+  }
 
   /**
    * Use this method only when the events flux is known to terminate at certain point
@@ -35,7 +51,7 @@ public interface Evolver<S extends State, E extends Event> extends Function2<S, 
                  .map(Option::get);
   }
 
-  default Flux<S> accumulate(Id stateId, Flux<E> events) {
+  default Flux<S> allStates(Id stateId, Flux<E> events) {
     var atomicReference = new AtomicReference<S>();
     return events.filter(e -> e.stateId().equals(stateId)).map(event -> {
       if (atomicReference.get() == null) {
