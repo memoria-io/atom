@@ -22,12 +22,40 @@
 
 ## Introduction
 
-* Atom is a collection of java utilities it has the following modules:
-  * `core` for core pojo utilities
-  * `sec` for security utilities
-  * `text` for json utilities
-* Current JDK used is `Java 20`.
-* Atom relies heavily on [Vavr](https://www.vavr.io/).
+Atom is an SDK to accelerate development, and it's a constant learning effort. Atom relies heavily
+on [Vavr](https://www.vavr.io/).
+
+The current JDK used is `Java 20` and the motivation is to use the latest available JDK.
+
+## Modules
+
+![](.docs/atom.jpg)
+
+### `core` module
+
+The `core` module consists of and intended to only contain **POJO** utilities, and standard interfaces which are
+implemented by child modules
+
+Some utilities like for configuration management like `ConfigFileOps`, and `ResourceFileOps` (similar to Typesafe HOCOON
+library)
+
+* The `ResourceFileOps` utility for reading resource based files even inside JAR packaged projects
+* The `ConfigFileOps` utility is a for reading configuration files:
+    * Allows nesting of files using a marker e.g `include: sub_file.yaml` would replace this line with content
+      of `sub_file.yaml`
+    * Reading as a system environment variable if not found as environment variable or else the default value if it was supplied:
+        * `path: ${JAVA_HOME}`
+        * `myVar: ${SOME_VAR:-defaultValue}`
+    * Reading java system properties `System.setProperty("MY_SYSTEM_PROPERTY", "2000");`
+
+### `sec` module
+
+`sec` for security utilities, e.g encryption, hashing, json web tokens etc. You can check the pom for more details on
+the libraries it depends on.
+
+### `text` module
+
+The `text` module is utilities and standardization of text serialization/deserialization
 
 **Disclaimer:**
 > `atom` is on edge, it's a work in progress and a pragmatic learning effort, so feel free to create issues or PRs.
@@ -70,29 +98,6 @@ Then import nomrally in your pom dependencies
 The versioning is similar to semantic but with a shift where the first segment being the jdk version.
 
 Format Example: `JDK_Version.major.mino`
-
-## Atom Features
-
-* Jackson Adapter (Json & Yaml) utilities
-* ResourceFileOps utility
-* ConfigFileOps is a module for reading yaml configuration files (depends on Jackson Adapter)
-    * Allows nesting of files using a marker e.g `include: sub_file.yaml` would replace this line with content
-      of `sub_file.yaml`
-    * Reading as a system property if not found as environment variable or else the default value if it was supplied:
-        * `path: ${JAVA_HOME}`
-        * `myVar: ${SOME_VAR:-defaultValue}`
-* Security utilities
-
-# Architecture
-
-![](.docs/atom.jpg)
-
-## Core module
-
-Core module has basic set of utilities:
-
-* ConfigFileOps, and ResourceFileOps (similar to Typesafe HOCOON library)
-* TextTransformer base interfaces
 
 ## TODOs
 
