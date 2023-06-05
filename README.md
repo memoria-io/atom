@@ -25,7 +25,7 @@
 Atom is an SDK to accelerate development, and it's a constant learning effort. Atom relies heavily
 on [Vavr](https://www.vavr.io/).
 
-The current JDK used is `Java 20` and the motivation is to use the latest available JDK.
+The currently used JDK is `Java 20` and the motivation is to use the latest available JDK.
 
 ## Modules
 
