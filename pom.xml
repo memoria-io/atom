@@ -12,7 +12,7 @@
     <!--suppress MavenRedundantGroupId -->
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>20.10.0</version>
+    <version>20.11.0</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
@@ -25,19 +25,12 @@
 
     <modules>
         <module>core</module>
-        <module>eventsourcing</module>
-        <module>adapter-etcd</module>
-        <module>adapter-kafka</module>
-        <module>adapter-nats</module>
         <module>text</module>
         <module>sec</module>
-        <module>web</module>
     </modules>
 
     <properties>
-        <kafka.version>3.4.0</kafka.version>
         <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
-        <reactor.version>2022.0.5</reactor.version>
         <sonar.coverage.exclusions>
             **/*Exception.java
         </sonar.coverage.exclusions>
@@ -90,16 +83,6 @@
             </dependency>
 
             <!--======================================================================================== -->
-            <!-- Reactive Dependencies -->
-            <!--======================================================================================== -->
-            <dependency>
-                <groupId>io.projectreactor</groupId>
-                <artifactId>reactor-bom</artifactId>
-                <version>${reactor.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <!--======================================================================================== -->
             <!-- Security Dependencies -->
             <!--======================================================================================== -->
             <dependency>
@@ -125,30 +108,6 @@
                 <scope>runtime</scope>
             </dependency>
             <!--======================================================================================== -->
-            <!-- kafka Dependencies -->
-            <!--======================================================================================== -->
-            <dependency>
-                <groupId>org.apache.kafka</groupId>
-                <artifactId>kafka-clients</artifactId>
-                <version>${kafka.version}</version>
-            </dependency>
-            <!-- ===============================================================   -->
-            <!-- Nats Dependencies                                                 -->
-            <!-- ===============================================================   -->
-            <dependency>
-                <groupId>io.nats</groupId>
-                <artifactId>jnats</artifactId>
-                <version>2.16.9</version>
-            </dependency>
-            <!-- ===============================================================   -->
-            <!-- etcd Dependencies                                                 -->
-            <!-- ===============================================================   -->
-            <dependency>
-                <groupId>io.etcd</groupId>
-                <artifactId>jetcd-core</artifactId>
-                <version>0.7.5</version>
-            </dependency>
-            <!--======================================================================================== -->
             <!-- Json Dependencies -->
             <!--======================================================================================== -->
             <dependency>
@@ -170,20 +129,8 @@
             <artifactId>uuid-creator</artifactId>
         </dependency>
         <!--======================================================================================== -->
-        <!-- Reactive Dependencies -->
-        <!--======================================================================================== -->
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
-        </dependency>
-        <!--======================================================================================== -->
         <!-- Testing Dependencies -->
         <!--======================================================================================== -->
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-test</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
