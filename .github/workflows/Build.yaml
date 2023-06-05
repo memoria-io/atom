@@ -19,8 +19,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '20'
-      - name: Docker compose
-        run: docker-compose up -d
       - name: Sleeping
         run: sleep 30
       - name: Cache Maven packages
