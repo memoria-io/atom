@@ -43,7 +43,8 @@ library)
 * The `ConfigFileOps` utility is a for reading configuration files:
     * Allows nesting of files using a marker e.g `include: sub_file.yaml` would replace this line with content
       of `sub_file.yaml`
-    * Reading as a system environment variable if not found as environment variable or else the default value if it was supplied:
+    * Reading as a system environment variable if not found as environment variable or else the default value if it was
+      supplied:
         * `path: ${JAVA_HOME}`
         * `myVar: ${SOME_VAR:-defaultValue}`
     * Reading java system properties `System.setProperty("MY_SYSTEM_PROPERTY", "2000");`
@@ -55,7 +56,8 @@ the libraries it depends on.
 
 ### `text` module
 
-The `text` module is utilities and standardization of text serialization/deserialization
+The `text` module is utilities and standardization of text serialization/deserialization, it relies on jackson
+libraries.
 
 **Disclaimer:**
 > `atom` is on edge, it's a work in progress and a pragmatic learning effort, so feel free to create issues or PRs.
