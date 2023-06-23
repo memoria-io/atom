@@ -6,13 +6,13 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>jbom</artifactId>
-        <version>20.2.0</version>
+        <version>20.3.0</version>
     </parent>
 
     <!--suppress MavenRedundantGroupId -->
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>20.13.0</version>
+    <version>20.14.0</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
@@ -66,17 +66,6 @@
             <!-- Core Dependencies -->
             <!--======================================================================================== -->
             <dependency>
-                <groupId>io.vavr</groupId>
-                <artifactId>vavr</artifactId>
-                <version>0.10.4</version>
-            </dependency>
-            <dependency>
-                <groupId>io.vavr</groupId>
-                <artifactId>vavr-jackson</artifactId>
-                <version>0.10.3</version>
-            </dependency>
-
-            <dependency>
                 <groupId>com.github.f4b6a3</groupId>
                 <artifactId>uuid-creator</artifactId>
                 <version>5.2.0</version>
@@ -121,25 +110,8 @@
     </dependencyManagement>
     <dependencies>
         <dependency>
-            <groupId>io.vavr</groupId>
-            <artifactId>vavr</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.github.f4b6a3</groupId>
             <artifactId>uuid-creator</artifactId>
         </dependency>
-        <!--======================================================================================== -->
-        <!-- Testing Dependencies -->
-        <!--======================================================================================== -->
-<!--        <dependency>-->
-<!--            <groupId>org.awaitility</groupId>-->
-<!--            <artifactId>awaitility</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.assertj</groupId>-->
-<!--            <artifactId>assertj-core</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
     </dependencies>
 </project>
