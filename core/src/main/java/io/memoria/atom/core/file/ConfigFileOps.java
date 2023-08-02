@@ -38,7 +38,7 @@ public class ConfigFileOps {
 
   Map<String, String> toMap(Properties props) {
     return HashSet.ofAll(props.keySet())
-                  .filter(k -> k instanceof String)
+                  .filter(String.class::isInstance)
                   .map(k -> (String) k)
                   .toMap(k -> Tuple.of(k, props.getProperty(k)));
   }
