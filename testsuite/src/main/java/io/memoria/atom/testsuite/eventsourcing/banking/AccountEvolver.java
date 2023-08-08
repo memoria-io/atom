@@ -17,14 +17,6 @@ import io.memoria.atom.testsuite.eventsourcing.banking.state.OpenAccount;
 @SuppressWarnings("SwitchStatementWithTooFewBranches")
 public record AccountEvolver() implements Evolver<Account, AccountEvent> {
   @Override
-  public Account apply(Account account, AccountEvent accountEvent) {
-    return switch (account) {
-      case OpenAccount openAccount -> handle(openAccount, accountEvent);
-      case ClosedAccount acc -> acc;
-    };
-  }
-
-  @Override
   public Account apply(AccountEvent accountEvent) {
     return switch (accountEvent) {
       case AccountCreated e -> {
@@ -35,14 +27,22 @@ public record AccountEvolver() implements Evolver<Account, AccountEvent> {
     };
   }
 
-  private Account handle(OpenAccount openAccount, AccountEvent accountEvent) {
+  @Override
+  public Account apply(Account account, AccountEvent accountEvent) {
+    return switch (account) {
+      case OpenAccount openAccount -> handle(openAccount, accountEvent);
+      case ClosedAccount acc -> acc;
+    };
+  }
+
+  private Account handle(OpenAccount account, AccountEvent accountEvent) {
     return switch (accountEvent) {
-      case Credited e -> openAccount.withCredit(e.amount());
-      case NameChanged e -> openAccount.withName(e.newName());
-      case Debited e -> openAccount.withDebit(e.amount());
-      case DebitConfirmed e -> openAccount.withDebitConfirmed();
-      case AccountClosed e -> new ClosedAccount(openAccount.meta().incrementVersion());
-      default -> openAccount;
+      case Credited e -> account.withCredit(e.amount());
+      case NameChanged e -> account.withName(e.newName());
+      case Debited e -> account.withDebit(e.amount());
+      case DebitConfirmed e -> account.withDebitConfirmed();
+      case AccountClosed e -> new ClosedAccount(stateMeta(account));
+      default -> account;
     };
   }
 }
