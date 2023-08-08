@@ -5,7 +5,10 @@ import io.memoria.atom.testsuite.eventsourcing.banking.state.OpenAccount;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.*;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.aliceEventMeta;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.bobCommandMeta;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.createOpenAccount;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.evolver;
 
 class AccountEvolverTest {
   @Test

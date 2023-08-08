@@ -1,7 +1,10 @@
 package io.memoria.atom.core.file;
 
 import io.vavr.Tuple;
-import io.vavr.collection.*;
+import io.vavr.collection.HashMap;
+import io.vavr.collection.HashSet;
+import io.vavr.collection.List;
+import io.vavr.collection.Map;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 

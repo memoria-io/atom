@@ -24,7 +24,7 @@ public record EventMeta(EventId eventId,
   }
 
   public EventMeta(CommandId commandId, StateId stateId) {
-    this(EventId.of(),commandId, stateId, System.currentTimeMillis(), Option.none());
+    this(EventId.of(), commandId, stateId, System.currentTimeMillis(), Option.none());
   }
 }
 

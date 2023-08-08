@@ -6,7 +6,10 @@ import io.memoria.atom.testsuite.eventsourcing.banking.event.Debited;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.*;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.aliceCommandMeta;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.bobCommandMeta;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.createOpenAccount;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.decider;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AccountDeciderTest {

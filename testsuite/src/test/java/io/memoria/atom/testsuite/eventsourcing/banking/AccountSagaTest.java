@@ -5,7 +5,10 @@ import io.memoria.atom.testsuite.eventsourcing.banking.event.Debited;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.*;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.aliceEventMeta;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.aliceId;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.bobId;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.saga;
 
 class AccountSagaTest {
   @Test
