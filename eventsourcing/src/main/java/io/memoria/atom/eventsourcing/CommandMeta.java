@@ -12,16 +12,16 @@ public record CommandMeta(CommandId commandId, StateId stateId, long timestamp, 
     }
   }
 
-  public CommandMeta(CommandId commandId, StateId stateId, long timestamp) {
-    this(commandId, stateId, timestamp, Option.none());
+  public CommandMeta(StateId stateId) {
+    this(CommandId.of(), stateId);
   }
 
   public CommandMeta(CommandId commandId, StateId stateId) {
-    this(commandId, stateId, System.currentTimeMillis(), Option.none());
+    this(commandId, stateId, System.currentTimeMillis());
   }
 
-  public CommandMeta(StateId stateId) {
-    this(CommandId.of(), stateId, System.currentTimeMillis(), Option.none());
+  public CommandMeta(CommandId commandId, StateId stateId, long timestamp) {
+    this(commandId, stateId, timestamp, Option.none());
   }
 }
 

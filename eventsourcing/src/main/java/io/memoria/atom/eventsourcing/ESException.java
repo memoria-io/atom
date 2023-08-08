@@ -42,8 +42,8 @@ public interface ESException {
       super(msg);
     }
 
-    public static MismatchingStateId of(Id stateId, Id cmdStateId) {
-      var msg = "The Command's stateId:%s doesn't match stream stateId:%s";
+    public static MismatchingStateId of(StateId stateId, StateId cmdStateId) {
+      var msg = "The Command's stateId:%s doesn't match stateId:%s";
       return new MismatchingStateId(msg.formatted(cmdStateId.value(), stateId.value()));
     }
   }

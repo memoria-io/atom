@@ -2,7 +2,6 @@ package io.memoria.atom.testsuite.eventsourcing.banking;
 
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.ESException;
-import io.memoria.atom.eventsourcing.EventId;
 import io.memoria.atom.eventsourcing.EventMeta;
 import io.memoria.atom.eventsourcing.rule.Decider;
 import io.memoria.atom.testsuite.eventsourcing.banking.command.AccountCommand;
@@ -29,24 +28,21 @@ import io.vavr.control.Try;
 
 import java.util.function.Supplier;
 
+import static io.vavr.control.Try.failure;
+import static io.vavr.control.Try.success;
+
 public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier)
         implements Decider<Account, AccountCommand, AccountEvent> {
 
   @Override
   @SuppressWarnings("SwitchStatementWithTooFewBranches")
   public Try<AccountEvent> apply(AccountCommand command) {
-    var meta = getMeta(command);
+    var createMeta = eventMeta(command);
     return switch (command) {
-      case CreateAccount cmd -> Try.success(new AccountCreated(meta, cmd.accountName(), cmd.balance()));
-      default -> Try.failure(ESException.InvalidCommand.of(command));
+      case CreateAccount cmd ->
+              createMeta.flatMap(meta -> success(new AccountCreated(meta, cmd.accountName(), cmd.balance())));
+      default -> failure(ESException.InvalidCommand.of(command));
     };
-  }
-
-  private EventMeta getMeta(AccountCommand command) {
-    return new EventMeta(EventId.of(idSupplier.get()),
-                         command.meta().commandId(),
-                         command.accountId(),
-                         timeSupplier.get());
   }
 
   @Override
@@ -58,44 +54,42 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
   }
 
   private Try<AccountEvent> handle(OpenAccount account, AccountCommand command) {
-    var meta = getMeta(command);
+    var createMeta = eventMeta(account, command);
     return switch (command) {
-      case CreateAccount cmd -> Try.failure(ESException.InvalidCommand.of(account, cmd));
-      case ChangeName cmd -> Try.success(new NameChanged(meta, cmd.name()));
-      case Debit cmd -> tryToDebit(account, meta, cmd);
-      case Credit cmd -> Try.success(new Credited(meta, cmd.debitedAcc(), cmd.amount()));
-      case ConfirmDebit cmd -> Try.success(new DebitConfirmed(meta));
-      case CloseAccount cmd -> tryToClose(account, cmd);
+      case CreateAccount cmd -> failure(ESException.InvalidCommand.of(account, cmd));
+      case ChangeName cmd -> createMeta.flatMap(meta -> success(new NameChanged(meta, cmd.name())));
+      case Debit cmd -> createMeta.flatMap(meta -> tryToDebit(account, meta, cmd));
+      case Credit cmd -> createMeta.flatMap(meta -> success(new Credited(meta, cmd.debitedAcc(), cmd.amount())));
+      case ConfirmDebit cmd -> createMeta.flatMap(meta -> success(new DebitConfirmed(meta)));
+      case CloseAccount cmd -> createMeta.flatMap(meta -> tryToClose(account, meta));
     };
   }
 
   private Try<AccountEvent> handle(ClosedAccount state, AccountCommand command) {
-    var meta = getMeta(command);
+    var createMeta = eventMeta(command);
     return switch (command) {
-      case Credit cmd -> Try.success(new CreditRejected(meta, cmd.debitedAcc(), cmd.amount()));
-      case ConfirmDebit cmd -> Try.success(new DebitConfirmed(meta));
-      case ChangeName cmd -> Try.failure(ESException.InvalidCommand.of(state, cmd));
-      case Debit cmd -> Try.failure(ESException.InvalidCommand.of(state, cmd));
-      case CreateAccount cmd -> Try.failure(ESException.InvalidCommand.of(state, cmd));
-      case CloseAccount cmd -> Try.failure(ESException.InvalidCommand.of(state, cmd));
+      case Credit cmd -> createMeta.flatMap(meta -> success(new CreditRejected(meta, cmd.debitedAcc(), cmd.amount())));
+      case ConfirmDebit cmd -> createMeta.flatMap(meta -> success(new DebitConfirmed(meta)));
+      case ChangeName cmd -> failure(ESException.InvalidCommand.of(state, cmd));
+      case Debit cmd -> failure(ESException.InvalidCommand.of(state, cmd));
+      case CreateAccount cmd -> failure(ESException.InvalidCommand.of(state, cmd));
+      case CloseAccount cmd -> failure(ESException.InvalidCommand.of(state, cmd));
     };
   }
 
   private static Try<AccountEvent> tryToDebit(OpenAccount account, EventMeta meta, Debit cmd) {
     if (account.canDebit(cmd.amount())) {
-      return Try.success(new Debited(meta, cmd.creditedAcc(), cmd.amount()));
+      return success(new Debited(meta, cmd.creditedAcc(), cmd.amount()));
     } else {
-      return Try.success(new DebitRejected(meta));
+      return success(new DebitRejected(meta));
     }
   }
 
-  private Try<AccountEvent> tryToClose(OpenAccount openAccount, CloseAccount command) {
-    var meta = new EventMeta(EventId.of(idSupplier.get()),
-                             command.meta().commandId(),
-                             command.accountId(),
-                             timeSupplier.get());
-    if (openAccount.hasOngoingDebit())
-      return Try.success(new ClosureRejected(meta));
-    return Try.success(new AccountClosed(meta));
+  private static Try<AccountEvent> tryToClose(OpenAccount openAccount, EventMeta meta) {
+    if (openAccount.hasOngoingDebit()) {
+      return success(new ClosureRejected(meta));
+    } else {
+      return success(new AccountClosed(meta));
+    }
   }
 }
