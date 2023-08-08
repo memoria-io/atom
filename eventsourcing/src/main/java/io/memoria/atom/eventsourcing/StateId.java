@@ -6,6 +6,9 @@ import java.io.Serializable;
 import java.util.UUID;
 
 public record StateId(Id id) implements Comparable<StateId>, Serializable {
+  String value() {
+    return id().value();
+  }
 
   public static StateId of() {
     return new StateId(Id.of());
