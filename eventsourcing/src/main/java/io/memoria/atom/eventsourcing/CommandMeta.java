@@ -5,7 +5,7 @@ import io.vavr.control.Option;
 import java.io.Serializable;
 
 public record CommandMeta(CommandId commandId, StateId stateId, long timestamp, Option<EventId> sagaSource)
-        implements Serializable {
+        implements Shardable, Serializable {
   public CommandMeta {
     if (sagaSource == null) {
       throw new IllegalArgumentException("sagaSource can not be null");

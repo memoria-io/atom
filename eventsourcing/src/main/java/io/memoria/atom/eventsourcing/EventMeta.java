@@ -5,27 +5,26 @@ import io.vavr.control.Option;
 import java.io.Serializable;
 
 public record EventMeta(EventId eventId,
-                        long seqId,
                         CommandId commandId,
                         StateId stateId,
                         long timestamp,
-                        Option<EventId> sagaSource) implements Serializable {
+                        Option<EventId> sagaSource) implements Shardable, Serializable {
   public EventMeta {
     if (sagaSource == null) {
       throw new IllegalArgumentException("sagaSource can not be null");
     }
   }
 
-  public EventMeta(EventId id, long seqId, CommandId commandId, StateId stateId, long timestamp) {
-    this(id, seqId, commandId, stateId, timestamp, Option.none());
+  public EventMeta(EventId id, CommandId commandId, StateId stateId, long timestamp) {
+    this(id, commandId, stateId, timestamp, Option.none());
   }
 
-  public EventMeta(EventId id, long seqId, CommandId commandId, StateId stateId) {
-    this(id, seqId, commandId, stateId, System.currentTimeMillis(), Option.none());
+  public EventMeta(EventId id, CommandId commandId, StateId stateId) {
+    this(id, commandId, stateId, System.currentTimeMillis(), Option.none());
   }
 
-  public EventMeta(long seqId, CommandId commandId, StateId stateId) {
-    this(EventId.of(), seqId, commandId, stateId, System.currentTimeMillis(), Option.none());
+  public EventMeta(CommandId commandId, StateId stateId) {
+    this(EventId.of(),commandId, stateId, System.currentTimeMillis(), Option.none());
   }
 }
 
