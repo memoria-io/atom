@@ -1,30 +1,21 @@
 package io.memoria.atom.eventsourcing;
 
-import io.vavr.control.Option;
-
 import java.io.Serializable;
 
-public record EventMeta(EventId eventId,
-                        CommandId commandId,
-                        StateId stateId,
-                        long timestamp,
-                        Option<EventId> sagaSource) implements Shardable, Serializable {
+public record EventMeta(EventId eventId, long version, StateId stateId, CommandId commandId, long timestamp)
+        implements Shardable, Versioned, Serializable {
   public EventMeta {
-    if (sagaSource == null) {
-      throw new IllegalArgumentException("sagaSource can not be null");
+    if (version < 0) {
+      throw new IllegalArgumentException("version can't be less than zero");
     }
   }
 
-  public EventMeta(EventId id, CommandId commandId, StateId stateId, long timestamp) {
-    this(id, commandId, stateId, timestamp, Option.none());
+  public EventMeta(CommandId commandId, long version, StateId stateId) {
+    this(EventId.of(), version, stateId, commandId);
   }
 
-  public EventMeta(EventId id, CommandId commandId, StateId stateId) {
-    this(id, commandId, stateId, System.currentTimeMillis(), Option.none());
-  }
-
-  public EventMeta(CommandId commandId, StateId stateId) {
-    this(EventId.of(), commandId, stateId, System.currentTimeMillis(), Option.none());
+  public EventMeta(EventId id, long version, StateId stateId, CommandId commandId) {
+    this(id, version, stateId, commandId, System.currentTimeMillis());
   }
 }
 

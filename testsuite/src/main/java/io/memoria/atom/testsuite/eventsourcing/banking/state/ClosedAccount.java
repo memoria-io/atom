@@ -1,5 +1,5 @@
 package io.memoria.atom.testsuite.eventsourcing.banking.state;
 
-import io.memoria.atom.eventsourcing.StateId;
+import io.memoria.atom.eventsourcing.StateMeta;
 
-public record ClosedAccount(StateId accountId) implements Account {}
+public record ClosedAccount(StateMeta meta) implements Account {}
