@@ -10,12 +10,12 @@
     </parent>
 
     <groupId>io.memoria.atom</groupId>
-    <artifactId>eventsourcing</artifactId>
+    <artifactId>testsuite</artifactId>
     <version>20.18.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
-    <description>eventsourcing Module</description>
+    <description>testsuite Module</description>
 
     <dependencies>
         <!--======================================================================================== -->
@@ -26,7 +26,11 @@
             <artifactId>core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>io.memoria.atom</groupId>
+            <artifactId>eventsourcing</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
 </project>
 
