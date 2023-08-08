@@ -1,15 +1,16 @@
 package io.memoria.atom.eventsourcing;
 
-import io.vavr.control.Option;
-
 import java.io.Serializable;
 
 public interface Command extends Shardable, Serializable {
-  default Option<EventId> sagaEventId() {
-    return Option.none();
+  CommandMeta meta();
+
+  default CommandId commandId() {
+    return meta().commandId();
   }
 
-  CommandId commandId();
-
-  long timestamp();
+  @Override
+  default StateId stateId() {
+    return meta().stateId();
+  }
 }

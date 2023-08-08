@@ -6,6 +6,9 @@ import java.io.Serializable;
 import java.util.UUID;
 
 public record EventId(Id id) implements Comparable<EventId>, Serializable {
+  String value() {
+    return id().value();
+  }
 
   public static EventId of() {
     return new EventId(Id.of());
