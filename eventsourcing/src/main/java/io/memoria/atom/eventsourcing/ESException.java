@@ -1,7 +1,5 @@
 package io.memoria.atom.eventsourcing;
 
-import io.memoria.atom.core.id.Id;
-
 public interface ESException {
   class InvalidCommand extends IllegalArgumentException implements ESException {
     private InvalidCommand(String msg) {
