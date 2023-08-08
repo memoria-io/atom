@@ -7,7 +7,6 @@ import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.eventsourcing.EventId;
 import io.memoria.atom.eventsourcing.EventMeta;
 import io.memoria.atom.eventsourcing.State;
-import io.memoria.atom.eventsourcing.StateId;
 import io.vavr.Function2;
 import io.vavr.control.Try;
 
@@ -23,7 +22,7 @@ public interface Decider<S extends State, C extends Command, E extends Event> ex
   default Try<EventMeta> eventMeta(C cmd) {
     var meta = new EventMeta(EventId.of(idSupplier().get()),
                              0,
-                             StateId.of(idSupplier().get()),
+                             cmd.meta().stateId(),
                              cmd.meta().commandId(),
                              timeSupplier().get());
     return Try.success(meta);
