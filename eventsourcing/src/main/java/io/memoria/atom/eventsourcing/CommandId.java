@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 public record CommandId(Id id) implements Comparable<CommandId>, Serializable {
-  String value() {
+  public String value() {
     return id().value();
   }
 
