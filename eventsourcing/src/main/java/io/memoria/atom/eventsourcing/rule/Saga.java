@@ -16,7 +16,7 @@ public interface Saga<E extends Event, C extends Command> extends Function1<E, O
 
   Supplier<Long> timeSupplier();
 
-  default CommandMeta commandMeta(StateId stateId) {
-    return new CommandMeta(CommandId.of(idSupplier().get()), stateId, timeSupplier().get());
+  default CommandMeta commandMeta(StateId stateId, E e) {
+    return new CommandMeta(CommandId.of(idSupplier().get()), stateId, timeSupplier().get(), e.meta().eventId());
   }
 }

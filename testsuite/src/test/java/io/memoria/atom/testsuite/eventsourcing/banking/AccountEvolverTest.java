@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.alice;
 import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.aliceId;
-import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.bobCommandMeta;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.bobId;
 import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.evolver;
 
 class AccountEvolverTest {
@@ -18,7 +18,7 @@ class AccountEvolverTest {
   void evolve() {
     // Given
     var openAccount = new OpenAccount(new StateMeta(aliceId), alice, 500);
-    var debited = new Debited(new EventMeta(CommandId.of(), 1, aliceId), bobCommandMeta.stateId(), 300);
+    var debited = new Debited(new EventMeta(CommandId.of(), 1, aliceId), bobId, 300);
 
     // When
     var acc = (OpenAccount) evolver.apply(openAccount, debited);

@@ -23,5 +23,9 @@ public record CommandMeta(CommandId commandId, StateId stateId, long timestamp, 
   public CommandMeta(CommandId commandId, StateId stateId, long timestamp) {
     this(commandId, stateId, timestamp, Option.none());
   }
+
+  public CommandMeta(CommandId commandId, StateId stateId, long timestamp, EventId sagaSource) {
+    this(commandId, stateId, timestamp, Option.of(sagaSource));
+  }
 }
 
