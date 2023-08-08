@@ -26,7 +26,6 @@ public record AccountEvolver() implements Evolver<Account, AccountEvent> {
 
   @Override
   public Account apply(AccountEvent accountEvent) {
-
     return switch (accountEvent) {
       case AccountCreated e -> {
         StateMeta meta = new StateMeta(e.accountId());
