@@ -9,6 +9,7 @@ public sealed interface AccountEvent extends Event permits AccountClosed,
                                                            CreditRejected,
                                                            Credited,
                                                            DebitConfirmed,
+                                                           DebitRejected,
                                                            Debited,
                                                            NameChanged {
   default StateId accountId() {

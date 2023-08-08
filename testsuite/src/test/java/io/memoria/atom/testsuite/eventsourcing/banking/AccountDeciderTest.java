@@ -1,26 +1,33 @@
 package io.memoria.atom.testsuite.eventsourcing.banking;
 
-import io.memoria.atom.core.id.Id;
-import io.memoria.atom.eventsourcing.CommandMeta;
-import io.memoria.atom.eventsourcing.StateId;
-import io.memoria.atom.testsuite.eventsourcing.banking.command.CreateAccount;
-import org.junit.jupiter.api.Test;
+import io.memoria.atom.testsuite.eventsourcing.banking.command.Debit;
+import io.memoria.atom.testsuite.eventsourcing.banking.event.DebitRejected;
+import io.memoria.atom.testsuite.eventsourcing.banking.event.Debited;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Supplier;
+import static io.memoria.atom.testsuite.eventsourcing.banking.TestUtils.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class AccountDeciderTest {
-  private static final AtomicLong counter = new AtomicLong();
-  private final Supplier<Id> idSupplier = () -> Id.of(counter.getAndIncrement());
-  private final Supplier<Long> timeSupplier = () -> 0L;
-  private final AccountDecider decider = new AccountDecider(idSupplier, timeSupplier);
 
-  @Test
-  void decide() {
-    var alice = StateId.of("alice");
-    var aliceMeta = new CommandMeta(alice);
-    var bob = StateId.of("bob");
-    var bobMeta = new CommandMeta(bob);
-    decider.apply(new CreateAccount(aliceMeta,alice.,))
+  @ParameterizedTest
+  @ValueSource(ints = {300, 500, 600})
+  void debit(int debitAmount) {
+    // Given
+    int balance = 500;
+    var openAccount = createOpenAccount(balance);
+    var debit = new Debit(aliceCommandMeta, bobCommandMeta.stateId(), debitAmount);
+
+    // When
+    var event = decider.apply(openAccount, debit).get();
+
+    // Then
+    assertThat(event.accountId()).isEqualTo(aliceCommandMeta.stateId());
+    if (debitAmount < balance) {
+      assertThat(event).isInstanceOf(Debited.class);
+    } else {
+      assertThat(event).isInstanceOf(DebitRejected.class);
+    }
   }
 }

@@ -19,6 +19,7 @@ import io.memoria.atom.testsuite.eventsourcing.banking.event.ClosureRejected;
 import io.memoria.atom.testsuite.eventsourcing.banking.event.CreditRejected;
 import io.memoria.atom.testsuite.eventsourcing.banking.event.Credited;
 import io.memoria.atom.testsuite.eventsourcing.banking.event.DebitConfirmed;
+import io.memoria.atom.testsuite.eventsourcing.banking.event.DebitRejected;
 import io.memoria.atom.testsuite.eventsourcing.banking.event.Debited;
 import io.memoria.atom.testsuite.eventsourcing.banking.event.NameChanged;
 import io.memoria.atom.testsuite.eventsourcing.banking.state.Account;
@@ -56,15 +57,15 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
     };
   }
 
-  private Try<AccountEvent> handle(OpenAccount state, AccountCommand command) {
+  private Try<AccountEvent> handle(OpenAccount account, AccountCommand command) {
     var meta = getMeta(command);
     return switch (command) {
-      case CreateAccount cmd -> Try.failure(ESException.InvalidCommand.of(state, cmd));
+      case CreateAccount cmd -> Try.failure(ESException.InvalidCommand.of(account, cmd));
       case ChangeName cmd -> Try.success(new NameChanged(meta, cmd.name()));
-      case Debit cmd -> Try.success(new Debited(meta, cmd.creditedAcc(), cmd.amount()));
+      case Debit cmd -> tryToDebit(account, meta, cmd);
       case Credit cmd -> Try.success(new Credited(meta, cmd.debitedAcc(), cmd.amount()));
       case ConfirmDebit cmd -> Try.success(new DebitConfirmed(meta));
-      case CloseAccount cmd -> tryToClose(state, cmd);
+      case CloseAccount cmd -> tryToClose(account, cmd);
     };
   }
 
@@ -72,12 +73,20 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
     var meta = getMeta(command);
     return switch (command) {
       case Credit cmd -> Try.success(new CreditRejected(meta, cmd.debitedAcc(), cmd.amount()));
-      case ConfirmDebit cmd -> Try.success(new DebitConfirmed(meta)); // TODO validate creditor
+      case ConfirmDebit cmd -> Try.success(new DebitConfirmed(meta));
       case ChangeName cmd -> Try.failure(ESException.InvalidCommand.of(state, cmd));
       case Debit cmd -> Try.failure(ESException.InvalidCommand.of(state, cmd));
       case CreateAccount cmd -> Try.failure(ESException.InvalidCommand.of(state, cmd));
       case CloseAccount cmd -> Try.failure(ESException.InvalidCommand.of(state, cmd));
     };
+  }
+
+  private static Try<AccountEvent> tryToDebit(OpenAccount account, EventMeta meta, Debit cmd) {
+    if (account.canDebit(cmd.amount())) {
+      return Try.success(new Debited(meta, cmd.creditedAcc(), cmd.amount()));
+    } else {
+      return Try.success(new DebitRejected(meta));
+    }
   }
 
   private Try<AccountEvent> tryToClose(OpenAccount openAccount, CloseAccount command) {

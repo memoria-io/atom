@@ -8,6 +8,9 @@ public record OpenAccount(StateId accountId,
                           int debitCount,
                           int confirmedDebit,
                           int creditCount) implements Account {
+  public OpenAccount(StateId accountId, String name, long balance) {
+    this(accountId, name, balance, 0, 0, 0);
+  }
 
   public boolean hasOngoingDebit() {
     return debitCount != confirmedDebit;
@@ -31,5 +34,9 @@ public record OpenAccount(StateId accountId,
 
   public OpenAccount withName(String newName) {
     return new OpenAccount(accountId, newName, balance, debitCount, confirmedDebit, creditCount);
+  }
+
+  public boolean canDebit(long amount) {
+    return balance - amount > 0;
   }
 }
