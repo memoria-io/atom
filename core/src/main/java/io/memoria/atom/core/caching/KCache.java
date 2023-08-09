@@ -11,7 +11,7 @@ public class KCache<K> {
     this.capacity = capacity;
   }
 
-  public boolean exists(K key) {
+  public boolean contains(K key) {
     return cache.contains(key);
   }
 
