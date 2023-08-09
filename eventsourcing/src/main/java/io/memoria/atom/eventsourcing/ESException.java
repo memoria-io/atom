@@ -25,13 +25,16 @@ public interface ESException {
     }
 
     public static InvalidEvent of(Event event) {
-      var msg = "Invalid creator event:%s for creating state, this should never happen";
-      return new InvalidEvent(msg.formatted(event.getClass().getSimpleName()));
+      var msg = "Invalid creator event: %s[%s] for creating state, this should never happen";
+      return new InvalidEvent(msg.formatted(event.getClass().getSimpleName(), event.meta()));
     }
 
     public static InvalidEvent of(State state, Event event) {
-      var msg = "Invalid evolution of: %s on current state: %s, this should never happen";
-      return new InvalidEvent(msg.formatted(state.getClass().getSimpleName(), event.getClass().getSimpleName()));
+      var msg = "Invalid evolution event: %s[%s] to the state: %s[%s], this should never happen";
+      return new InvalidEvent(msg.formatted(event.getClass().getSimpleName(),
+                                            event.meta(),
+                                            state.getClass().getSimpleName(),
+                                            state.meta()));
     }
   }
 
