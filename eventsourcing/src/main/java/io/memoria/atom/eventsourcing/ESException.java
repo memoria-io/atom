@@ -38,7 +38,7 @@ public interface ESException {
     }
   }
 
-  class MismatchingStateId extends Exception implements ESException {
+  class MismatchingStateId extends IllegalArgumentException implements ESException {
     private MismatchingStateId(String msg) {
       super(msg);
     }
