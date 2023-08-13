@@ -4,16 +4,16 @@ import io.vavr.collection.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class KCacheTest {
+class MemKCacheTest {
   private final int range = 1000_000;
   private final int capacity = 100;
-  private final KCache<Integer> cache = new KCache<>(capacity);
+  private final MemKCache<Integer> cache = new MemKCache<>(capacity);
 
   @Test
   void check() {
     Stream.range(0, range).forEach(i -> {
       cache.add(i);
-      Assertions.assertThat(cache.cache).hasSizeLessThanOrEqualTo(capacity);
+      Assertions.assertThat(cache.hashSet).hasSizeLessThanOrEqualTo(capacity);
     });
   }
 }

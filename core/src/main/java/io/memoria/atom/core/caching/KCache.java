@@ -1,24 +1,16 @@
 package io.memoria.atom.core.caching;
 
-import java.util.LinkedHashSet;
+public interface KCache<K> {
+  boolean contains(K key);
 
-public class KCache<K> {
-  LinkedHashSet<K> cache;
-  int capacity;
+  void add(K key);
 
-  public KCache(int capacity) {
-    cache = LinkedHashSet.newLinkedHashSet(capacity);
-    this.capacity = capacity;
-  }
-
-  public boolean contains(K key) {
-    return cache.contains(key);
-  }
-
-  public void add(K key) {
-    if (cache.size() == capacity) {
-      cache.remove(cache.iterator().next());
-    }
-    cache.add(key);
+  /**
+   *
+   * @param capacity is the max size of the queue
+   * @return in memory fifo cache
+   */
+  static <K> KCache<K> inMemory(int capacity) {
+    return new MemKCache<>(capacity);
   }
 }
