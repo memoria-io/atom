@@ -13,12 +13,13 @@ public abstract class KVCache<K, V> {
 
   abstract void put(K key, V value);
 
-  public V putIfAbsent(K key, V value) {
+  public void putIfAbsent(K key, V value) {
     lockMap.computeIfAbsent(key, k -> new ReentrantLock());
     lockMap.get(key).lock();
-    put(key, value);
+    if (get(key).isEmpty()) {
+      put(key, value);
+    }
     lockMap.get(key).unlock();
-    return value;
   }
 
   /**
