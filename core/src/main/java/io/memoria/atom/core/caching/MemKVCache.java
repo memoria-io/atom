@@ -5,12 +5,12 @@ import io.vavr.control.Option;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-class MemKVCache<K, V> implements KVCache<K, V> {
+class MemKVCache<K, V> extends KVCache<K, V> {
   LinkedHashMap<K, V> hashMap;
   int capacity;
 
   public MemKVCache(int capacity) {
-    hashMap = LinkedHashMap.newLinkedHashMap(capacity);
+    this.hashMap = LinkedHashMap.newLinkedHashMap(capacity);
     this.capacity = capacity;
   }
 
