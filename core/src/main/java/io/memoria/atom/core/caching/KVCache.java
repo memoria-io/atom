@@ -5,6 +5,7 @@ import io.vavr.control.Option;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 
 public abstract class KVCache<K, V> {
   private final Map<K, ReentrantLock> lockMap = new ConcurrentHashMap<>();
@@ -13,11 +14,11 @@ public abstract class KVCache<K, V> {
 
   public abstract void put(K key, V value);
 
-  public void putIfAbsent(K key, V value) {
+  public void putIfAbsent(K key, Function<K,V> fn) {
     lockMap.computeIfAbsent(key, k -> new ReentrantLock());
     lockMap.get(key).lock();
     if (get(key).isEmpty()) {
-      put(key, value);
+      put(key, fn.apply(key));
     }
     lockMap.get(key).unlock();
   }
