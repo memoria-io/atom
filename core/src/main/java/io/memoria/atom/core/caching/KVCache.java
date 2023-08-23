@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
 public abstract class KVCache<K, V> {
-  private final Map<K, ReentrantLock> lockMap = new ConcurrentHashMap<>();
+  protected final Map<K, ReentrantLock> lockMap = new ConcurrentHashMap<>();
 
   public abstract Option<V> get(K key);
 
