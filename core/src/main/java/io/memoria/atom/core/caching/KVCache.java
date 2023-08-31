@@ -14,7 +14,7 @@ public abstract class KVCache<K, V> {
 
   public abstract void put(K key, V value);
 
-  public void putIfAbsent(K key, Function<K,V> fn) {
+  public void putIfAbsent(K key, Function<K, V> fn) {
     lockMap.computeIfAbsent(key, k -> new ReentrantLock());
     lockMap.get(key).lock();
     if (get(key).isEmpty()) {

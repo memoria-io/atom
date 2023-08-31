@@ -6,7 +6,6 @@ public interface KCache<K> {
   void add(K key);
 
   /**
-   *
    * @param capacity is the max size of the queue
    * @return in memory fifo cache
    */
