@@ -15,52 +15,40 @@
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
 
-
 > هذا العلم والعمل وقف للّه تعالي اسأل اللّه ان يرزقنا الاخلاص فالقول والعمل
 >
 > This work and knowledge is for the sake of Allah, may Allah grant us sincerity in what we say or do.
 
 ## Introduction
 
+**Disclaimer:**
+> `atom` is on edge, it's a work in progress and a pragmatic learning effort, so feel free to create issues or PRs.
+
 Atom is an SDK to accelerate development, and it's a constant learning effort. Atom relies heavily
 on [Vavr](https://www.vavr.io/).
 
 The currently used JDK is `Java 20` and the motivation is to use the latest available JDK.
 
+## Documentation
+
+Can be found under the [.docs](/.docs) directory
+
 ## Modules
 
 ![](.docs/atom.jpg)
 
-### `core` module
-
-The `core` module consists of and intended to only contain **POJO** utilities, and standard interfaces which are
-implemented by child modules
-
-Some utilities like for configuration management like `ConfigFileOps`, and `ResourceFileOps` (similar to Typesafe HOCOON
-library)
-
-* The `ResourceFileOps` utility for reading resource based files even inside JAR packaged projects
-* The `ConfigFileOps` utility is a for reading configuration files:
-    * Allows nesting of files using a marker e.g `include: sub_file.yaml` would replace this line with content
-      of `sub_file.yaml`
-    * Reading as a system environment variable if not found as environment variable or else the default value if it was
-      supplied:
-        * `path: ${JAVA_HOME}`
-        * `myVar: ${SOME_VAR:-defaultValue}`
-    * Reading java system properties `System.setProperty("MY_SYSTEM_PROPERTY", "2000");`
-
-### `sec` module
-
-`sec` for security utilities, e.g encryption, hashing, json web tokens etc. You can check the pom for more details on
-the libraries it depends on.
-
-### `text` module
-
-The `text` module is utilities and standardization of text serialization/deserialization, it relies on jackson
-libraries.
-
-**Disclaimer:**
-> `atom` is on edge, it's a work in progress and a pragmatic learning effort, so feel free to create issues or PRs.
+* The `core` module
+    * The `core` module consists of and intended to only contain **POJO** utilities, and standard interfaces which are
+      implemented by child modules
+    * Some utilities like for configuration management like `ConfigFileOps`, and `ResourceFileOps` (similar to Typesafe
+      HOCOON
+      library)
+* `sec` module
+    * `sec` for security utilities, e.g encryption, hashing, json web tokens etc. You can check the pom for more details
+      on the libraries it depends on.
+* `text` module
+    * The `text` module is utilities and standardization of text serialization/deserialization, it relies on jackson
+      libraries.
 
 ## Usage
 
@@ -84,7 +72,7 @@ First make sure you can fetch repositories under such memoria organisation from 
 
 ```
 
-Then import nomrally in your pom dependencies
+Then import in your pom dependencies
 
 ```xml
 
@@ -106,7 +94,7 @@ Format Example: `JDK_Version.major.mino`
 * [x] Increase test coverage to >85%
 * [ ] Performance and benchmarks project "atom-performance"
 * [ ] JVM Profiling
-* [ ] More structured releases based on PRs
+* [ ] More structured releasing once library is stable
 
 ## Release notes
 
