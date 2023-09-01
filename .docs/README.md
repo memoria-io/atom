@@ -90,11 +90,21 @@ This means the Saga generated commands should be idempotent.
   saved in same order they were produced, from this I needed to do some sort of runtime compaction to avoid ingesting e1
   twice. Which meant getting rid of the processedEventIds set and only save the previous eventId. Disclaimer I still
   need some more investigation here on the topic.
-* Then I decided to use a cache for processed CommandIds but this now seemed like wrong decision, first the cache
+* Then I decided to use a **cache** for processed CommandIds to save some memory but this now seemed like wrong
+  decision, first the cache
   invalidation puts the whole thing at risk, if we use size we're in the risk when we have big partitions and it would
-  require manual intervention to increase cache size
-*
-* although commands are
-  probably ephemeral, they definitely need acknowledgement pattern otherwise they shouldn't be deleted ever, the
-  workaround of using **long** keep alive time seems fine, but it still puts a platform that's supposed to be used for
-  highly critical systems at risk of losing a saga command even if probability was very low. 
+  require manual intervention to increase cache size, and if we use time, what happens to idle partitions, not to
+  mention losing a design fact (command X **was** processed)
+    * This adds complexity due to the current design that commands are being ephemeral which means, they
+      definitely need acknowledgement pattern otherwise they shouldn't be deleted ever, the workaround of using **long**
+      keep alive time seems fine, but it still puts a platform that's supposed to be used for highly critical systems at
+      risk of losing a saga command even if probability was very low.
+    * Back to caching and invalidating commandIds, if we're having commands ephemeral it means we don't need to cache
+      and invalidate, we can just save all commandIds because on restart all deleted commands wouldn't be ingested and
+      only event.meta.commandId will be saved (aka actually effective command) but if system never restarts this still
+      puts the risk of an incrementally increasing memory (as if it's a memory leak) not to mention the question whether
+      we actually need to save every processed commandId or not; while it might be understandable for sagaSource
+      eventIds since we know some commands might be regenerated on startup.
+
+> Note: All the previous seems like a very complicated cat/mouse loop so far, and system needs more invariants
+> verifications but also deep thinking sessions. 
