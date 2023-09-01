@@ -57,4 +57,4 @@ commandId and stateId etc, it was time to group in as a meta information.
       a flag since it generates all saga commands again and it's not ideal (since each event that produces saga will be
       now generating a command again) to do such thing despite it's possible and safe due
       to commands idempotency guaranteed as mentioned previously
-    
+    * since 

@@ -24,7 +24,8 @@ public interface Decider<S extends State, C extends Command, E extends Event> ex
                              0,
                              cmd.meta().stateId(),
                              cmd.meta().commandId(),
-                             timeSupplier().get());
+                             timeSupplier().get(),
+                             cmd.meta().sagaSource());
     return Try.success(meta);
   }
 
@@ -34,7 +35,8 @@ public interface Decider<S extends State, C extends Command, E extends Event> ex
                                state.meta().version() + 1,
                                state.meta().stateId(),
                                cmd.meta().commandId(),
-                               timeSupplier().get());
+                               timeSupplier().get(),
+                               cmd.meta().sagaSource());
       return Try.success(meta);
     } else {
       return Try.failure(MismatchingStateId.of(state.meta().stateId(), cmd.meta().stateId()));
