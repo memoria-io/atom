@@ -43,12 +43,14 @@ commandId and stateId etc, it was time to group in as a meta information.
 ### 2.3 Saga based commands, and the SagaSource addition to meta
 
 * Published commands especially saga ones should be at least quorum persisted, to make sure they're not missed.
-* The Saga generated commands should be idempotent as well, to allow their regeneration by ingesting old events, this way if there
+* The Saga generated commands should be idempotent as well, to allow their regeneration by ingesting old events, this
+  way if there
   was human error in the eventsourcing state machine, it could be fixed for old events as well
     * In order to do that, `Option<EventId> sagaSource` should be added to the command meta, so that when ingesting the
       command pipeline the commands are checked if they have same source and not executed again, this is because Saga
       commands would have new Ids and the only constant is the saga source (eventId) which generated them.
-    * The saga source eventIds cache should be separate from normal eventId cache, because the idempotency here is for commands
+    * The saga source eventIds cache should be separate from normal eventId cache, because the idempotency here is for
+      commands
       not events.
         * This is good candidate for a written test to make sure of such separation
     * The regeneration of saga commands in the init phase (aka re-ingesting of already persisted events) should be under

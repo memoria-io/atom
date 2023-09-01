@@ -19,9 +19,11 @@ public record AccountSaga(Supplier<Id> idSupplier, Supplier<Long> timeSupplier)
   @Override
   public Option<AccountCommand> apply(AccountEvent event) {
     return switch (event) {
-      case Debited e -> Option.some(new Credit(commandMeta(e.creditedAcc()), e.accountId(), e.amount()));
-      case Credited e -> Option.some(new ConfirmDebit(commandMeta(e.debitedAcc()), e.accountId()));
-      case CreditRejected e -> Option.some(new Credit(commandMeta(e.debitedAcc()), e.accountId(), e.amount()));
+      case Debited e ->
+              Option.some(new Credit(commandMeta(e.creditedAcc(), e.meta().eventId()), e.accountId(), e.amount()));
+      case Credited e -> Option.some(new ConfirmDebit(commandMeta(e.debitedAcc(), e.meta().eventId()), e.accountId()));
+      case CreditRejected e ->
+              Option.some(new Credit(commandMeta(e.debitedAcc(), e.meta().eventId()), e.accountId(), e.amount()));
       default -> Option.none();
     };
   }
