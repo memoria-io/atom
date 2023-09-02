@@ -18,15 +18,17 @@
 
 ## 2.0 Eventsourcing
 
+Notes:
+
+* `State` term is kind of used interchangeably with `Aggregate`, the reason for using state, is that the interfaces
+  design allows state to be immutable, since aggregates usually have the command/evolution logic inside, and changing
+  their state internally.
+
 ### 2.1 Id generation
 
-Initial decision of moving id generation to become repo responsibility instead of service
-
-* Why: I think adapters should be the one generating Ids, since they're the ones talking to database
-* It should be the responsibility of a service how an object is persisted, it should only care about business logic
-  not implementations of how that object is saved
-* same as for controllers should ony be about converting json to DTOs and selecting which service should handle the
-  request.
+Id generation can happen on so many levels from client to DB itself, pragmatically and after many trials, my decision
+was moving id generation of events/commands to be in the rules (`saga`, `decider`, `evolver`), this allows control over
+generation of Ids, while not leaving the responsibility to clients.
 
 ### 2.2 Value Id objects `EventId` and `CommandId`
 
@@ -52,59 +54,67 @@ Both events and commands should both at least be quorum replicated, to make sure
 
 ### 2.5 persistence,
 
-* Events should be persisted permanently
-* Permanent Commands persistence:
-    * Means commands generated from saga events won't be missed and will be ingested everytime,
-    * For idempotency this is safe due to two facts:
-        * For already ingested commands which produced events, the commandsIds are loaded on startup
-        * For newly generated saga commands the sagaSource uninvalidated cache would guard against them
-* Ephemeral commands persistence, means that we'll need
+Events by nature should be persisted permanently, while permanent Commands persistence is optional
 
-### 2.6 The case of Saga regeneration for the already persisted events
+If permanent it means commands generated from saga events won't be missed and will be ingested everytime.
 
-Saga is an evolving state machine, and many times we'd need to have a new command created based on certain event.
+This has effect only on memory, since idempotency this is safe due to that ingested commands which produced events, the
+commandsIds are loaded on startup.
 
-This means the Saga generated commands should be idempotent.
+Commands ephemeral persistence means, they'd need acknowledgement pattern otherwise they should not be deleted ever, but
+there's a workaround though, which is to use **long** keep alive of such commands at the stream to keep the probability
+of losing a command very low.
 
-* In order to do that, `Option<EventId> sagaSource` should be added to the command meta and eventMeta, to explain this
-  it's a bit of chicken egg paradox,
-    * For an empty pipeline state, the newly handled saga commands would contain `sagaSource`, and the sagaSource
-      eventId would be propagated to the generated saga events, when such events are reingested on startup they'd fill
-      up the sagaSource hash set bucket, this would allow any newly generated saga command to be checked at `decide()`
-      whether it has already produced an event.
-* The saga source eventIds hashset should be separate from normal eventId cache, because the idempotency here is for
-  commands not events.
-    * Deeper thought (can be skipped) it also prevents pipeline from cancelling applying events who were added but not
-      actually evolved.
-    * This is good candidate for a written test to make sure of such separation
-* Another point is that the regeneration of saga commands in the init phase (aka re-ingesting of already persisted
-  events) should be under a flag since it generates all saga commands again and it's not ideal (since each event that
-  produces saga will be now generating a command again) to do such thing despite it's possible and safe due
-  to commands idempotency guaranteed as mentioned previously
+### 2.6 The case of Saga regeneration on startup (aka old events)
 
-### 2.7 The decision of caching of `eventIds`, `SagaSource` and `CommandIds`
+Saga is an evolving state machine, and as the application evolves we'd need to have a new command created based on
+certain event.
 
-* Initially all processed `eventIds` and `commandIds` were kept in hash sets, but I soon came to realise the
-  eventId can not be duplicated due to redelivery in a wrong order, meaning the partition could deliver(e3,e2,e1,e1) but
-  not (e3,e1,e2,e1) this is guaranteed by any stream framework (e.g kafka nats) that messages in certain partitions are
-  saved in same order they were produced, from this I needed to do some sort of runtime compaction to avoid ingesting e1
-  twice. Which meant getting rid of the processedEventIds set and only save the previous eventId. Disclaimer I still
-  need some more investigation here on the topic.
-* Then I decided to use a **cache** for processed CommandIds to save some memory but this now seemed like wrong
-  decision, first the cache
-  invalidation puts the whole thing at risk, if we use size we're in the risk when we have big partitions and it would
-  require manual intervention to increase cache size, and if we use time, what happens to idle partitions, not to
-  mention losing a design fact (command X **was** processed)
-    * This adds complexity due to the current design that commands are being ephemeral which means, they
-      definitely need acknowledgement pattern otherwise they shouldn't be deleted ever, the workaround of using **long**
-      keep alive time seems fine, but it still puts a platform that's supposed to be used for highly critical systems at
-      risk of losing a saga command even if probability was very low.
-    * Back to caching and invalidating commandIds, if we're having commands ephemeral it means we don't need to cache
-      and invalidate, we can just save all commandIds because on restart all deleted commands wouldn't be ingested and
-      only event.meta.commandId will be saved (aka actually effective command) but if system never restarts this still
-      puts the risk of an incrementally increasing memory (as if it's a memory leak) not to mention the question whether
-      we actually need to save every processed commandId or not; while it might be understandable for sagaSource
-      eventIds since we know some commands might be regenerated on startup.
+### 2.7 Saga command idempotency
 
-> Note: All the previous seems like a very complicated cat/mouse loop so far, and system needs more invariants
-> verifications but also deep thinking sessions. 
+The Saga generated commands should be idempotent, but the issue here is that they're generated with new ids for example
+when duplicated due to saga generation on startup mentioned previously, so in order to reach idempotency, we'll
+propagate the only fact which is eventId hopping from the generated command eventually to the generated event, which
+will require `Option<EventId> sagaSource` should be added to the command meta and eventMeta.
+
+For an empty pipeline scenario, the newly handled saga commands would contain `sagaSource`, and the sagaSource
+eventId would be **propagated** to the generated saga events, when such events are re-ingested on startup they'd
+fill up the sagaSource hashset bucket, this would allow any newly generated saga command to be checked at `decide()`
+whether it has already produced an event.
+
+The saga source eventIds hashset should be separate from normal eventId cache, because the idempotency here is for
+commands not events.
+
+* Deeper thought (can be skipped) it also prevents pipeline from cancelling the evolution of events who were added
+  to sagaSource but not actually evolved if those sagaEvents were in same partition.
+* This is good candidate for a written test to make sure of such separation
+
+Another point is that the regeneration of saga commands in the init phase (aka re-ingesting of already persisted
+events) **should be under a flag** since it generates all saga commands again as it's not ideal performance wise.
+
+### 2.8 The decision of keeping all processed `eventIds`
+
+Initially all processed `eventIds` were kept in hash sets, but I soon came to realise the
+eventId can not be having wrong order due to redelivery it will just be delivered twice or more but consecutively,
+meaning the partition could deliver(e3,e2,e1,e1) but not (e3,e1,e2,e1) this is guaranteed by any stream framework (e.g
+kafka nats) that
+messages in certain partitions are saved in same order they were produced, from this I needed to do some sort of
+runtime compaction to avoid ingesting e1 twice, note that the sequence/version belongs to the event not the partition,
+meaning aggregate events can be moved to any other partition.
+
+As a result we were able to get rid of the `processedEventIds` hashset and only save the previous eventId, while also
+checking
+the aggregate event version making sure it's the right next event x state/aggregate.
+
+### 2.8 The decision of in memory invalidation of `CommandIds` cahce
+
+Initially I decided to use a **cache** for processed CommandIds to save some memory but this now seems like wrong
+decision, first the cache invalidation puts the whole thing at risk, if we use size we're in the risk when we have big
+partitions, and it would require manual intervention to increase cache size, and if we use time, what happens to idle
+partitions, not to mention losing a design fact (command X **was** processed)
+
+Another case in favor of not invalidating commandIds and invalidating being ephemeral which means after a restart it
+would prune all previous
+processed commands which were invalid, and only keep the ones who produced events.
+
+Anyway such improvement still needs some investigation.
