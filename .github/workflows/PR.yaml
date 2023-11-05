@@ -1,33 +1,28 @@
-name: Build
+name: PR
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
     types: [ opened, synchronize, reopened ]
 
 jobs:
-  Build:
+  PR:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-java@v3
         with:
           distribution: "oracle"
           java-version: "21"
           check-latest: true
-      - name: check java
-        run: |
-          java --version
-          mvn --version
+
       - name: Cache Maven packages
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
       - name: Sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
