@@ -1,13 +1,6 @@
 package io.memoria.atom.core.stream;
 
-import io.vavr.collection.Stream;
-import io.vavr.control.Try;
-
-public interface BlockingStream extends AutoCloseable {
-  Try<Msg> publish(String topic, int partition, Msg msg);
-
-  Try<Stream<Msg>> fetch(String topic, int partition);
-
+public interface BlockingStream extends BlockingStreamPublisher, BlockingStreamSubscriber {
   static BlockingStream inMemory() {
     return new MemBlockingStream();
   }
