@@ -10,12 +10,12 @@
     </parent>
 
     <groupId>io.memoria.atom</groupId>
-    <artifactId>sec</artifactId>
+    <artifactId>eventsourcing</artifactId>
     <version>21.2.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
-    <description>Security Module</description>
+    <description>eventsourcing Module</description>
 
     <dependencies>
         <!--======================================================================================== -->
@@ -26,25 +26,7 @@
             <artifactId>core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <!--======================================================================================== -->
-        <!-- Security Dependencies -->
-        <!--======================================================================================== -->
-        <dependency>
-            <groupId>de.mkammerer</groupId>
-            <artifactId>argon2-jvm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-        </dependency>
+
     </dependencies>
 </project>
 

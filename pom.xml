@@ -12,7 +12,7 @@
     <!--suppress MavenRedundantGroupId -->
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>21.1.0</version>
+    <version>21.2.0</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
@@ -27,6 +27,7 @@
         <module>core</module>
         <module>text</module>
         <module>sec</module>
+        <module>eventsourcing</module>
     </modules>
 
     <properties>
