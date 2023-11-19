@@ -98,6 +98,8 @@ Format Example: `JDK_Version.major.mino`
 
 ## Release notes
 
+* `21.1.0`
+    * Moving Event-sourcing and testsuite modules to reactive  
 * `20.11.0`
     * Moving reactive modules to separate repository [memoria-io/reactive](https://github.com/memoria-io/reactive)
 
