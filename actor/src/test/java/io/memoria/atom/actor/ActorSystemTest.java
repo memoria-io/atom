@@ -19,11 +19,9 @@ public class ActorSystemTest {
   private final Map<Id, Actor> actorMap = new ConcurrentHashMap<>();
   private final ActorSystem actorSystem = new ActorSystem(Id.of(0), actorFactory, actorMap);
 
-  /**
-   * Create numOfRequests and spread evenly across numOfActors
-   */
   @Test
   void syncTest() throws InterruptedException {
+    // Create numOfRequests and spread evenly across numOfActors
     List.range(0, numOfRequests)
         .flatMap(reqId -> List.range(0, numOfActors).map(i -> Tuple.of(reqId, Id.of(i))))
         .shuffle()
@@ -48,22 +46,29 @@ public class ActorSystemTest {
 
     @Override
     public Actor create(Id id) {
-      return new MyActor(latch);
+      return new MyActor(id, latch);
     }
   }
 
   static class MyActor implements Actor {
+    private final Id id;
     private final CountDownLatch latch;
     private volatile int count;
 
-    MyActor(CountDownLatch latch) {
+    MyActor(Id id, CountDownLatch latch) {
+      this.id = id;
       this.latch = latch;
       this.count = 0;
     }
 
     @Override
     public Id shardKey() {
-      return null;
+      return id;
+    }
+
+    @Override
+    public Id id() {
+      return id;
     }
 
     public int getCount() {

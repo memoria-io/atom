@@ -19,11 +19,12 @@ public class SyncTest {
     latch.await();
   }
 
-  static class MyActor implements Actor {
+  static class MyActor extends AbstractActor {
     private final CountDownLatch latch;
     private volatile int count;
 
     MyActor(CountDownLatch latch) {
+      super(Id.of());
       this.latch = latch;
       this.count = 0;
     }
