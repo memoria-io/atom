@@ -4,23 +4,27 @@ import io.memoria.atom.core.id.Id;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 
-import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 public class SyncTest {
+  private final int count = 100;
+  private final CountDownLatch latch = new CountDownLatch(count);
+
   @Test
   void syncTest() throws InterruptedException {
-    var h = new MyActor();
-    for (int i = 0; i < 100; i++) {
+    var h = new MyActor(latch);
+    for (int i = 0; i < count; i++) {
       Thread.ofVirtual().name("Thread:" + i).start(() -> h.apply(new Message()));
     }
-    Thread.currentThread().join();
+    latch.await();
   }
 
   static class MyActor implements Actor {
-    private static final Random r = new Random();
+    private final CountDownLatch latch;
     private volatile int count;
 
-    MyActor() {
+    MyActor(CountDownLatch latch) {
+      this.latch = latch;
       this.count = 0;
     }
 
@@ -35,15 +39,17 @@ public class SyncTest {
 
     @Override
     public synchronized Try<Message> apply(Message message) {
-      try {
-        System.out.println(STR. "Hello from: \{ Thread.currentThread().getName() } Count is now: \{ count }" );
-        count++;
-        Thread.sleep(r.nextInt(1000));
-        System.out.println(STR. "Hello from: \{ Thread.currentThread().getName() } Count is now: \{ count }" );
-        return Try.success(message);
-      } catch (InterruptedException e) {
-        return Try.failure(e);
-      }
+      //      try {
+      System.out.println(STR. "Hello from: \{ Thread.currentThread().getName() } Count is now: \{ count }" );
+      count++;
+      //        Thread.sleep(r.nextInt(1000));
+      count--;
+      latch.countDown();
+      System.out.println(STR. "Hello from: \{ Thread.currentThread().getName() } Count is now: \{ count }" );
+      return Try.success(message);
+      //      } catch (InterruptedException e) {
+      //        return Try.failure(e);
+      //      }
     }
   }
 }

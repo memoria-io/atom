@@ -10,21 +10,25 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ActorSystem implements Shardable {
   private final Id shardKey;
   private final ActorFactory actorFactory;
-  private final Map<String, Actor> actorMap;
+  private final Map<Id, Actor> actorMap;
+
+  public ActorSystem(ActorFactory actorFactory) {
+    this(Id.of(), actorFactory, new ConcurrentHashMap<>());
+  }
 
   public ActorSystem(Id shardKey, ActorFactory actorFactory) {
     this(shardKey, actorFactory, new ConcurrentHashMap<>());
   }
 
-  public ActorSystem(Id shardKey, ActorFactory actorFactory, Map<String, Actor> actorMap) {
+  public ActorSystem(Id shardKey, ActorFactory actorFactory, Map<Id, Actor> actorMap) {
     this.shardKey = shardKey;
     this.actorFactory = actorFactory;
     this.actorMap = actorMap;
   }
 
-  public Try<Message> handle(String key, Message message) {
-    actorMap.computeIfAbsent(key, actorFactory::create);
-    return actorMap.get(key).apply(message);
+  public Try<Message> handle(Id actorId, Message message) {
+    actorMap.computeIfAbsent(actorId, actorFactory::create);
+    return actorMap.get(actorId).apply(message);
   }
 
   @Override
