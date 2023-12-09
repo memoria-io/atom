@@ -1,38 +1,25 @@
 package io.memoria.atom.actor;
 
-import io.memoria.atom.core.Shardable;
-import io.memoria.atom.core.id.Id;
 import io.vavr.control.Try;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ActorSystem implements Shardable {
-  private final Id shardKey;
+public class ActorSystem {
   private final ActorFactory actorFactory;
-  private final Map<Id, Actor> actorMap;
+  private final Map<ActorId, Actor> actorMap;
 
   public ActorSystem(ActorFactory actorFactory) {
-    this(Id.of(), actorFactory, new ConcurrentHashMap<>());
+    this(actorFactory, new ConcurrentHashMap<>());
   }
 
-  public ActorSystem(Id shardKey, ActorFactory actorFactory) {
-    this(shardKey, actorFactory, new ConcurrentHashMap<>());
-  }
-
-  public ActorSystem(Id shardKey, ActorFactory actorFactory, Map<Id, Actor> actorMap) {
-    this.shardKey = shardKey;
+  public ActorSystem(ActorFactory actorFactory, Map<ActorId, Actor> actorMap) {
     this.actorFactory = actorFactory;
     this.actorMap = actorMap;
   }
 
-  public Try<Message> handle(Id actorId, Message message) {
+  public Try<Message> handle(ActorId actorId, Message message) {
     actorMap.computeIfAbsent(actorId, actorFactory::create);
     return actorMap.get(actorId).apply(message);
-  }
-
-  @Override
-  public Id shardKey() {
-    return shardKey;
   }
 }

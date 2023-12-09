@@ -1,6 +1,5 @@
 package io.memoria.atom.actor;
 
-import io.memoria.atom.core.id.Id;
 import io.vavr.Tuple;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
@@ -16,14 +15,14 @@ public class ActorSystemTest {
   private final int numOfRequests = 1111;
   private final CountDownLatch latch = new CountDownLatch(numOfRequests * numOfActors);
   private final ActorFactory actorFactory = new DomainActorFactory(latch);
-  private final Map<Id, Actor> actorMap = new ConcurrentHashMap<>();
-  private final ActorSystem actorSystem = new ActorSystem(Id.of(0), actorFactory, actorMap);
+  private final Map<ActorId, Actor> actorMap = new ConcurrentHashMap<>();
+  private final ActorSystem actorSystem = new ActorSystem(actorFactory, actorMap);
 
   @Test
   void syncTest() throws InterruptedException {
     // Create numOfRequests and spread evenly across numOfActors
     List.range(0, numOfRequests)
-        .flatMap(reqId -> List.range(0, numOfActors).map(i -> Tuple.of(reqId, Id.of(i))))
+        .flatMap(reqId -> List.range(0, numOfActors).map(i -> Tuple.of(reqId, ActorId.of(i))))
         .shuffle()
         .forEach(tup -> handle(tup._1, tup._2));
     latch.await();
@@ -33,7 +32,7 @@ public class ActorSystemTest {
                   .forAll(actor -> actor.getCount() == numOfRequests);
   }
 
-  private void handle(int threadId, Id actorId) {
+  private void handle(int threadId, ActorId actorId) {
     Thread.ofVirtual().name("Thread:" + threadId).start(() -> actorSystem.handle(actorId, new Message()));
   }
 
@@ -45,30 +44,19 @@ public class ActorSystemTest {
     }
 
     @Override
-    public Actor create(Id id) {
+    public Actor create(ActorId id) {
       return new MyActor(id, latch);
     }
   }
 
-  static class MyActor implements Actor {
-    private final Id id;
+  static class MyActor extends AbstractActor {
     private final CountDownLatch latch;
     private volatile int count;
 
-    MyActor(Id id, CountDownLatch latch) {
-      this.id = id;
+    MyActor(ActorId actorId, CountDownLatch latch) {
+      super(actorId);
       this.latch = latch;
       this.count = 0;
-    }
-
-    @Override
-    public Id shardKey() {
-      return id;
-    }
-
-    @Override
-    public Id id() {
-      return id;
     }
 
     public int getCount() {
@@ -79,11 +67,11 @@ public class ActorSystemTest {
     public synchronized Try<Message> apply(Message message) {
       //      try {
       count++;
-      System.out.println(STR. "Hello from: \{ Thread.currentThread().getName() } Count is now: \{ count }" );
+      //      System.out.println(STR. "Hello from: \{ Thread.currentThread().getName() } Count is now: \{ count }" );
       //        Thread.sleep(r.nextInt(1000));
       //      count--;
       latch.countDown();
-      System.out.println(STR. "Hello from: \{ Thread.currentThread().getName() } Count is now: \{ count }" );
+      //      System.out.println(STR. "Hello from: \{ Thread.currentThread().getName() } Count is now: \{ count }" );
       return Try.success(message);
       //      } catch (InterruptedException e) {
       //        return Try.failure(e);

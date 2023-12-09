@@ -1,16 +1,14 @@
 package io.memoria.atom.actor;
 
-import io.memoria.atom.core.id.Id;
-
 public abstract class AbstractActor implements Actor {
-  private final Id id;
+  private final ActorId actorId;
 
-  protected AbstractActor(Id id) {
-    this.id = id;
+  protected AbstractActor(ActorId actorId) {
+    this.actorId = actorId;
   }
 
   @Override
-  public Id id() {
-    return id;
+  public ActorId actorId() {
+    return this.actorId;
   }
 }
