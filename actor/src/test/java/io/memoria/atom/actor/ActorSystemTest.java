@@ -16,7 +16,7 @@ public class ActorSystemTest {
   private final CountDownLatch latch = new CountDownLatch(numOfRequests * numOfActors);
   private final ActorFactory actorFactory = new DomainActorFactory(latch);
   private final Map<ActorId, Actor> actorMap = new ConcurrentHashMap<>();
-  private final ActorSystem actorSystem = new ActorSystem(actorFactory, actorMap);
+  private final ActorSystem actorSystem = new MemActorSystem(actorFactory, actorMap);
 
   @Test
   void syncTest() throws InterruptedException {
