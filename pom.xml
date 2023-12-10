@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>jbom</artifactId>
-        <version>21.1.0</version>
+        <version>21.2.0</version>
     </parent>
 
     <!--suppress MavenRedundantGroupId -->
@@ -72,7 +72,22 @@
                 <artifactId>uuid-creator</artifactId>
                 <version>5.3.5</version>
             </dependency>
-
+            <dependency>
+                <groupId>javax.cache</groupId>
+                <artifactId>cache-api</artifactId>
+                <version>1.1.1</version>
+            </dependency>
+            <!--            <dependency>-->
+            <!--                <groupId>com.hazelcast</groupId>-->
+            <!--                <artifactId>hazelcast</artifactId>-->
+            <!--                <version>5.3.6</version>-->
+            <!--                <scope>test</scope>-->
+            <!--            </dependency>-->
+            <dependency>
+                <groupId>org.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>3.9.6</version>
+            </dependency>
             <!--======================================================================================== -->
             <!-- Security Dependencies -->
             <!--======================================================================================== -->
@@ -112,8 +127,24 @@
     </dependencyManagement>
     <dependencies>
         <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.github.f4b6a3</groupId>
             <artifactId>uuid-creator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
         </dependency>
     </dependencies>
 </project>

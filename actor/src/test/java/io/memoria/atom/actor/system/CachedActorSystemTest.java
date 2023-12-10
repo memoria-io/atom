@@ -1,22 +1,38 @@
-package io.memoria.atom.actor;
+package io.memoria.atom.actor.system;
 
+import io.memoria.atom.actor.AbstractActor;
+import io.memoria.atom.actor.Actor;
+import io.memoria.atom.actor.ActorFactory;
+import io.memoria.atom.actor.ActorId;
+import io.memoria.atom.actor.Message;
 import io.vavr.Tuple;
-import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import javax.cache.Cache;
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
-public class ActorSystemTest {
-  private final int numOfActors = 9;
-  private final int numOfRequests = 1111;
-  private final CountDownLatch latch = new CountDownLatch(numOfRequests * numOfActors);
-  private final ActorFactory actorFactory = new DomainActorFactory(latch);
-  private final Map<ActorId, Actor> actorMap = new ConcurrentHashMap<>();
-  private final ActorSystem actorSystem = new MemActorSystem(actorFactory, actorMap);
+public class CachedActorSystemTest {
+  private static final int numOfActors = 9;
+  private static final int numOfRequests = 111;
+
+  private final Cache<ActorId, Actor> cache;
+  private final CountDownLatch latch;
+  private final ActorSystem actorSystem;
+
+  public CachedActorSystemTest() {
+    var cacheManager = Caching.getCachingProvider().getCacheManager();
+    var config = new MutableConfiguration<ActorId, Actor>().setTypes(ActorId.class, Actor.class).setStoreByValue(false);
+    //.setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
+    cache = cacheManager.createCache("simpleCache", config);
+    latch = new CountDownLatch(numOfRequests * numOfActors);
+    actorSystem = new CachedActorSystem(new DomainActorFactory(latch), cache);
+  }
 
   @Test
   void syncTest() throws InterruptedException {
@@ -26,10 +42,9 @@ public class ActorSystemTest {
         .shuffle()
         .forEach(tup -> handle(tup._1, tup._2));
     latch.await();
-    assert HashMap.ofAll(actorMap)
-                  .map(tup -> tup._2)
-                  .map(actor -> (MyActor) actor)
-                  .forAll(actor -> actor.getCount() == numOfRequests);
+    cache.iterator().forEachRemaining(entry -> {
+      Assertions.assertThat(((MyActor) entry.getValue()).count).isEqualTo(numOfRequests);
+    });
   }
 
   private void handle(int threadId, ActorId actorId) {
