@@ -19,7 +19,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class CachedActorSystemTest {
   private static final int numOfActors = 9;
-  private static final int numOfRequests = 111;
+  private static final int numOfRequests = 1111;
 
   private final Cache<ActorId, Actor> cache;
   private final CountDownLatch latch;
