@@ -26,6 +26,13 @@
             <artifactId>core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <!--======================================================================================== -->
+        <!-- Caching Dependencies -->
+        <!--======================================================================================== -->
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>

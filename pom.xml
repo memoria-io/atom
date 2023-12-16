@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>jbom</artifactId>
-        <version>21.2.0</version>
+        <version>21.3.0</version>
     </parent>
 
     <!--suppress MavenRedundantGroupId -->
@@ -65,23 +65,13 @@
     <dependencyManagement>
         <dependencies>
             <!--======================================================================================== -->
-            <!-- Core Dependencies -->
+            <!-- Caching Dependencies -->
             <!--======================================================================================== -->
-            <dependency>
-                <groupId>com.github.f4b6a3</groupId>
-                <artifactId>uuid-creator</artifactId>
-                <version>5.3.5</version>
-            </dependency>
             <dependency>
                 <groupId>javax.cache</groupId>
                 <artifactId>cache-api</artifactId>
                 <version>1.1.1</version>
             </dependency>
-            <!--            <dependency>-->
-            <!--                <groupId>com.hazelcast</groupId>-->
-            <!--                <artifactId>hazelcast</artifactId>-->
-            <!--                <version>5.3.6</version>-->
-            <!--            </dependency>-->
             <dependency>
                 <groupId>org.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
@@ -125,6 +115,21 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
+        <!--======================================================================================== -->
+        <!-- Core Dependencies -->
+        <!--======================================================================================== -->
+        <dependency>
+            <groupId>io.vavr</groupId>
+            <artifactId>vavr</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.f4b6a3</groupId>
+            <artifactId>uuid-creator</artifactId>
+            <version>5.3.5</version>
+        </dependency>
+        <!--======================================================================================== -->
+        <!-- Logging Dependencies -->
+        <!--======================================================================================== -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
@@ -137,13 +142,18 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j2-impl</artifactId>
         </dependency>
+        <!--======================================================================================== -->
+        <!-- Testing Dependencies -->
+        <!--======================================================================================== -->
         <dependency>
-            <groupId>com.github.f4b6a3</groupId>
-            <artifactId>uuid-creator</artifactId>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>javax.cache</groupId>
-            <artifactId>cache-api</artifactId>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
