@@ -7,6 +7,7 @@ import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.eventsourcing.EventId;
 import io.memoria.atom.eventsourcing.EventMeta;
 import io.memoria.atom.eventsourcing.State;
+import io.memoria.atom.eventsourcing.StateId;
 import io.vavr.Function2;
 import io.vavr.control.Try;
 
@@ -22,7 +23,7 @@ public interface Decider<S extends State, C extends Command, E extends Event> ex
   default Try<EventMeta> eventMeta(C cmd) {
     var meta = new EventMeta(EventId.of(idSupplier().get()),
                              0,
-                             cmd.meta().stateId(),
+                             StateId.of(cmd.meta().shardKey()),
                              cmd.meta().commandId(),
                              timeSupplier().get(),
                              cmd.meta().sagaSource());
@@ -30,10 +31,10 @@ public interface Decider<S extends State, C extends Command, E extends Event> ex
   }
 
   default Try<EventMeta> eventMeta(S state, C cmd) {
-    if (state.meta().stateId().equals(cmd.meta().stateId())) {
+    if (state.meta().shardKey().equals(cmd.meta().shardKey())) {
       var meta = new EventMeta(EventId.of(idSupplier().get()),
                                state.meta().version() + 1,
-                               state.meta().stateId(),
+                               StateId.of(cmd.meta().shardKey()),
                                cmd.meta().commandId(),
                                timeSupplier().get(),
                                cmd.meta().sagaSource());

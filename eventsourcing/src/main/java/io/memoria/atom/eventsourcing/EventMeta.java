@@ -1,5 +1,8 @@
 package io.memoria.atom.eventsourcing;
 
+import io.memoria.atom.core.Shardable;
+import io.memoria.atom.core.Versioned;
+import io.memoria.atom.core.id.Id;
 import io.vavr.control.Option;
 
 import java.io.Serializable;
@@ -17,7 +20,6 @@ public record EventMeta(EventId eventId,
     if (sagaSource == null) {
       throw new IllegalArgumentException("Saga source can't be null");
     }
-
   }
 
   public EventMeta(CommandId commandId, long version, StateId stateId) {
@@ -30,6 +32,11 @@ public record EventMeta(EventId eventId,
 
   public EventMeta(EventId id, long version, StateId stateId, CommandId commandId, long timestamp) {
     this(id, version, stateId, commandId, timestamp, Option.none());
+  }
+
+  @Override
+  public Id shardKey() {
+    return stateId.id();
   }
 }
 

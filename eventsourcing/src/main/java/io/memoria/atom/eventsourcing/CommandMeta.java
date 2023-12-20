@@ -1,5 +1,7 @@
 package io.memoria.atom.eventsourcing;
 
+import io.memoria.atom.core.Shardable;
+import io.memoria.atom.core.id.Id;
 import io.vavr.control.Option;
 
 import java.io.Serializable;
@@ -22,6 +24,11 @@ public record CommandMeta(CommandId commandId, StateId stateId, long timestamp, 
 
   public CommandMeta(CommandId commandId, StateId stateId, long timestamp) {
     this(commandId, stateId, timestamp, Option.none());
+  }
+
+  @Override
+  public Id shardKey() {
+    return commandId.id();
   }
 }
 
