@@ -9,15 +9,9 @@ import io.vavr.control.Try;
 import java.io.IOException;
 import java.util.Iterator;
 
-class DefaultActorSystem implements ActorSystem {
-  private final ActorStore actorStore;
-  private final ActorFactory actorFactory;
+record DefaultActorSystem(ActorStore actorStore, ActorFactory actorFactory) implements ActorSystem {
 
-  protected DefaultActorSystem(ActorStore actorStore, ActorFactory actorFactory) {
-    this.actorStore = actorStore;
-    this.actorFactory = actorFactory;
-  }
-
+  @Override
   public Try<Message> apply(ActorId actorId, Message message) {
     actorStore.computeIfAbsent(actorId, actorFactory::create);
     return actorStore.get(actorId).apply(message);
@@ -31,15 +25,5 @@ class DefaultActorSystem implements ActorSystem {
   @Override
   public Iterator<Actor> iterator() {
     return actorStore.iterator();
-  }
-
-  @Override
-  public ActorStore actorStore() {
-    return actorStore;
-  }
-
-  @Override
-  public ActorFactory actorFactory() {
-    return actorFactory;
   }
 }
