@@ -34,6 +34,6 @@ class CacheAdapter implements ActorStore {
 
   @Override
   public Iterator<Actor> iterator() {
-    return StreamSupport.stream(cache.spliterator(),false).map(Entry::getValue).iterator();
+    return StreamSupport.stream(cache.spliterator(), false).map(Entry::getValue).iterator();
   }
 }
