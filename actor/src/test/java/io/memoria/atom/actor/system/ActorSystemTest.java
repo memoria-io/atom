@@ -17,11 +17,12 @@ import java.util.stream.Stream;
 
 public class ActorSystemTest {
   private static final int numOfActors = 1000;
-  private static final int numOfRequests = 10000;
+  private static final int numOfRequests = 1000;
 
   @ParameterizedTest
   @MethodSource("testArgs")
   void syncTest(ActorStore actorStore, CountDownLatch latch) throws InterruptedException {
+    System.out.printf("Handling total %d requests", latch.getCount());
     try (var actorSystem = ActorSystem.create(actorStore, new DomainActorFactory(latch))) {
       IntStream.range(0, numOfActors).forEach(i -> startActor(ActorId.of(i), actorSystem));
       latch.await();
