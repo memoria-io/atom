@@ -22,7 +22,7 @@ public class ActorSystemTest {
   @ParameterizedTest
   @MethodSource("testArgs")
   void syncTest(ActorStore actorStore, CountDownLatch latch) throws InterruptedException {
-    System.out.printf("Handling total %d requests", latch.getCount());
+    //    System.out.printf("Handling total %d requests", latch.getCount());
     try (var actorSystem = ActorSystem.create(actorStore, new DomainActorFactory(latch))) {
       IntStream.range(0, numOfActors).forEach(i -> startActor(ActorId.of(i), actorSystem));
       latch.await();
@@ -33,7 +33,7 @@ public class ActorSystemTest {
 
   private static void startActor(ActorId actorId, ActorSystem actorSystem) {
     Thread.ofVirtual().start(() -> {
-      System.out.println("Starting: " + actorId);
+      //      System.out.println("Starting: " + actorId);
       IntStream.range(0, numOfRequests).forEach(_ -> {
         assert actorSystem.apply(actorId, new Message()).isSuccess();
       });
