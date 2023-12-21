@@ -10,6 +10,11 @@ public record StateId(Id id) implements Comparable<StateId>, Serializable {
     return id().value();
   }
 
+  @Override
+  public int compareTo(StateId o) {
+    return o.id.compareTo(id);
+  }
+
   public static StateId of() {
     return new StateId(Id.of());
   }
@@ -28,10 +33,5 @@ public record StateId(Id id) implements Comparable<StateId>, Serializable {
 
   public static StateId of(String value) {
     return new StateId(Id.of(value));
-  }
-
-  @Override
-  public int compareTo(StateId o) {
-    return o.id.compareTo(id);
   }
 }

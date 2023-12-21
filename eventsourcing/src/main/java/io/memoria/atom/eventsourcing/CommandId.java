@@ -10,6 +10,11 @@ public record CommandId(Id id) implements Comparable<CommandId>, Serializable {
     return id().value();
   }
 
+  @Override
+  public int compareTo(CommandId o) {
+    return o.id.compareTo(id);
+  }
+
   public static CommandId of() {
     return new CommandId(Id.of());
   }
@@ -28,10 +33,5 @@ public record CommandId(Id id) implements Comparable<CommandId>, Serializable {
 
   public static CommandId of(String value) {
     return new CommandId(Id.of(value));
-  }
-
-  @Override
-  public int compareTo(CommandId o) {
-    return o.id.compareTo(id);
   }
 }
