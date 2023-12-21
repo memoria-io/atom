@@ -8,35 +8,20 @@
         <artifactId>atom</artifactId>
         <version>21.5.1</version>
     </parent>
-
-    <groupId>io.memoria.atom</groupId>
-    <artifactId>actor</artifactId>
+    <groupId>io.memoria.reactive</groupId>
+    <artifactId>testsuite</artifactId>
     <version>21.5.1</version>
     <packaging>jar</packaging>
-
     <name>${project.groupId}.${project.artifactId}</name>
-    <description>actor Module</description>
-
+    <description>Event sourcing Module</description>
     <dependencies>
         <!--======================================================================================== -->
-        <!-- Modules Dependencies -->
+        <!-- Module Dependencies -->
         <!--======================================================================================== -->
         <dependency>
             <groupId>io.memoria.atom</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>eventsourcing</artifactId>
             <version>${project.parent.version}</version>
-        </dependency>
-        <!--======================================================================================== -->
-        <!-- Caching Dependencies -->
-        <!--======================================================================================== -->
-        <dependency>
-            <groupId>javax.cache</groupId>
-            <artifactId>cache-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
