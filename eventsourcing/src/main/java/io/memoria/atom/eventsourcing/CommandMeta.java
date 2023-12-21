@@ -28,7 +28,7 @@ public record CommandMeta(CommandId commandId, StateId stateId, long timestamp, 
 
   @Override
   public Id shardKey() {
-    return commandId.id();
+    return stateId.id();
   }
 }
 
