@@ -33,8 +33,8 @@ public record AccountEvolver() implements Evolver {
 
   @Override
   public Account apply(State state, Event event) {
-    return instanceOf(event, AccountEvent.class, state, Account.class).map(tup -> switch (tup._2) {
-      case OpenAccount openAccount -> handle(openAccount, tup._1);
+    return instanceOf(state, Account.class, event, AccountEvent.class).map(tup -> switch (tup._1) {
+      case OpenAccount openAccount -> handle(openAccount, tup._2);
       case ClosedAccount acc -> acc;
     }).get();
   }
