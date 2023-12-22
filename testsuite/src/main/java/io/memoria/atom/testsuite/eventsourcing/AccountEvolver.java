@@ -1,7 +1,9 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
-import io.memoria.atom.eventsourcing.ESException.InvalidEvent;
+import io.memoria.atom.eventsourcing.Event;
+import io.memoria.atom.eventsourcing.State;
 import io.memoria.atom.eventsourcing.StateMeta;
+import io.memoria.atom.eventsourcing.exceptions.InvalidEvolution;
 import io.memoria.atom.eventsourcing.rule.Evolver;
 import io.memoria.atom.testsuite.eventsourcing.event.AccountClosed;
 import io.memoria.atom.testsuite.eventsourcing.event.AccountCreated;
@@ -14,25 +16,27 @@ import io.memoria.atom.testsuite.eventsourcing.state.Account;
 import io.memoria.atom.testsuite.eventsourcing.state.ClosedAccount;
 import io.memoria.atom.testsuite.eventsourcing.state.OpenAccount;
 
+import static io.memoria.atom.eventsourcing.Validations.instanceOf;
+
 @SuppressWarnings("SwitchStatementWithTooFewBranches")
-public record AccountEvolver() implements Evolver<Account, AccountEvent> {
+public record AccountEvolver() implements Evolver {
   @Override
-  public Account apply(AccountEvent accountEvent) {
-    return switch (accountEvent) {
+  public Account apply(Event event) {
+    return switch (event) {
       case AccountCreated e -> {
         StateMeta meta = new StateMeta(e.accountId());
         yield new OpenAccount(meta, e.name(), e.balance(), 0, 0, 0);
       }
-      default -> throw InvalidEvent.of(accountEvent);
+      default -> throw InvalidEvolution.of(event);
     };
   }
 
   @Override
-  public Account apply(Account account, AccountEvent accountEvent) {
-    return switch (account) {
-      case OpenAccount openAccount -> handle(openAccount, accountEvent);
+  public Account apply(State state, Event event) {
+    return instanceOf(event, AccountEvent.class, state, Account.class).map(tup -> switch (tup._2) {
+      case OpenAccount openAccount -> handle(openAccount, tup._1);
       case ClosedAccount acc -> acc;
-    };
+    }).get();
   }
 
   private Account handle(OpenAccount account, AccountEvent accountEvent) {
@@ -40,8 +44,8 @@ public record AccountEvolver() implements Evolver<Account, AccountEvent> {
       case Credited e -> account.withCredit(e.amount());
       case NameChanged e -> account.withName(e.newName());
       case Debited e -> account.withDebit(e.amount());
-      case DebitConfirmed e -> account.withDebitConfirmed();
-      case AccountClosed e -> new ClosedAccount(stateMeta(account));
+      case DebitConfirmed _ -> account.withDebitConfirmed();
+      case AccountClosed _ -> new ClosedAccount(stateMeta(account));
       default -> account;
     };
   }

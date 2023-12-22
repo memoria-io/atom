@@ -5,10 +5,10 @@ import io.memoria.atom.eventsourcing.State;
 import io.memoria.atom.eventsourcing.StateMeta;
 import io.vavr.Function2;
 
-public interface Evolver<S extends State, E extends Event> extends Function2<S, E, S> {
-  S apply(E e);
+public interface Evolver extends Function2<State, Event, State> {
+  State apply(Event e);
 
-  default StateMeta stateMeta(S s) {
+  default StateMeta stateMeta(State s) {
     return s.meta().incrementVersion();
   }
 }
