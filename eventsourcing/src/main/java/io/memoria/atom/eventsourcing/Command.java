@@ -1,7 +1,14 @@
 package io.memoria.atom.eventsourcing;
 
+import io.memoria.atom.core.Shardable;
+import io.memoria.atom.core.id.Id;
+
 import java.io.Serializable;
 
-public interface Command extends Serializable {
+public interface Command extends Shardable, Serializable {
   CommandMeta meta();
+
+  default @Override Id shardKey() {
+    return meta().shardKey();
+  }
 }

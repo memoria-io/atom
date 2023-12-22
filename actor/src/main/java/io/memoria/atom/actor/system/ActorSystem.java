@@ -3,13 +3,13 @@ package io.memoria.atom.actor.system;
 import io.memoria.atom.actor.Actor;
 import io.memoria.atom.actor.ActorFactory;
 import io.memoria.atom.actor.ActorId;
-import io.memoria.atom.actor.Message;
+import io.memoria.atom.core.Shardable;
 import io.vavr.control.Try;
 
 import java.io.Closeable;
 import java.util.function.BiFunction;
 
-public interface ActorSystem extends Closeable, Iterable<Actor>, BiFunction<ActorId, Message, Try<Message>> {
+public interface ActorSystem extends Closeable, Iterable<Actor>, BiFunction<ActorId, Shardable, Try<Shardable>> {
   ActorStore actorStore();
 
   ActorFactory actorFactory();
