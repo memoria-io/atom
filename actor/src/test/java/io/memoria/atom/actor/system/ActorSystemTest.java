@@ -2,7 +2,6 @@ package io.memoria.atom.actor.system;
 
 import io.memoria.atom.actor.Actor;
 import io.memoria.atom.actor.ActorId;
-import io.memoria.atom.actor.Message;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

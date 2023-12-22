@@ -2,7 +2,7 @@ package io.memoria.atom.actor.system;
 
 import io.memoria.atom.actor.AbstractActor;
 import io.memoria.atom.actor.ActorId;
-import io.memoria.atom.actor.Message;
+import io.memoria.atom.core.Shardable;
 import io.vavr.control.Try;
 
 import java.util.concurrent.CountDownLatch;
@@ -16,7 +16,7 @@ class MyActor extends AbstractActor {
   }
 
   @Override
-  public synchronized Try<Message> apply(Message message) {
+  public synchronized Try<Shardable> apply(Shardable message) {
     latch.countDown();
     return Try.success(message);
   }
