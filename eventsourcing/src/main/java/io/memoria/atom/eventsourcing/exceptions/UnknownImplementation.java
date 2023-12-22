@@ -15,8 +15,8 @@ public class UnknownImplementation extends IllegalArgumentException implements E
   public static UnknownImplementation of(Shardable shardable) {
     var msg = switch (shardable) {
       case Command cmd -> message.formatted("Command", cmd.getClass().getSimpleName(), cmd.meta());
-      case State state -> message.formatted("Command", state.getClass().getSimpleName(), state.meta());
-      case Event event -> message.formatted("Command", event.getClass().getSimpleName(), event.meta());
+      case State state -> message.formatted("State", state.getClass().getSimpleName(), state.meta());
+      case Event event -> message.formatted("Event", event.getClass().getSimpleName(), event.meta());
       default -> message.formatted("Shardable", shardable.getClass().getSimpleName(), "");
     };
     return new UnknownImplementation(msg);

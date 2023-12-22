@@ -16,8 +16,8 @@ public class Validations {
 
   @SuppressWarnings("unchecked")
   public static <T extends Shardable> Try<T> instanceOf(Shardable shardable, Class<T> tClass) {
-    return shardable.getClass().isInstance(tClass) ? Try.success((T) shardable)
-                                                   : Try.failure(UnknownImplementation.of(shardable));
+    return tClass.isAssignableFrom(shardable.getClass()) ? Try.success((T) shardable)
+                                                         : Try.failure(UnknownImplementation.of(shardable));
   }
 
   public static <S extends State, E extends Event> Try<Tuple2<S, E>> instanceOf(State state,

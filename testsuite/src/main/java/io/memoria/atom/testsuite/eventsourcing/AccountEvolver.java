@@ -18,8 +18,9 @@ import io.memoria.atom.testsuite.eventsourcing.state.OpenAccount;
 
 import static io.memoria.atom.eventsourcing.Validations.instanceOf;
 
-@SuppressWarnings("SwitchStatementWithTooFewBranches")
 public record AccountEvolver() implements Evolver {
+
+  @SuppressWarnings("SwitchStatementWithTooFewBranches")
   @Override
   public Account apply(Event event) {
     return switch (event) {

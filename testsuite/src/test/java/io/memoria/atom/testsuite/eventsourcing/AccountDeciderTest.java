@@ -4,6 +4,7 @@ import io.memoria.atom.eventsourcing.CommandMeta;
 import io.memoria.atom.eventsourcing.StateMeta;
 import io.memoria.atom.eventsourcing.Validations;
 import io.memoria.atom.testsuite.eventsourcing.command.Debit;
+import io.memoria.atom.testsuite.eventsourcing.event.AccountEvent;
 import io.memoria.atom.testsuite.eventsourcing.event.DebitRejected;
 import io.memoria.atom.testsuite.eventsourcing.event.Debited;
 import io.memoria.atom.testsuite.eventsourcing.state.Account;
@@ -29,7 +30,7 @@ class AccountDeciderTest {
 
     // When
     var event = decider.apply(openAccount, debit).get();
-    var accountEvent = Validations.instanceOf(event, Account.class).get();
+    var accountEvent = Validations.instanceOf(event, AccountEvent.class).get();
 
     // Then
     assertThat(accountEvent.accountId()).isEqualTo(aliceId);
