@@ -18,7 +18,7 @@ class IdTransformerTest {
   void idSubTypesDirectMapping() {
     // Given
     var jsonStr = "\"some_id\"";
-    var obj = new SomeId("some_id");
+    var obj = SomeId.of(Id.of("some_id"));
 
     // When
     var serResult = json.serialize(obj).get();
@@ -52,9 +52,8 @@ class IdTransformerTest {
   }
 
   private static ObjectMapper createMapper() {
-    var subIdModule = JacksonUtils.subIdValueObjectsModule(SomeId.class, SomeId::new);
-    var anotherIdModule = JacksonUtils.subIdValueObjectsModule(AnotherId.class, AnotherId::new);
-    var om = JacksonUtils.json(subIdModule, anotherIdModule);
+    var om = JacksonUtils.json();
+    om.registerSubtypes(SomeId.class, AnotherId.class);
     JacksonUtils.prettyJson(om);
     JacksonUtils.addMixInPropertyFormat(om, Person.class);
     return om;

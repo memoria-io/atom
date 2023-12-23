@@ -2,36 +2,37 @@ package io.memoria.atom.eventsourcing;
 
 import io.memoria.atom.core.id.Id;
 
-import java.io.Serializable;
 import java.util.UUID;
 
-public record CommandId(Id id) implements Comparable<CommandId>, Serializable {
-  public String value() {
-    return id().value();
+public class CommandId extends Id {
+  public CommandId(String value) {
+    super(value);
   }
 
-  @Override
-  public int compareTo(CommandId o) {
-    return o.id.compareTo(id);
+  public CommandId(long value) {
+    super(value);
   }
 
-  public static CommandId of() {
-    return new CommandId(Id.of());
+  public CommandId(UUID value) {
+    super(value);
   }
 
-  public static CommandId of(Id id) {
-    return new CommandId(id);
-  }
-
-  public static CommandId of(UUID id) {
-    return new CommandId(Id.of(id));
-  }
-
-  public static CommandId of(long i) {
-    return new CommandId(Id.of(i));
+  public CommandId(Id id) {
+    super(id);
   }
 
   public static CommandId of(String value) {
-    return new CommandId(Id.of(value));
+    return new CommandId(value);
+  }
+
+  public static CommandId of(long value) {
+    return new CommandId(value);
+  }
+
+  public static CommandId of(UUID uuid) {
+    return new CommandId(uuid.toString());
+  }
+  public static CommandId of(Id id) {
+    return new CommandId(id);
   }
 }

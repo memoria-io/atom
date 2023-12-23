@@ -6,13 +6,13 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>jbom</artifactId>
-        <version>21.3.0</version>
+        <version>21.4.0</version>
     </parent>
 
     <!--suppress MavenRedundantGroupId -->
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>21.8.2</version>
+    <version>21.9.0</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
@@ -123,11 +123,7 @@
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.f4b6a3</groupId>
-            <artifactId>uuid-creator</artifactId>
-            <version>5.3.5</version>
-        </dependency>
+
         <!--======================================================================================== -->
         <!-- Logging Dependencies -->
         <!--======================================================================================== -->

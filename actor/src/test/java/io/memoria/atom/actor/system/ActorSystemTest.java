@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 public class ActorSystemTest {
@@ -23,7 +24,7 @@ public class ActorSystemTest {
   void syncTest(ActorStore actorStore, CountDownLatch latch) throws InterruptedException {
     //    System.out.printf("Handling total %d requests", latch.getCount());
     try (var actorSystem = ActorSystem.create(actorStore, new DomainActorFactory(latch))) {
-      IntStream.range(0, numOfActors).forEach(i -> startActor(ActorId.of(i), actorSystem));
+      LongStream.range(0, numOfActors).mapToObj(ActorId::new).forEach(actorId -> startActor(actorId, actorSystem));
       latch.await();
     } catch (IOException e) {
       throw new RuntimeException(e);

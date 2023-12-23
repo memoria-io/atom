@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.core.util.Separators;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -27,6 +28,8 @@ import io.vavr.jackson.datatype.VavrModule;
 
 import java.text.SimpleDateFormat;
 import java.util.function.Function;
+
+import static com.fasterxml.jackson.core.util.Separators.Spacing.NONE;
 
 public class JacksonUtils {
   private JacksonUtils() {}
@@ -122,7 +125,8 @@ public class JacksonUtils {
   }
 
   public static void prettyJson(ObjectMapper om) {
-    var printer = new DefaultPrettyPrinter().withoutSpacesInObjectEntries();
+    Separators separators = Separators.createDefaultInstance().withObjectFieldValueSpacing(NONE);
+    var printer = new DefaultPrettyPrinter(separators);
     printer.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
     om.enable(SerializationFeature.INDENT_OUTPUT);
     om.setDefaultPrettyPrinter(printer);
