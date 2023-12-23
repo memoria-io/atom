@@ -12,7 +12,7 @@ import io.vavr.control.Option;
 
 import java.util.function.Supplier;
 
-public interface Saga<E extends Event, C extends Command> extends Function1<E, Option<C>> {
+public interface Saga extends Function1<Event, Option<Command>> {
   Supplier<Id> idSupplier();
 
   Supplier<Long> timeSupplier();

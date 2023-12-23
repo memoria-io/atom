@@ -2,24 +2,24 @@ package io.memoria.atom.eventsourcing.rule;
 
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.Command;
-import io.memoria.atom.eventsourcing.ESException.MismatchingStateId;
 import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.eventsourcing.EventId;
 import io.memoria.atom.eventsourcing.EventMeta;
 import io.memoria.atom.eventsourcing.State;
+import io.memoria.atom.eventsourcing.exceptions.MismatchingState;
 import io.vavr.Function2;
 import io.vavr.control.Try;
 
 import java.util.function.Supplier;
 
-public interface Decider<S extends State, C extends Command, E extends Event> extends Function2<S, C, Try<E>> {
+public interface Decider extends Function2<State, Command, Try<Event>> {
   Supplier<Id> idSupplier();
 
   Supplier<Long> timeSupplier();
 
-  Try<E> apply(C c);
+  Try<Event> apply(Command c);
 
-  default Try<EventMeta> eventMeta(C cmd) {
+  default Try<EventMeta> eventMeta(Command cmd) {
     var meta = new EventMeta(EventId.of(idSupplier().get()),
                              0,
                              cmd.meta().stateId(),
@@ -29,7 +29,7 @@ public interface Decider<S extends State, C extends Command, E extends Event> ex
     return Try.success(meta);
   }
 
-  default Try<EventMeta> eventMeta(S state, C cmd) {
+  default Try<EventMeta> eventMeta(State state, Command cmd) {
     if (state.meta().stateId().equals(cmd.meta().stateId())) {
       var meta = new EventMeta(EventId.of(idSupplier().get()),
                                state.meta().version() + 1,
@@ -39,7 +39,7 @@ public interface Decider<S extends State, C extends Command, E extends Event> ex
                                cmd.meta().sagaSource());
       return Try.success(meta);
     } else {
-      return Try.failure(MismatchingStateId.of(state.meta().stateId(), cmd.meta().stateId()));
+      return Try.failure(MismatchingState.ids(cmd, state));
     }
   }
 }
