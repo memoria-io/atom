@@ -15,14 +15,6 @@ public record TimedUUID(UUID uuidValue) implements IdValue {
     }
   }
 
-  public TimedUUID() {
-    this(UuidCreator.getTimeOrderedEpoch());
-  }
-
-  public TimedUUID(String value) {
-    this(UUID.fromString(value));
-  }
-
   @Override
   public String value() {
     return uuidValue.toString();
@@ -35,5 +27,17 @@ public record TimedUUID(UUID uuidValue) implements IdValue {
     } else {
       throw new IllegalArgumentException("Unable to compare current value:%s to other:%s ".formatted(this, o));
     }
+  }
+
+  public static TimedUUID of() {
+    return new TimedUUID(UuidCreator.getTimeOrderedEpoch());
+  }
+
+  public static TimedUUID of(UUID uuid) {
+    return new TimedUUID(uuid);
+  }
+
+  public static TimedUUID of(String value) {
+    return new TimedUUID(UUID.fromString(value));
   }
 }

@@ -7,10 +7,6 @@ public record SeqId(long seqValue) implements IdValue {
     }
   }
 
-  public SeqId(String value) {
-    this(Long.parseLong(value));
-  }
-
   @Override
   public String value() {
     return String.valueOf(seqValue);
@@ -23,5 +19,13 @@ public record SeqId(long seqValue) implements IdValue {
     } else {
       throw new IllegalArgumentException("Unable to compare current value:%s to other:%s ".formatted(this, o));
     }
+  }
+
+  public static SeqId of(long value) {
+    return new SeqId(value);
+  }
+
+  public static SeqId of(String value) {
+    return new SeqId(Long.parseLong(value));
   }
 }

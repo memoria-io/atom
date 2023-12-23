@@ -17,4 +17,8 @@ public class Id implements Serializable, Comparable<Id> {
   public int compareTo(Id o) {
     return this.idValue.compareTo(o.idValue);
   }
+
+  public static Id of(IdValue idValue) {
+    return new Id(idValue);
+  }
 }
