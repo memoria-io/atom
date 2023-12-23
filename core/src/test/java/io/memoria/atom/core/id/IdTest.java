@@ -17,18 +17,9 @@ class IdTest {
   }
 
   @Test
-  void implementationTypes() {
-    Assertions.assertThat(Id.of("0")).isInstanceOf(SeqId.class);
-    Assertions.assertThat(Id.of(UuidCreator.getTimeOrderedEpoch())).isInstanceOf(TimedUUID.class);
-    Assertions.assertThat(Id.of("bob")).isInstanceOf(StringId.class);
-  }
-
-  @Test
   void validation() {
     UUID nullUUID = null;
-    var randomUUID = UUID.randomUUID();
     Assertions.assertThatNullPointerException().isThrownBy(() -> Id.of(nullUUID));
-    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> Id.of(randomUUID));
     Assertions.assertThatIllegalArgumentException().isThrownBy(() -> Id.of(-1L));
     Assertions.assertThatIllegalArgumentException().isThrownBy(() -> Id.of(""));
   }
@@ -36,7 +27,7 @@ class IdTest {
   @Test
   void uuidOrdering() {
     TreeMap<Id, Integer> map = new TreeMap<>();
-    List.range(0, 1000).forEach(i -> map.put(Id.of(), i));
+    List.range(0, 1000).forEach(i -> map.put(Id.of(UuidCreator.getTimeOrderedEpoch()), i));
     var atomic = new AtomicInteger(0);
     map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
   }

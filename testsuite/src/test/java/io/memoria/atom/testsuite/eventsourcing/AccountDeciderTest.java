@@ -1,5 +1,6 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
+import io.memoria.atom.eventsourcing.CommandId;
 import io.memoria.atom.eventsourcing.CommandMeta;
 import io.memoria.atom.eventsourcing.StateMeta;
 import io.memoria.atom.eventsourcing.Validations;
@@ -15,6 +16,7 @@ import static io.memoria.atom.testsuite.eventsourcing.TestData.alice;
 import static io.memoria.atom.testsuite.eventsourcing.TestData.aliceId;
 import static io.memoria.atom.testsuite.eventsourcing.TestData.bobId;
 import static io.memoria.atom.testsuite.eventsourcing.TestData.decider;
+import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AccountDeciderTest {
@@ -25,7 +27,7 @@ class AccountDeciderTest {
     // Given
     int balance = 500;
     var openAccount = new OpenAccount(new StateMeta(aliceId), alice, balance);
-    var debit = new Debit(new CommandMeta(aliceId), bobId, debitAmount);
+    var debit = new Debit(new CommandMeta(CommandId.of(randomUUID()), aliceId), bobId, debitAmount);
 
     // When
     var event = decider.apply(openAccount, debit).get();

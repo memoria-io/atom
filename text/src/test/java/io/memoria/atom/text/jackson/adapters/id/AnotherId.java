@@ -2,9 +2,16 @@ package io.memoria.atom.text.jackson.adapters.id;
 
 import io.memoria.atom.core.id.Id;
 
-public record AnotherId(String value) implements Id {
-  @Override
-  public int compareTo(Id o) {
-    return value.compareTo(o.value());
+public class AnotherId extends Id {
+  public AnotherId(String value) {
+    super(value);
+  }
+
+  public AnotherId(Id id) {
+    super(id);
+  }
+
+  public static AnotherId of(Id id) {
+    return new AnotherId(id);
   }
 }

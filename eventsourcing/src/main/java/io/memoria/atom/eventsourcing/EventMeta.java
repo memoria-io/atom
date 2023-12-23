@@ -22,8 +22,8 @@ public record EventMeta(EventId eventId,
     }
   }
 
-  public EventMeta(CommandId commandId, long version, StateId stateId) {
-    this(EventId.of(), version, stateId, commandId);
+  public EventMeta(EventId id, CommandId commandId, long version, StateId stateId) {
+    this(id, version, stateId, commandId);
   }
 
   public EventMeta(EventId id, long version, StateId stateId, CommandId commandId) {
@@ -36,7 +36,7 @@ public record EventMeta(EventId eventId,
 
   @Override
   public Id shardKey() {
-    return stateId.id();
+    return stateId;
   }
 }
 

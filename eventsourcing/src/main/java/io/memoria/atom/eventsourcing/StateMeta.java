@@ -13,17 +13,13 @@ public record StateMeta(StateId stateId, long version) implements Shardable, Ver
     }
   }
 
-  public StateMeta() {
-    this(StateId.of());
-  }
-
   public StateMeta(StateId stateId) {
     this(stateId, 0);
   }
 
   @Override
   public Id shardKey() {
-    return stateId.id();
+    return stateId;
   }
 
   public StateMeta incrementVersion() {

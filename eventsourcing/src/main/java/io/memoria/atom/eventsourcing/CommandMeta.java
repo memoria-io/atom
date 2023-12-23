@@ -14,10 +14,6 @@ public record CommandMeta(CommandId commandId, StateId stateId, long timestamp, 
     }
   }
 
-  public CommandMeta(StateId stateId) {
-    this(CommandId.of(), stateId);
-  }
-
   public CommandMeta(CommandId commandId, StateId stateId) {
     this(commandId, stateId, System.currentTimeMillis());
   }
@@ -28,7 +24,7 @@ public record CommandMeta(CommandId commandId, StateId stateId, long timestamp, 
 
   @Override
   public Id shardKey() {
-    return stateId.id();
+    return stateId;
   }
 }
 

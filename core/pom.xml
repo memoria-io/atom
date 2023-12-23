@@ -15,5 +15,12 @@
     <name>${project.groupId}.${project.artifactId}</name>
     <description>Core Module</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.github.f4b6a3</groupId>
+            <artifactId>uuid-creator</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
 
