@@ -4,7 +4,7 @@ import io.memoria.atom.eventsourcing.Command;
 import io.memoria.atom.eventsourcing.State;
 
 public class MismatchingState extends IllegalArgumentException implements ESException {
-  private MismatchingState(String msg) {
+  protected MismatchingState(String msg) {
     super(msg);
   }
 

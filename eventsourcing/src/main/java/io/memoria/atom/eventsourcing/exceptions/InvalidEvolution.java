@@ -6,17 +6,17 @@ import io.memoria.atom.eventsourcing.State;
 
 public class InvalidEvolution extends IllegalArgumentException implements ESException {
 
-  private InvalidEvolution(String msg) {
+  protected InvalidEvolution(String msg) {
     super(msg);
   }
 
   public static InvalidEvolution of(Event event) {
-    var msg = "Invalid creator event: %s[%s] for creating state, this should never happen";
+    var msg = "Invalid creator event: %s[%s] for creating state";
     return new InvalidEvolution(msg.formatted(event.getClass().getSimpleName(), event.meta()));
   }
 
   public static InvalidEvolution of(Event event, State state) {
-    var msg = "Invalid evolution event: %s[%s] to the state: %s[%s], this should never happen";
+    var msg = "Invalid evolution event: %s[%s] to the state: %s[%s]";
     return new InvalidEvolution(msg.formatted(event.getClass().getSimpleName(),
                                               event.meta(),
                                               state.getClass().getSimpleName(),

@@ -8,7 +8,7 @@ import io.memoria.atom.eventsourcing.State;
 public class UnknownImplementation extends IllegalArgumentException implements ESException {
   private static final String message = "Unknown %s: %s[%s] implementation";
 
-  private UnknownImplementation(String msg) {
+  protected UnknownImplementation(String msg) {
     super(msg);
   }
 
