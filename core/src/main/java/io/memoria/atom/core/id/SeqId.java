@@ -1,19 +1,27 @@
 package io.memoria.atom.core.id;
 
-public record SeqId(long i) implements Id {
+public record SeqId(long seqValue) implements IdValue {
   public SeqId {
-    if (i < 0) {
+    if (seqValue < 0) {
       throw new IllegalArgumentException("Sequence Id value is less than 0");
     }
   }
 
-  @Override
-  public int compareTo(Id o) {
-    return Long.compare(i, Long.parseLong(o.value()));
+  public SeqId(String value) {
+    this(Long.parseLong(value));
   }
 
   @Override
   public String value() {
-    return String.valueOf(i);
+    return String.valueOf(seqValue);
+  }
+
+  @Override
+  public int compareTo(IdValue o) {
+    if (o instanceof SeqId seqId) {
+      return Long.compare(this.seqValue, seqId.seqValue);
+    } else {
+      throw new IllegalArgumentException("Unable to compare current value:%s to other:%s ".formatted(this, o));
+    }
   }
 }

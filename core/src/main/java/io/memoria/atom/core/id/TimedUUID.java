@@ -6,11 +6,11 @@ import com.github.f4b6a3.uuid.util.UuidUtil;
 import java.util.Objects;
 import java.util.UUID;
 
-public record TimedUUID(UUID uuid) implements Id {
+public record TimedUUID(UUID uuidValue) implements IdValue {
 
   public TimedUUID {
-    Objects.requireNonNull(uuid);
-    if (!UuidUtil.isTimeOrderedEpoch(uuid)) {
+    Objects.requireNonNull(uuidValue);
+    if (!UuidUtil.isTimeOrderedEpoch(uuidValue)) {
       throw new IllegalArgumentException("uuid is not version 7");
     }
   }
@@ -19,13 +19,21 @@ public record TimedUUID(UUID uuid) implements Id {
     this(UuidCreator.getTimeOrderedEpoch());
   }
 
-  @Override
-  public int compareTo(Id id) {
-    return this.uuid.compareTo(UUID.fromString(id.value()));
+  public TimedUUID(String value) {
+    this(UUID.fromString(value));
   }
 
   @Override
   public String value() {
-    return uuid.toString();
+    return uuidValue.toString();
+  }
+
+  @Override
+  public int compareTo(IdValue o) {
+    if (o instanceof TimedUUID uuid) {
+      return this.uuidValue.compareTo(uuid.uuidValue);
+    } else {
+      throw new IllegalArgumentException("Unable to compare current value:%s to other:%s ".formatted(this, o));
+    }
   }
 }
