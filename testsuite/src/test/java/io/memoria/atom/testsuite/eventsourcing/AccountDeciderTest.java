@@ -7,7 +7,6 @@ import io.memoria.atom.testsuite.eventsourcing.command.Debit;
 import io.memoria.atom.testsuite.eventsourcing.event.AccountEvent;
 import io.memoria.atom.testsuite.eventsourcing.event.DebitRejected;
 import io.memoria.atom.testsuite.eventsourcing.event.Debited;
-import io.memoria.atom.testsuite.eventsourcing.state.Account;
 import io.memoria.atom.testsuite.eventsourcing.state.OpenAccount;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
