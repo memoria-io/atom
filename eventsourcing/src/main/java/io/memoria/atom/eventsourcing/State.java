@@ -1,7 +1,7 @@
 package io.memoria.atom.eventsourcing;
 
-import io.memoria.atom.core.Shardable;
-import io.memoria.atom.core.Versioned;
+import io.memoria.atom.core.domain.Shardable;
+import io.memoria.atom.core.domain.Versioned;
 import io.memoria.atom.core.id.Id;
 
 import java.io.Serializable;
