@@ -20,7 +20,7 @@ class AccountEvolverTest {
   void evolve() {
     // Given
     var openAccount = new OpenAccount(new StateMeta(aliceId), alice, 500);
-    var debited = new Debited(new EventMeta(EventId.of(randomUUID()), CommandId.of(randomUUID()), 1, aliceId),
+    var debited = new Debited(new EventMeta(EventId.of(randomUUID()), 1, aliceId, CommandId.of(randomUUID())),
                               bobId,
                               300);
 
