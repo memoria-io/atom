@@ -22,10 +22,6 @@ public record EventMeta(EventId eventId,
     }
   }
 
-  public EventMeta(EventId id, CommandId commandId, long version, StateId stateId) {
-    this(id, version, stateId, commandId);
-  }
-
   public EventMeta(EventId id, long version, StateId stateId, CommandId commandId) {
     this(id, version, stateId, commandId, System.currentTimeMillis());
   }
