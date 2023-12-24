@@ -1,6 +1,6 @@
 package io.memoria.atom.eventsourcing;
 
-import io.memoria.atom.core.Shardable;
+import io.memoria.atom.core.domain.Shardable;
 import io.memoria.atom.eventsourcing.exceptions.UnknownImplementation;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;

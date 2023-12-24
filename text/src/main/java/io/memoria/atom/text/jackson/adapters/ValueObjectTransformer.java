@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import io.memoria.atom.core.ValueObject;
+import io.memoria.atom.core.domain.ValueObject;
 
 import java.io.IOException;
 import java.util.function.Function;

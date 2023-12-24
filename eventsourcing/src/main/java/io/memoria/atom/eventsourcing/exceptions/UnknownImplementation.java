@@ -1,6 +1,6 @@
 package io.memoria.atom.eventsourcing.exceptions;
 
-import io.memoria.atom.core.Shardable;
+import io.memoria.atom.core.domain.Shardable;
 import io.memoria.atom.eventsourcing.Command;
 import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.eventsourcing.State;

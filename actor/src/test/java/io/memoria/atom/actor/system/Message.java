@@ -1,6 +1,6 @@
 package io.memoria.atom.actor.system;
 
-import io.memoria.atom.core.Shardable;
+import io.memoria.atom.core.domain.Shardable;
 import io.memoria.atom.core.id.Id;
 
 import java.util.UUID;

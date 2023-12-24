@@ -16,7 +16,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import io.memoria.atom.core.ValueObject;
+import io.memoria.atom.core.domain.ValueObject;
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.text.jackson.adapters.GenericValueObjectTransformer.GenericValueObjectDeserializer;
 import io.memoria.atom.text.jackson.adapters.GenericValueObjectTransformer.GenericValueObjectSerializer;

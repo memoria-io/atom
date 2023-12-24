@@ -1,4 +1,4 @@
-package io.memoria.atom.core;
+package io.memoria.atom.core.domain;
 
 @FunctionalInterface
 public interface ValueObject<T> {
