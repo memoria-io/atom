@@ -1,7 +1,7 @@
-package io.memoria.atom.sec;
+package io.memoria.atom.security;
 
-import io.memoria.atom.core.sec.Hasher;
-import io.memoria.atom.core.sec.Verifier;
+import io.memoria.atom.core.security.Hasher;
+import io.memoria.atom.core.security.Verifier;
 import io.memoria.atom.core.text.TextGenerator;
 import io.vavr.collection.Stream;
 import org.junit.jupiter.api.Test;

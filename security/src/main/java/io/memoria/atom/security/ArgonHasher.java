@@ -1,8 +1,8 @@
-package io.memoria.atom.sec;
+package io.memoria.atom.security;
 
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
-import io.memoria.atom.core.sec.Hasher;
+import io.memoria.atom.core.security.Hasher;
 
 public record ArgonHasher(Argon2 argon2, int iterations, int memory, int parallelism) implements Hasher {
 
