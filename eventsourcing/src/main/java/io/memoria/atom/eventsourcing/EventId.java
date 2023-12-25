@@ -33,6 +33,7 @@ public class EventId extends Id {
   public static EventId of(UUID uuid) {
     return new EventId(uuid.toString());
   }
+
   public static EventId of(Id id) {
     return new EventId(id);
   }

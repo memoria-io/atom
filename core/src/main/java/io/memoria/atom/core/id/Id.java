@@ -90,4 +90,9 @@ public class Id implements Serializable, Comparable<Id> {
   private int compareToUuid(Id o) {
     return UUID.fromString(value).compareTo(UUID.fromString(o.value));
   }
+
+  @Override
+  public String toString() {
+    return value;
+  }
 }

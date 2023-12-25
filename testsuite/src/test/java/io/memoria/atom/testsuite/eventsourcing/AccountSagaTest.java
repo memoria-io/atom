@@ -17,7 +17,7 @@ class AccountSagaTest {
   @Test
   void evolve() {
     // Given
-    var debited = new Debited(new EventMeta(EventId.of(randomUUID()),1,aliceId, CommandId.of(randomUUID())),
+    var debited = new Debited(new EventMeta(EventId.of(randomUUID()), 1, aliceId, CommandId.of(randomUUID())),
                               bobId,
                               300);
 

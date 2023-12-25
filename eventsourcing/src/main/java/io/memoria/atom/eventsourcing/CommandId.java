@@ -32,6 +32,7 @@ public class CommandId extends Id {
   public static CommandId of(UUID uuid) {
     return new CommandId(uuid.toString());
   }
+
   public static CommandId of(Id id) {
     return new CommandId(id);
   }
