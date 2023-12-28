@@ -39,7 +39,7 @@ public interface Decider extends Function2<State, Command, Try<Event>> {
                                cmd.meta().sagaSource());
       return Try.success(meta);
     } else {
-      return Try.failure(MismatchingState.ids(cmd, state));
+      return Try.failure(MismatchingState.stateId(cmd, state));
     }
   }
 }
