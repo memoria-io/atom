@@ -8,14 +8,13 @@ public class MismatchingState extends IllegalArgumentException implements ESExce
     super(msg);
   }
 
-  public static MismatchingState stateId(Command command, State state) {
-    var msg = "The Command's stateId:%s doesn't match stateId:%s".formatted(command.meta().stateId(),
-                                                                            state.meta().stateId());
+  public static MismatchingState shardKey(Command command, State state) {
+    var msg = "The Command's stateId:%s doesn't match stateId:%s".formatted(command.shardKey(), state.shardKey());
     return new MismatchingState(msg);
   }
 
-  public static MismatchingState stateId(Command command) {
-    var msg = "The command's stateId:%s doesn't belong here".formatted(command.meta().stateId());
+  public static MismatchingState shardKey(Command command) {
+    var msg = "The command's stateId:%s doesn't belong here".formatted(command.shardKey());
     return new MismatchingState(msg);
   }
 }
