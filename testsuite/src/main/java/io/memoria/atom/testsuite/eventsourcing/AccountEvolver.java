@@ -3,7 +3,7 @@ package io.memoria.atom.testsuite.eventsourcing;
 import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.eventsourcing.State;
 import io.memoria.atom.eventsourcing.StateMeta;
-import io.memoria.atom.eventsourcing.exceptions.InvalidEvolution;
+import io.memoria.atom.eventsourcing.exceptions.UnknownImplementation;
 import io.memoria.atom.eventsourcing.rule.Evolver;
 import io.memoria.atom.testsuite.eventsourcing.event.AccountClosed;
 import io.memoria.atom.testsuite.eventsourcing.event.AccountCreated;
@@ -28,7 +28,7 @@ public record AccountEvolver() implements Evolver {
         StateMeta meta = new StateMeta(e.accountId());
         yield new OpenAccount(meta, e.name(), e.balance(), 0, 0, 0);
       }
-      default -> throw InvalidEvolution.of(event);
+      default -> throw new RuntimeException(UnknownImplementation.of(event));
     };
   }
 

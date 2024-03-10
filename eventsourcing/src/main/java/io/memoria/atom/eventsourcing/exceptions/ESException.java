@@ -1,5 +1,7 @@
 package io.memoria.atom.eventsourcing.exceptions;
 
-public interface ESException {
-
+public class ESException extends Throwable {
+  protected ESException(String msg) {
+    super(msg);
+  }
 }

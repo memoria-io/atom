@@ -5,7 +5,7 @@ import io.memoria.atom.eventsourcing.Command;
 import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.eventsourcing.State;
 
-public class UnknownImplementation extends IllegalArgumentException implements ESException {
+public class UnknownImplementation extends ESException {
   private static final String message = "Unknown %s: %s[%s] implementation";
 
   protected UnknownImplementation(String msg) {

@@ -6,7 +6,7 @@ import io.memoria.atom.eventsourcing.Event;
 import io.memoria.atom.eventsourcing.EventId;
 import io.memoria.atom.eventsourcing.EventMeta;
 import io.memoria.atom.eventsourcing.State;
-import io.memoria.atom.eventsourcing.exceptions.MismatchingState;
+import io.memoria.atom.eventsourcing.exceptions.command.MismatchingCommandState;
 import io.vavr.Function2;
 import io.vavr.control.Try;
 
@@ -39,7 +39,7 @@ public interface Decider extends Function2<State, Command, Try<Event>> {
                                cmd.meta().sagaSource());
       return Try.success(meta);
     } else {
-      return Try.failure(MismatchingState.shardKey(cmd, state));
+      return Try.failure(MismatchingCommandState.of(cmd, state));
     }
   }
 }
