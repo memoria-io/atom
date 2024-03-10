@@ -1,9 +1,8 @@
-package io.memoria.atom.eventsourcing.exceptions.event;
+package io.memoria.atom.eventsourcing.event.exceptions;
 
-import io.memoria.atom.eventsourcing.Command;
-import io.memoria.atom.eventsourcing.Event;
-import io.memoria.atom.eventsourcing.State;
-import io.memoria.atom.eventsourcing.exceptions.ESException;
+import io.memoria.atom.eventsourcing.state.State;
+import io.memoria.atom.eventsourcing.ESException;
+import io.memoria.atom.eventsourcing.event.Event;
 
 public class MismatchingEventState extends ESException {
   protected MismatchingEventState(String msg) {

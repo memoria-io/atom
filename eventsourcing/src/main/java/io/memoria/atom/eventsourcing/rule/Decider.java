@@ -1,12 +1,12 @@
 package io.memoria.atom.eventsourcing.rule;
 
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.eventsourcing.Command;
-import io.memoria.atom.eventsourcing.Event;
-import io.memoria.atom.eventsourcing.EventId;
-import io.memoria.atom.eventsourcing.EventMeta;
-import io.memoria.atom.eventsourcing.State;
-import io.memoria.atom.eventsourcing.exceptions.command.MismatchingCommandState;
+import io.memoria.atom.eventsourcing.command.Command;
+import io.memoria.atom.eventsourcing.event.Event;
+import io.memoria.atom.eventsourcing.event.EventId;
+import io.memoria.atom.eventsourcing.event.EventMeta;
+import io.memoria.atom.eventsourcing.state.State;
+import io.memoria.atom.eventsourcing.command.exceptions.MismatchingCommandState;
 import io.vavr.Function2;
 import io.vavr.control.Try;
 

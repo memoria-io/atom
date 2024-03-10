@@ -1,4 +1,4 @@
-package io.memoria.atom.eventsourcing.exceptions;
+package io.memoria.atom.eventsourcing;
 
 public class ESException extends Throwable {
   protected ESException(String msg) {

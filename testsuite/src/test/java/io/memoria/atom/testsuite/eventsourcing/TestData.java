@@ -1,7 +1,7 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.eventsourcing.StateId;
+import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;

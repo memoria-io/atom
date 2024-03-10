@@ -1,9 +1,9 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
-import io.memoria.atom.eventsourcing.CommandId;
-import io.memoria.atom.eventsourcing.EventId;
-import io.memoria.atom.eventsourcing.EventMeta;
-import io.memoria.atom.eventsourcing.StateMeta;
+import io.memoria.atom.eventsourcing.command.CommandId;
+import io.memoria.atom.eventsourcing.event.EventId;
+import io.memoria.atom.eventsourcing.event.EventMeta;
+import io.memoria.atom.eventsourcing.state.StateMeta;
 import io.memoria.atom.testsuite.eventsourcing.event.Debited;
 import io.memoria.atom.testsuite.eventsourcing.state.OpenAccount;
 import org.assertj.core.api.Assertions;

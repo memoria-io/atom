@@ -1,8 +1,8 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.eventsourcing.Command;
-import io.memoria.atom.eventsourcing.Event;
+import io.memoria.atom.eventsourcing.command.Command;
+import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.rule.Saga;
 import io.memoria.atom.testsuite.eventsourcing.command.ConfirmDebit;
 import io.memoria.atom.testsuite.eventsourcing.command.Credit;

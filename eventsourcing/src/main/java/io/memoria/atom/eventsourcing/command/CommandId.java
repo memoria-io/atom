@@ -1,4 +1,4 @@
-package io.memoria.atom.eventsourcing;
+package io.memoria.atom.eventsourcing.command;
 
 import io.memoria.atom.core.id.Id;
 
