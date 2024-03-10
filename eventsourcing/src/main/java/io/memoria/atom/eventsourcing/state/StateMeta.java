@@ -1,4 +1,4 @@
-package io.memoria.atom.eventsourcing;
+package io.memoria.atom.eventsourcing.state;
 
 import io.memoria.atom.core.domain.Shardable;
 import io.memoria.atom.core.domain.Versioned;

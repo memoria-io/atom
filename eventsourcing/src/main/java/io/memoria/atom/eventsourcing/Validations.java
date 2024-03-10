@@ -1,7 +1,12 @@
 package io.memoria.atom.eventsourcing;
 
 import io.memoria.atom.core.domain.Shardable;
-import io.memoria.atom.eventsourcing.exceptions.UnknownImplementation;
+import io.memoria.atom.eventsourcing.command.Command;
+import io.memoria.atom.eventsourcing.command.exceptions.UnknownCommand;
+import io.memoria.atom.eventsourcing.event.Event;
+import io.memoria.atom.eventsourcing.event.exceptions.UnknownEvent;
+import io.memoria.atom.eventsourcing.state.State;
+import io.memoria.atom.eventsourcing.state.exceptions.UnknownState;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.control.Try;
@@ -11,13 +16,22 @@ public class Validations {
   private Validations() {}
 
   public static Try<Shardable> instanceOf(Shardable shardable, boolean condition) {
-    return (condition) ? Try.success(shardable) : Try.failure(UnknownImplementation.of(shardable));
+    if (condition) {
+      return Try.success(shardable);
+    } else {
+      var ex = switch (shardable) {
+        case Command cmd -> UnknownCommand.of(cmd);
+        case State state -> UnknownState.of(state);
+        case Event event -> UnknownEvent.of(event);
+        default -> new IllegalArgumentException("Unknown shardable %s".formatted(shardable));
+      };
+      return Try.failure(ex);
+    }
   }
 
   @SuppressWarnings("unchecked")
   public static <T extends Shardable> Try<T> instanceOf(Shardable shardable, Class<T> tClass) {
-    return tClass.isAssignableFrom(shardable.getClass()) ? Try.success((T) shardable)
-                                                         : Try.failure(UnknownImplementation.of(shardable));
+    return instanceOf(shardable, tClass.isAssignableFrom(shardable.getClass())).map(t -> (T) t);
   }
 
   public static <S extends State, E extends Event> Try<Tuple2<S, E>> instanceOf(State state,

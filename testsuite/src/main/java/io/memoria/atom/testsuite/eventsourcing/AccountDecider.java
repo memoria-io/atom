@@ -1,12 +1,13 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.eventsourcing.Command;
-import io.memoria.atom.eventsourcing.Event;
-import io.memoria.atom.eventsourcing.EventMeta;
-import io.memoria.atom.eventsourcing.State;
-import io.memoria.atom.eventsourcing.exceptions.InvalidEvolution;
+import io.memoria.atom.eventsourcing.command.Command;
+import io.memoria.atom.eventsourcing.command.exceptions.InvalidEvolutionCommand;
+import io.memoria.atom.eventsourcing.command.exceptions.UnknownCommand;
+import io.memoria.atom.eventsourcing.event.Event;
+import io.memoria.atom.eventsourcing.event.EventMeta;
 import io.memoria.atom.eventsourcing.rule.Decider;
+import io.memoria.atom.eventsourcing.state.State;
 import io.memoria.atom.testsuite.eventsourcing.command.AccountCommand;
 import io.memoria.atom.testsuite.eventsourcing.command.ChangeName;
 import io.memoria.atom.testsuite.eventsourcing.command.CloseAccount;
@@ -51,7 +52,7 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
   private Try<AccountEvent> handle(AccountCommand command) {
     return eventMeta(command).flatMap(meta -> switch (command) {
       case CreateAccount cmd -> success(new AccountCreated(meta, cmd.accountName(), cmd.balance()));
-      default -> failure(InvalidEvolution.of(command));
+      default -> failure(UnknownCommand.of(command));
     });
   }
 
@@ -64,7 +65,7 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
 
   private Try<AccountEvent> handle(OpenAccount account, AccountCommand command, EventMeta meta) {
     return switch (command) {
-      case CreateAccount cmd -> failure(InvalidEvolution.of(cmd, account));
+      case CreateAccount cmd -> failure(InvalidEvolutionCommand.of(cmd, account));
       case ChangeName cmd -> success(new NameChanged(meta, cmd.name()));
       case Debit cmd -> tryToDebit(cmd, account, meta);
       case Credit cmd -> success(new Credited(meta, cmd.debitedAcc(), cmd.amount()));
@@ -77,10 +78,10 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
     return switch (command) {
       case Credit cmd -> success(new CreditRejected(meta, cmd.debitedAcc(), cmd.amount()));
       case ConfirmDebit _ -> success(new DebitConfirmed(meta));
-      case ChangeName cmd -> failure(InvalidEvolution.of(cmd, state));
-      case Debit cmd -> failure(InvalidEvolution.of(cmd, state));
-      case CreateAccount cmd -> failure(InvalidEvolution.of(cmd, state));
-      case CloseAccount cmd -> failure(InvalidEvolution.of(cmd, state));
+      case ChangeName cmd -> failure(InvalidEvolutionCommand.of(cmd, state));
+      case Debit cmd -> failure(InvalidEvolutionCommand.of(cmd, state));
+      case CreateAccount cmd -> failure(InvalidEvolutionCommand.of(cmd, state));
+      case CloseAccount cmd -> failure(InvalidEvolutionCommand.of(cmd, state));
     };
   }
 

@@ -1,7 +1,7 @@
 package io.memoria.atom.testsuite.eventsourcing.event;
 
-import io.memoria.atom.eventsourcing.Event;
-import io.memoria.atom.eventsourcing.StateId;
+import io.memoria.atom.eventsourcing.event.Event;
+import io.memoria.atom.eventsourcing.state.StateId;
 
 public sealed interface AccountEvent extends Event permits AccountClosed,
                                                            AccountCreated,
