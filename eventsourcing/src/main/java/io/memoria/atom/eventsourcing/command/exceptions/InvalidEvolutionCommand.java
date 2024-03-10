@@ -1,12 +1,11 @@
 package io.memoria.atom.eventsourcing.command.exceptions;
 
-import io.memoria.atom.eventsourcing.state.State;
-import io.memoria.atom.eventsourcing.ESException;
 import io.memoria.atom.eventsourcing.command.Command;
+import io.memoria.atom.eventsourcing.state.State;
 
-public class InvalidEvolutionCommand extends ESException {
-  protected InvalidEvolutionCommand(String msg) {
-    super(msg);
+public class InvalidEvolutionCommand extends CommandException {
+  protected InvalidEvolutionCommand(String msg, Command command) {
+    super(msg, command);
   }
 
   public static InvalidEvolutionCommand of(Command command, State state) {
@@ -14,6 +13,6 @@ public class InvalidEvolutionCommand extends ESException {
                                                                                  command.meta(),
                                                                                  state.getClass().getSimpleName(),
                                                                                  state.meta());
-    return new InvalidEvolutionCommand(msg);
+    return new InvalidEvolutionCommand(msg, command);
   }
 }
