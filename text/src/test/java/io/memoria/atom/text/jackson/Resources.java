@@ -4,7 +4,7 @@ import io.memoria.atom.core.file.ResourceFileOps;
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.text.jackson.cases.company.Engineer;
 import io.memoria.atom.text.jackson.cases.company.Manager;
-import io.vavr.collection.List;
+
 
 import java.time.LocalDate;
 

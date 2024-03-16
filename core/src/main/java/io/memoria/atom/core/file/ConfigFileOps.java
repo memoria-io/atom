@@ -1,66 +1,78 @@
 package io.memoria.atom.core.file;
 
-import io.vavr.Tuple;
-import io.vavr.collection.HashMap;
-import io.vavr.collection.HashSet;
-import io.vavr.collection.List;
-import io.vavr.collection.Map;
-import io.vavr.control.Option;
-import io.vavr.control.Try;
-
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.regex.Pattern;
-
-import static io.vavr.control.Option.none;
-import static io.vavr.control.Option.some;
+import java.util.stream.Collectors;
 
 public class ConfigFileOps {
   public static final BinaryOperator<String> JOIN_LINES = (a, b) -> a + System.lineSeparator() + b;
   public static final String VAR_PREFIX = "${";
   public static final String VAR_POSTFIX = "}";
-  private final Option<String> nestingPrefix;
+  private final String nestingPrefix;
   private final boolean enableVariableInterpolation;
   private final Map<String, String> envVars;
 
-  public ConfigFileOps(boolean enableVariableInterpolation) {
-    this(null, enableVariableInterpolation);
+  public ConfigFileOps(String nestingPrefix, boolean enableVariableInterpolation) {
+    this.nestingPrefix = nestingPrefix;
+    this.enableVariableInterpolation = enableVariableInterpolation;
+    this.envVars = getEnvVars(enableVariableInterpolation);
   }
 
   /**
    * @param enableVariableInterpolation when true, any line which contains ${ENV_VALUE:-defaultValue} will be resolved
    *                                    from system environment then from java systemProperties
    */
-  public ConfigFileOps(String nestingPrefix, boolean enableVariableInterpolation) {
+  public ConfigFileOps(boolean enableVariableInterpolation) {
+    this.nestingPrefix = null;
     this.enableVariableInterpolation = enableVariableInterpolation;
-    this.envVars = (enableVariableInterpolation) ? toMap(System.getProperties()).merge(HashMap.ofAll(System.getenv()))
-                                                 : HashMap.empty();
-    this.nestingPrefix = Option.of(nestingPrefix).flatMap(s -> (s.isEmpty()) ? none() : some(s));
-  }
-
-  Map<String, String> toMap(Properties props) {
-    return HashSet.ofAll(props.keySet())
-                  .filter(String.class::isInstance)
-                  .map(k -> (String) k)
-                  .toMap(k -> Tuple.of(k, props.getProperty(k)));
+    this.envVars = getEnvVars(enableVariableInterpolation);
   }
 
   /**
    * if the path parameter doesn't start with "/" it's considered a file under the resources directory
    */
-  public Try<String> read(String path) {
-    return Try.of(() -> expand(path, null).reduce(JOIN_LINES));
+  public String read(String path) throws IOException {
+    return expand(path, null).stream().reduce("", JOIN_LINES);
   }
 
-  private List<String> expand(String path, String line) {
-    if (line == null)
-      return ResourceFileOps.readResourceOrFile(path)
-                            .get()
-                            .flatMap(l -> expand(path, l))
-                            .map(this::resolveLineExpression);
-    if (nestingPrefix.isDefined() && line.trim().startsWith(nestingPrefix.get())) {
-      var subFilePath = line.substring(nestingPrefix.get().length()).trim();
+  Map<String, String> getEnvVars(boolean enableVariableInterpolation) {
+    final Map<String, String> envVars;
+    if (enableVariableInterpolation) {
+      envVars = toMap(System.getProperties());
+      envVars.putAll(System.getenv());
+    } else {
+      envVars = Map.of();
+    }
+    return envVars;
+  }
+
+  Map<String, String> toMap(Properties props) {
+    return Set.copyOf(props.keySet())
+              .stream()
+              .filter(String.class::isInstance)
+              .map(k -> (String) k)
+              .collect(Collectors.toMap(k -> k, props::getProperty));
+  }
+
+  List<String> expand(String path, String line) throws IOException {
+    if (line == null) {
+      List<String> result = new ArrayList<>();
+      for (String l : ResourceFileOps.readResourceOrFile(path)) {
+        var expanded = expand(path, l).stream().map(this::resolveLineExpression).toList();
+        result.addAll(expanded);
+      }
+      return result;
+    }
+    if (nestingPrefix != null && line.trim().startsWith(nestingPrefix)) {
+      var subFilePath = line.substring(nestingPrefix.length()).trim();
       var relativePath = parentPath(path) + subFilePath;
       return expand(relativePath, null);
     } else {
@@ -68,7 +80,7 @@ public class ConfigFileOps {
     }
   }
 
-  private String removeBraces(String line) {
+  String removeBraces(String line) {
     StringBuilder stringBuilder = new StringBuilder(line);
     var openingIdx = stringBuilder.indexOf(VAR_PREFIX);
     stringBuilder.replace(openingIdx, openingIdx + 2, "");
@@ -77,29 +89,29 @@ public class ConfigFileOps {
     return stringBuilder.toString().trim();
   }
 
-  private Option<String> resolveExpression(String expression) {
+  Optional<String> resolveExpression(String expression) {
     expression = removeBraces(expression);
     var split = expression.split(":-");
     if (split.length == 1) {
       var key = split[0];
-      return this.envVars.get(key).orElse(none());
+      return Optional.ofNullable(this.envVars.get(key));
     }
     if (split.length == 2) {
       var key = split[0];
       var defaultValue = split[1];
-      return this.envVars.get(key).orElse(some(defaultValue));
+      return Optional.ofNullable(this.envVars.get(key)).or(() -> Optional.of(defaultValue));
     }
-    return none();
+    return Optional.empty();
   }
 
-  private String resolveLineExpression(String line) {
+  String resolveLineExpression(String line) {
     if (this.enableVariableInterpolation) {
       var p = Pattern.compile("\\$\\{[\\sa-zA-Z_0-9]+(:-)?.+}");//NOSONAR
       var f = p.matcher(line);
       var matches = new java.util.HashMap<String, String>();
       while (f.find()) {
         var match = line.substring(f.start(), f.end());
-        matches.put(match, resolveExpression(match).getOrElse(match));
+        matches.put(match, resolveExpression(match).orElse(match));
       }
       for (Entry<String, String> entry : matches.entrySet()) {
         line = line.replace(entry.getKey(), entry.getValue());

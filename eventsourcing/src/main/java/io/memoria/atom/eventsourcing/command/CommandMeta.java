@@ -4,11 +4,12 @@ import io.memoria.atom.core.domain.Shardable;
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.event.EventId;
 import io.memoria.atom.eventsourcing.state.StateId;
-import io.vavr.control.Option;
+
 
 import java.io.Serializable;
+import java.util.Optional;
 
-public record CommandMeta(CommandId commandId, StateId stateId, long timestamp, Option<EventId> sagaSource)
+public record CommandMeta(CommandId commandId, StateId stateId, long timestamp, Optional<EventId> sagaSource)
         implements Shardable, Serializable {
   public CommandMeta {
     if (sagaSource == null) {
@@ -21,7 +22,7 @@ public record CommandMeta(CommandId commandId, StateId stateId, long timestamp, 
   }
 
   public CommandMeta(CommandId commandId, StateId stateId, long timestamp) {
-    this(commandId, stateId, timestamp, Option.none());
+    this(commandId, stateId, timestamp, Optional.empty());
   }
 
   @Override

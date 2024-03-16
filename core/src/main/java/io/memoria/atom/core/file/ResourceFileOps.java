@@ -1,28 +1,26 @@
 package io.memoria.atom.core.file;
 
-import io.vavr.collection.List;
-import io.vavr.control.Try;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 
 public class ResourceFileOps {
   private ResourceFileOps() {}
 
-  public static Try<String> read(String path) {
-    return Try.of(() -> resource(path));
+  public static String read(String path) throws IOException {
+    return resource(path);
   }
 
-  public static Try<List<String>> readResourceOrFile(String path) {
+  public static List<String> readResourceOrFile(String path) throws IOException {
     if (path.startsWith("/")) {
-      return Try.of(() -> fileLines(path));
+      return fileLines(path);
     } else {
-      return Try.of(() -> resourceLines(path));
+      return resourceLines(path);
     }
   }
 
@@ -34,13 +32,13 @@ public class ResourceFileOps {
 
   private static List<String> fileLines(String path) throws IOException {
     try (var lines = Files.lines(Path.of(path))) {
-      return List.ofAll(lines);
+      return lines.toList();
     }
   }
 
   private static List<String> resourceLines(String path) throws IOException {
     try (var inputStream = Objects.requireNonNull(ClassLoader.getSystemResourceAsStream(path))) {
-      return List.ofAll(new BufferedReader(new InputStreamReader(inputStream)).lines());
+      return new BufferedReader(new InputStreamReader(inputStream)).lines().toList();
     }
   }
 }

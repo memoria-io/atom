@@ -1,6 +1,6 @@
 package io.memoria.atom.core.file;
 
-import io.vavr.collection.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

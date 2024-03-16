@@ -6,7 +6,7 @@ import io.memoria.atom.core.text.Json;
 import io.memoria.atom.core.text.TextException;
 import io.vavr.API;
 import io.vavr.Predicates;
-import io.vavr.control.Try;
+
 
 public record JsonJackson(ObjectMapper mapper) implements Json {
 

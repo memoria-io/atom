@@ -9,7 +9,7 @@ import io.memoria.atom.eventsourcing.state.State;
 import io.memoria.atom.eventsourcing.state.exceptions.UnknownState;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
-import io.vavr.control.Try;
+
 
 public class Validations {
 

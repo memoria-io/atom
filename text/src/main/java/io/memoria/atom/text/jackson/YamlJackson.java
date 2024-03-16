@@ -6,7 +6,7 @@ import io.memoria.atom.core.text.TextException;
 import io.memoria.atom.core.text.Yaml;
 import io.vavr.API;
 import io.vavr.Predicates;
-import io.vavr.control.Try;
+
 
 public record YamlJackson(ObjectMapper mapper) implements Yaml {
 

@@ -1,7 +1,7 @@
 package io.memoria.atom.core.id;
 
 import com.github.f4b6a3.uuid.UuidCreator;
-import io.vavr.collection.List;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

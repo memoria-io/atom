@@ -1,6 +1,6 @@
 package io.memoria.atom.core.text;
 
-import io.vavr.control.Try;
+
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

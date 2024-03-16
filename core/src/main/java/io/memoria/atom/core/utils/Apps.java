@@ -1,9 +1,9 @@
 package io.memoria.atom.core.utils;
 
-import io.vavr.Tuple;
-import io.vavr.collection.HashMap;
-import io.vavr.collection.List;
-import io.vavr.collection.Map;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Apps {
 

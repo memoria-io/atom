@@ -1,10 +1,10 @@
 package io.memoria.atom.core.file;
 
-import io.vavr.collection.List;
-import io.vavr.control.Try;
-
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
@@ -22,48 +22,57 @@ public class FileOps {
     path.toFile().mkdirs();
   }
 
-  public static Try<Path> rewrite(Path path, String content) {
-    return Try.of(() -> Files.createDirectories(path.getParent()))
-              .flatMap(p -> Try.of(() -> Files.writeString(path, content, TRUNCATE_EXISTING, CREATE)));
+  public static Path rewrite(Path path, String content) throws IOException {
+    Files.createDirectories(path.getParent());
+    return Files.writeString(path, content, TRUNCATE_EXISTING, CREATE);
   }
 
-  public static Try<Path> write(Path path, String content) {
-    return Try.of(() -> Files.createDirectories(path.getParent()))
-              .flatMap(p -> Try.of(() -> Files.writeString(path, content, CREATE_NEW)));
+  public static Path write(Path path, String content) throws IOException {
+    Files.createDirectories(path.getParent());
+    return Files.writeString(path, content, CREATE_NEW);
   }
 
   // -------------------------------------------------------------------------
   // Read
   // -------------------------------------------------------------------------
-
-  public static Try<List<Path>> listAll(Path path) {
-    return Try.of(() -> Files.list(path)).map(List::ofAll);
+  public static List<Path> listAll(Path path) throws IOException {
+    try (var l = Files.list(path)) {
+      return l.toList();
+    }
   }
 
   /**
    * @return list of all files in a path
    */
-  public static Try<List<Path>> listFiles(Path path) {
-    return listAll(path).map(paths -> paths.filter(f -> !Files.isDirectory(f)).sorted());
+  public static List<Path> listFiles(Path path) throws IOException {
+    try (var paths = Files.list(path)) {
+      return paths.filter(f -> !Files.isDirectory(f)).sorted().toList();
+    }
   }
 
   /**
    * @return list of directories inside a path
    */
-  public static Try<List<Path>> listDir(Path path) {
-    return listAll(path).map(paths -> paths.filter(Files::isDirectory).sorted());
+  public static List<Path> listDir(Path path) throws IOException {
+    try (var paths = Files.list(path)) {
+      return paths.filter(f -> !Files.isDirectory(f)).sorted().toList();
+    }
   }
 
-  public static Try<String> read(Path path) {
-    return Try.of(() -> Files.readString(path));
+  public static String read(Path path) throws IOException {
+    return Files.readString(path);
   }
 
-  public static Try<List<String>> readAsLines(Path path) {
-    return Try.of(() -> Files.lines(path)).map(List::ofAll);
+  public static List<String> readAsLines(Path path) throws IOException {
+    try (var l = Files.lines(path)) {
+      return l.toList();
+    }
   }
 
-  public static Try<Path> lastModifiedFile(Path path) {
-    return listFiles(path).map(paths -> paths.reduce(FileOps::lastModifiedFile));
+  public static Optional<Path> lastModifiedFile(Path path) throws IOException {
+    try (var l = Files.list(path)) {
+      return l.reduce(FileOps::lastModifiedFile);
+    }
   }
 
   public static Path lastModifiedFile(Path p1, Path p2) {
@@ -74,33 +83,19 @@ public class FileOps {
   // Delete
   // -------------------------------------------------------------------------
 
-  /**
-   * @return deleted file path
-   */
-  public static Try<Path> deleteFile(Path path) {
-    return Try.of(() -> Files.deleteIfExists(path)).map(i -> path);
-  }
-
-  /**
-   * @return deleted files in a path
-   */
-  public static Try<List<Path>> deleteDirFiles(Path path) {
-    if (Files.exists(path))
-      return listFiles(path).map(paths -> paths.flatMap(FileOps::deleteFile));
-    else
-      return Try.success(List.empty());
-  }
-
-  public static Try<Path> deleteDir(Path path) {
-    if (Files.exists(path)) {
-      deleteDirFiles(path);
-      listDir(path).forEach(subDirTry -> subDirTry.forEach(FileOps::deleteDir));
-      return Try.of(() -> {
-        Files.delete(path);
-        return path;
-      });
-    } else {
-      return Try.success(path);
+  public static void deleteDirFiles(Path path) throws IOException {
+    try (var stream = Files.list(path)) {
+      for (Path p : stream.toList()) {
+        Files.deleteIfExists(p);
+      }
     }
+  }
+
+  public static void deleteDir(Path path) throws IOException {
+    deleteDirFiles(path);
+    for (Path p : listDir(path)) {
+      deleteDir(p);
+    }
+    Files.delete(path);
   }
 }

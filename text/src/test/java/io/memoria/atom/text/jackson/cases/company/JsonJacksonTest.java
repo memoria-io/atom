@@ -2,8 +2,8 @@ package io.memoria.atom.text.jackson.cases.company;
 
 import io.memoria.atom.text.jackson.Resources;
 import io.memoria.atom.text.jackson.TestDeps;
-import io.vavr.collection.List;
-import io.vavr.control.Try;
+
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

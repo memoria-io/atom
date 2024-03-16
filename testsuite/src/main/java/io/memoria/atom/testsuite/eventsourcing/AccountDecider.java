@@ -28,7 +28,7 @@ import io.memoria.atom.testsuite.eventsourcing.event.NameChanged;
 import io.memoria.atom.testsuite.eventsourcing.state.Account;
 import io.memoria.atom.testsuite.eventsourcing.state.ClosedAccount;
 import io.memoria.atom.testsuite.eventsourcing.state.OpenAccount;
-import io.vavr.control.Try;
+
 
 import java.util.function.Supplier;
 
