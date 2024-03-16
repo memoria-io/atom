@@ -7,6 +7,6 @@ import org.junit.jupiter.api.Test;
 class EvolverTest {
   @Test
   void checkToString() {
-    Assertions.assertThat(new CommandId("id").toString()).isEqualTo("id");
+    Assertions.assertThat(new CommandId("id")).hasToString("id");
   }
 }
