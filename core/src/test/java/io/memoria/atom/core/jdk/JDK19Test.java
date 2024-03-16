@@ -2,13 +2,15 @@ package io.memoria.atom.core.jdk;
 
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class JDK19Test {
   @Test
   void testRecordPattern() {
     Shape sq = new Square(new Point(3, 1), new Point(1, 3));
     Shape cir = new Circle(new Point(0, 0), 3);
-    assert area(sq) == 4;
-    assert area(cir) > 9;
+    assertThat(area(sq)).isEqualTo(4);
+    assertThat(area(cir)).isGreaterThan(9);
   }
 
   static double area(Shape r) {
