@@ -29,7 +29,7 @@ class FileOpsTest {
 
   @Test
   void folderExists() {
-    assert Files.exists(TEST_DIR);
+    assertThat(Files.exists(TEST_DIR)).isTrue();
   }
 
   @Test
