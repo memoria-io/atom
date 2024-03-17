@@ -168,7 +168,7 @@ class FileOpsTest {
     try {
       for (int i : IntStream.range(0, count).toArray()) {
         var p = FileOps.write(path.resolve(i + ".json"), "hi" + i);
-        log.debug("Written" + p);
+        log.info("Written" + p);
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
