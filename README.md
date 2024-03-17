@@ -98,7 +98,7 @@ Format Example: `JDK_Version.major.mino`
 ## Release notes
 
 * `21.20.0`
-  * Removed reliance on vavr
+    * Removed reliance on vavr
 * `21.1.0`
     * Moving Event-sourcing and testsuite modules to reactive
 * `20.11.0`
