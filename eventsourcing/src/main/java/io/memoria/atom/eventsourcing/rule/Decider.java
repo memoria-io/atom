@@ -29,7 +29,7 @@ public interface Decider {
                          cmd.meta().sagaSource());
   }
 
-  default EventMeta eventMeta(State state, Command cmd)  {
+  default EventMeta eventMeta(State state, Command cmd) {
     if (state.meta().stateId().equals(cmd.meta().stateId())) {
       return new EventMeta(EventId.of(idSupplier().get()),
                            state.meta().version() + 1,

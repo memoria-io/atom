@@ -2,6 +2,7 @@ package io.memoria.atom.eventsourcing.event.exceptions;
 
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.state.StateId;
+
 @SuppressWarnings("java:S110")
 public class MismatchingEventState extends EventRuntimeException {
   protected MismatchingEventState(String msg, Event event) {
