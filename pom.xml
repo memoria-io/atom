@@ -35,8 +35,10 @@
     <properties>
         <jsonwebtoken.version>0.12.3</jsonwebtoken.version>
         <sonar.coverage.exclusions>
+            **/Main.java,
             **/exceptions/*.java,
-            **/*Exception.java
+            **/*Exception.java,
+            **/testsuite/*
         </sonar.coverage.exclusions>
     </properties>
 
