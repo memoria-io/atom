@@ -3,6 +3,7 @@ package io.memoria.atom.eventsourcing.command.exceptions;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.state.StateId;
 
+@SuppressWarnings("java:S110")
 public class MismatchingCommandState extends CommandRuntimeException {
   protected MismatchingCommandState(String msg, Command command) {
     super(msg, command);
