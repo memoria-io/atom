@@ -22,9 +22,11 @@ class AccountSagaTest {
                               300);
 
     // When
-    var credit = (Credit) saga.apply(debited).get();
+    var command = saga.apply(debited);
 
     // Then
+    Assertions.assertThat(command).isPresent();
+    var credit = (Credit) command.get();
     Assertions.assertThat(credit.accountId()).isEqualTo(bobId);
     Assertions.assertThat(credit.debitedAcc()).isEqualTo(aliceId);
   }

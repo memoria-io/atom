@@ -1,6 +1,6 @@
 #!/bin/bash
 
-listGoals(){
+listGoals() {
   mvn help:describe -Dcmd="${1}"
 }
 

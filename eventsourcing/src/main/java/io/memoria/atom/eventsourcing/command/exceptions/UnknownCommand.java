@@ -2,7 +2,7 @@ package io.memoria.atom.eventsourcing.command.exceptions;
 
 import io.memoria.atom.eventsourcing.command.Command;
 
-public class UnknownCommand extends CommandException {
+public class UnknownCommand extends CommandRuntimeException {
   private static final String MESSAGE = "Unknown Command: %s[%s] implementation";
 
   protected UnknownCommand(Command command) {
