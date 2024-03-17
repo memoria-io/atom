@@ -22,18 +22,12 @@ public class ConfigFileOps {
   private final boolean enableVariableInterpolation;
   private final Map<String, String> envVars;
 
-  public ConfigFileOps(String nestingPrefix, boolean enableVariableInterpolation) {
-    this.nestingPrefix = nestingPrefix;
-    this.enableVariableInterpolation = enableVariableInterpolation;
-    this.envVars = getEnvVars(enableVariableInterpolation);
-  }
-
   /**
    * @param enableVariableInterpolation when true, any line which contains ${ENV_VALUE:-defaultValue} will be resolved
    *                                    from system environment then from java systemProperties
    */
-  public ConfigFileOps(boolean enableVariableInterpolation) {
-    this.nestingPrefix = null;
+  public ConfigFileOps(String nestingPrefix, boolean enableVariableInterpolation) {
+    this.nestingPrefix = nestingPrefix;
     this.enableVariableInterpolation = enableVariableInterpolation;
     this.envVars = getEnvVars(enableVariableInterpolation);
   }
@@ -46,14 +40,13 @@ public class ConfigFileOps {
   }
 
   Map<String, String> getEnvVars(boolean enableVariableInterpolation) {
-    final Map<String, String> envVars;
     if (enableVariableInterpolation) {
-      envVars = toMap(System.getProperties());
-      envVars.putAll(System.getenv());
+      var envVarsMap = toMap(System.getProperties());
+      envVarsMap.putAll(System.getenv());
+      return envVarsMap;
     } else {
-      envVars = Map.of();
+      return Map.of();
     }
-    return envVars;
   }
 
   Map<String, String> toMap(Properties props) {
