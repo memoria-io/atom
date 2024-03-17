@@ -27,7 +27,7 @@ public record AccountEvolver() implements Evolver {
         StateMeta meta = new StateMeta(e.accountId());
         yield new OpenAccount(meta, e.name(), e.balance(), 0, 0, 0);
       }
-      default -> throw new RuntimeException(UnknownEvent.of(event));
+      default -> throw UnknownEvent.of(event);
     };
   }
 
@@ -40,10 +40,10 @@ public record AccountEvolver() implements Evolver {
           case ClosedAccount acc -> acc;
         };
       } else {
-        throw new RuntimeException(UnknownEvent.of(event));
+        throw UnknownEvent.of(event);
       }
     } else {
-      throw new RuntimeException(UnknownState.of(state));
+      throw UnknownState.of(state);
     }
   }
 

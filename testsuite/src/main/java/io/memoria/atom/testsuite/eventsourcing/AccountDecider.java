@@ -37,7 +37,7 @@ import java.util.function.Supplier;
 public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Decider {
 
   @Override
-  public Event apply(Command command) throws ESException {
+  public Event apply(Command command) {
     if (command instanceof AccountCommand accountCommand) {
       return handle(accountCommand);
     } else {
@@ -59,7 +59,7 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
   }
 
   @SuppressWarnings("SwitchStatementWithTooFewBranches")
-  private AccountEvent handle(AccountCommand command) throws UnknownCommand {
+  private AccountEvent handle(AccountCommand command) {
     var meta = eventMeta(command);
     return switch (command) {
       case CreateAccount cmd -> new AccountCreated(meta, cmd.accountName(), cmd.balance());

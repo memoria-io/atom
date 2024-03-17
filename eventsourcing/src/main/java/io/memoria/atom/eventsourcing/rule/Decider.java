@@ -16,7 +16,7 @@ public interface Decider {
 
   Supplier<Long> timeSupplier();
 
-  Event apply(Command c) throws ESException;
+  Event apply(Command c);
 
   Event apply(State state, Command command) throws ESException;
 

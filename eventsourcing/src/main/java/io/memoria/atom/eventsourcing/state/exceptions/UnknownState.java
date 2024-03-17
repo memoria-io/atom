@@ -2,7 +2,7 @@ package io.memoria.atom.eventsourcing.state.exceptions;
 
 import io.memoria.atom.eventsourcing.state.State;
 
-public class UnknownState extends StateException {
+public class UnknownState extends StateRuntimeException {
   private static final String MESSAGE = "Unknown State: %s[%s] implementation";
 
   protected UnknownState(State state) {
