@@ -34,14 +34,15 @@ import io.memoria.atom.testsuite.eventsourcing.state.OpenAccount;
 
 import java.util.function.Supplier;
 
-import static io.memoria.atom.eventsourcing.Validations.instanceOf;
-
 public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Decider {
 
   @Override
-  public Event apply(Command c) throws ESException {
-    var command = instanceOf(c, AccountCommand.class);
-    return handle(command);
+  public Event apply(Command command) throws ESException {
+    if (command instanceof AccountCommand accountCommand) {
+      return handle(accountCommand);
+    } else {
+      throw UnknownCommand.of(command);
+    }
   }
 
   @Override

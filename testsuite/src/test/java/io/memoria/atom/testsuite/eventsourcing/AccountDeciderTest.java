@@ -1,7 +1,6 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
 import io.memoria.atom.eventsourcing.ESException;
-import io.memoria.atom.eventsourcing.Validations;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
 import io.memoria.atom.eventsourcing.state.StateMeta;
@@ -32,7 +31,7 @@ class AccountDeciderTest {
 
     // When
     var event = decider.apply(openAccount, debit);
-    var accountEvent = Validations.instanceOf(event, AccountEvent.class);
+    var accountEvent = (AccountEvent) event;
 
     // Then
     assertThat(accountEvent.accountId()).isEqualTo(aliceId);
