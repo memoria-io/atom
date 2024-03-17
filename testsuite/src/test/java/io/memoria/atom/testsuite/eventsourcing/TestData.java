@@ -1,6 +1,9 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.eventsourcing.rule.Decider;
+import io.memoria.atom.eventsourcing.rule.Evolver;
+import io.memoria.atom.eventsourcing.rule.Saga;
 import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -11,9 +14,9 @@ public class TestData {
   public static final AtomicLong counter = new AtomicLong();
   public static final Supplier<Id> idSupplier = () -> Id.of(counter.getAndIncrement());
   public static final Supplier<Long> timeSupplier = () -> 0L;
-  public static final AccountDecider decider = new AccountDecider(idSupplier, timeSupplier);
-  public static final AccountEvolver evolver = new AccountEvolver();
-  public static final AccountSaga saga = new AccountSaga(idSupplier, timeSupplier);
+  public static final Decider decider = new AccountDecider(idSupplier, timeSupplier);
+  public static final Evolver evolver = new AccountEvolver();
+  public static final Saga saga = new AccountSaga(idSupplier, timeSupplier);
 
   // Data
   public static final String alice = "alice";
