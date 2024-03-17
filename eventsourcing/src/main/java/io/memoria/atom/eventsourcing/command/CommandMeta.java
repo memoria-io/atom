@@ -5,7 +5,6 @@ import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.event.EventId;
 import io.memoria.atom.eventsourcing.state.StateId;
 
-
 import java.io.Serializable;
 import java.util.Optional;
 

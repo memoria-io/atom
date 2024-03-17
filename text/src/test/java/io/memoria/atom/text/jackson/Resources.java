@@ -5,8 +5,9 @@ import io.memoria.atom.core.id.Id;
 import io.memoria.atom.text.jackson.cases.company.Engineer;
 import io.memoria.atom.text.jackson.cases.company.Manager;
 
-
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 public class Resources {
   // Json Resources
@@ -24,19 +25,20 @@ public class Resources {
 
   static {
     // Json Resources
-    JSON_LIST = ResourceFile.read("cases/company/json/List.json").get();
-    BOB_ENGINEER_JSON = ResourceFile.read("cases/company/json/Engineer.json").get();
-    ANNIKA_MANAGER_JSON = ResourceFile.read("cases/company/json/Manager.json").get();
-    DEPARTMENT_JSON = ResourceFile.read("cases/company/json/Department.json").get();
-    NAME_CREATED_JSON = ResourceFile.read("cases/company/json/NameCreated.json").get();
-
-    BOB_ENGINEER_YAML = ResourceFile.read("cases/company/yaml/Engineer.yaml").get();
-    ANNIKA_MANAGER_YAML = ResourceFile.read("cases/company/yaml/Manager.yaml").get();
-    // Objects
-    BOB_ENGINEER = new Engineer(Id.of(0), "bob", LocalDate.of(2000, 1, 1), List.of("fix issue 1", "Fix issue 2"));
-    ALEX_ENGINEER = new Engineer(Id.of(1), "alex", LocalDate.of(2000, 1, 1), List.of("fix issue 3", "Fix issue 4"));
-    ANNIKA_MANAGER = new Manager("Annika", List.of(BOB_ENGINEER, ALEX_ENGINEER));
+    try {
+      JSON_LIST = ResourceFile.of("cases/company/json/List.json").read();
+      BOB_ENGINEER_JSON = ResourceFile.of("cases/company/json/Engineer.json").read();
+      ANNIKA_MANAGER_JSON = ResourceFile.of("cases/company/json/Manager.json").read();
+      DEPARTMENT_JSON = ResourceFile.of("cases/company/json/Department.json").read();
+      NAME_CREATED_JSON = ResourceFile.of("cases/company/json/NameCreated.json").read();
+      BOB_ENGINEER_YAML = ResourceFile.of("cases/company/yaml/Engineer.yaml").read();
+      ANNIKA_MANAGER_YAML = ResourceFile.of("cases/company/yaml/Manager.yaml").read();
+      // Objects
+      BOB_ENGINEER = new Engineer(Id.of(0), "bob", LocalDate.of(2000, 1, 1), List.of("fix issue 1", "Fix issue 2"));
+      ALEX_ENGINEER = new Engineer(Id.of(1), "alex", LocalDate.of(2000, 1, 1), List.of("fix issue 3", "Fix issue 4"));
+      ANNIKA_MANAGER = new Manager("Annika", List.of(BOB_ENGINEER, ALEX_ENGINEER));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
-
-  private Resources() {}
 }

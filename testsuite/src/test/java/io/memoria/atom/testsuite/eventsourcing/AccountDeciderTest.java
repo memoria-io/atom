@@ -1,9 +1,10 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
+import io.memoria.atom.eventsourcing.ESException;
+import io.memoria.atom.eventsourcing.Validations;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
 import io.memoria.atom.eventsourcing.state.StateMeta;
-import io.memoria.atom.eventsourcing.Validations;
 import io.memoria.atom.testsuite.eventsourcing.command.Debit;
 import io.memoria.atom.testsuite.eventsourcing.event.AccountEvent;
 import io.memoria.atom.testsuite.eventsourcing.event.DebitRejected;
@@ -23,15 +24,15 @@ class AccountDeciderTest {
 
   @ParameterizedTest
   @ValueSource(ints = {300, 500, 600})
-  void debit(int debitAmount) {
+  void debit(int debitAmount) throws ESException {
     // Given
     int balance = 500;
     var openAccount = new OpenAccount(new StateMeta(aliceId), alice, balance);
     var debit = new Debit(new CommandMeta(CommandId.of(randomUUID()), aliceId), bobId, debitAmount);
 
     // When
-    var event = decider.apply(openAccount, debit).get();
-    var accountEvent = Validations.instanceOf(event, AccountEvent.class).get();
+    var event = decider.apply(openAccount, debit);
+    var accountEvent = Validations.instanceOf(event, AccountEvent.class);
 
     // Then
     assertThat(accountEvent.accountId()).isEqualTo(aliceId);

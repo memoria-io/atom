@@ -24,7 +24,6 @@ import io.memoria.atom.text.jackson.adapters.IdTransformer.IdDeserializer;
 import io.memoria.atom.text.jackson.adapters.IdTransformer.IdSerializer;
 import io.memoria.atom.text.jackson.adapters.ValueObjectTransformer.ValueObjectDeserializer;
 import io.memoria.atom.text.jackson.adapters.ValueObjectTransformer.ValueObjectSerializer;
-import io.vavr.jackson.datatype.VavrModule;
 
 import java.text.SimpleDateFormat;
 import java.util.function.Function;
@@ -41,7 +40,6 @@ public class JacksonUtils {
     ObjectMapper om = JsonMapper.builder().build();
     setDateFormat(om);
     addJ8Modules(om);
-    addVavrModule(om);
     om.registerModule(getIdModule());
     for (Module module : modules) {
       om.registerModule(module);
@@ -64,7 +62,6 @@ public class JacksonUtils {
     var om = new ObjectMapper(yfb.build());
     setDateFormat(om);
     addJ8Modules(om);
-    addVavrModule(om);
     om.registerModule(getIdModule());
     for (Module module : modules) {
       om.registerModule(module);
@@ -112,10 +109,6 @@ public class JacksonUtils {
 
   public static void addJ8Modules(ObjectMapper om) {
     om.registerModule(new ParameterNamesModule()).registerModule(new Jdk8Module()).registerModule(new JavaTimeModule());
-  }
-
-  public static void addVavrModule(ObjectMapper om) {
-    om.registerModule(new VavrModule());
   }
 
   public static ObjectMapper prettyJson() {

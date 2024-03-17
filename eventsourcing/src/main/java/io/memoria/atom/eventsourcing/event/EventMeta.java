@@ -3,11 +3,11 @@ package io.memoria.atom.eventsourcing.event;
 import io.memoria.atom.core.domain.Shardable;
 import io.memoria.atom.core.domain.Versioned;
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.eventsourcing.state.StateId;
 import io.memoria.atom.eventsourcing.command.CommandId;
-
+import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Optional;
 
 public record EventMeta(EventId eventId,
@@ -20,9 +20,7 @@ public record EventMeta(EventId eventId,
     if (version < 0) {
       throw new IllegalArgumentException("version can't be less than zero");
     }
-    if (sagaSource.isEmpty()) {
-      throw new IllegalArgumentException("Saga source can't be null");
-    }
+    Objects.requireNonNull(sagaSource);
   }
 
   public EventMeta(EventId id, long version, StateId stateId, CommandId commandId) {

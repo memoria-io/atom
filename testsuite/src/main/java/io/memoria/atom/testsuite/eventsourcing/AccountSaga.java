@@ -11,7 +11,7 @@ import io.memoria.atom.testsuite.eventsourcing.event.CreditRejected;
 import io.memoria.atom.testsuite.eventsourcing.event.Credited;
 import io.memoria.atom.testsuite.eventsourcing.event.Debited;
 
-
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public record AccountSaga(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Saga {
@@ -28,10 +28,10 @@ public record AccountSaga(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) 
   public Optional<Command> apply(AccountEvent event) {
     return switch (event) {
       case Debited e ->
-              Option.some(new Credit(commandMeta(e.creditedAcc(), e.meta().eventId()), e.accountId(), e.amount()));
-      case Credited e -> Option.some(new ConfirmDebit(commandMeta(e.debitedAcc(), e.meta().eventId()), e.accountId()));
+              Optional.of(new Credit(commandMeta(e.creditedAcc(), e.meta().eventId()), e.accountId(), e.amount()));
+      case Credited e -> Optional.of(new ConfirmDebit(commandMeta(e.debitedAcc(), e.meta().eventId()), e.accountId()));
       case CreditRejected e ->
-              Option.some(new Credit(commandMeta(e.debitedAcc(), e.meta().eventId()), e.accountId(), e.amount()));
+              Optional.of(new Credit(commandMeta(e.debitedAcc(), e.meta().eventId()), e.accountId(), e.amount()));
       default -> Optional.empty();
     };
   }

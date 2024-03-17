@@ -35,7 +35,7 @@ public class ActorSystemTest {
     Thread.ofVirtual().start(() -> {
       //      System.out.println("Starting: " + actorId);
       IntStream.range(0, numOfRequests).forEach(_ -> {
-        assert actorSystem.apply(actorId, new Message()).isSuccess();
+        actorSystem.apply(actorId, new Message());
       });
     });
   }
