@@ -38,7 +38,7 @@
             **/Main.java,
             **/exceptions/*.java,
             **/*Exception.java,
-            **/testsuite/**/*.java
+            testsuite/**/*.java
         </sonar.coverage.exclusions>
     </properties>
 
