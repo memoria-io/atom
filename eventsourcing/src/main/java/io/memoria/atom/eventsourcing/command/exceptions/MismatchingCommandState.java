@@ -1,7 +1,7 @@
 package io.memoria.atom.eventsourcing.command.exceptions;
 
 import io.memoria.atom.eventsourcing.command.Command;
-import io.memoria.atom.eventsourcing.state.State;
+import io.memoria.atom.eventsourcing.state.StateId;
 
 public class MismatchingCommandState extends CommandException {
   protected MismatchingCommandState(String msg, Command command) {
@@ -13,8 +13,8 @@ public class MismatchingCommandState extends CommandException {
     return new MismatchingCommandState(msg, command);
   }
 
-  public static MismatchingCommandState of(Command command, State state) {
-    var msg = "The Command's stateId:%s doesn't match stateId:%s".formatted(command.shardKey(), state.shardKey());
+  public static MismatchingCommandState of(Command command, StateId stateId) {
+    var msg = "The Command's stateId:%s doesn't match expected stateId:%s".formatted(command.shardKey(), stateId);
     return new MismatchingCommandState(msg, command);
   }
 }

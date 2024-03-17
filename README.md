@@ -24,8 +24,7 @@
 **Disclaimer:**
 > `atom` is on edge, it's a work in progress and a pragmatic learning effort, so feel free to create issues or PRs.
 
-Atom is an SDK to accelerate development, and it's a constant learning effort. Atom relies heavily
-on [Vavr](https://www.vavr.io/).
+Atom is an SDK to accelerate development, and it's a constant learning effort.
 
 The currently used JDK is `Java 20` and the motivation is to use the latest available JDK.
 
@@ -79,7 +78,7 @@ Then import in your pom dependencies
 <dependency>
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>20.11.0</version>
+    <version>21.20.0</version>
 </dependency>
 ```
 
@@ -98,6 +97,8 @@ Format Example: `JDK_Version.major.mino`
 
 ## Release notes
 
+* `21.20.0`
+  * Removed reliance on vavr
 * `21.1.0`
     * Moving Event-sourcing and testsuite modules to reactive
 * `20.11.0`
