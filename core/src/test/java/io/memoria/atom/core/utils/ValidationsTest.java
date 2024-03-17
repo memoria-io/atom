@@ -5,6 +5,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class ValidationsTest {
@@ -31,6 +33,7 @@ public class ValidationsTest {
                      "email@example.name",
                      "email@example.museum",
                      "email@example.co.jp",
+                     longValidEmail(),
                      "firstname-lastname@example.com").map(Arguments::of);
 
   }
@@ -58,8 +61,14 @@ public class ValidationsTest {
                      "just”not”right@example.com",
                      "much.”more unusual”@example.com",
                      "very.unusual.”@”.unusual.com@example.com",
+                     "n" + longValidEmail(),
                      "very.”(),:;<>[]”.VERY.”very@\\\\ \"very”.unusual@strange.example.com",
                      "this\\ is\"really\"not\\allowed@example.com").map(Arguments::of);
   }
 
+  private static String longValidEmail() {
+    var name = IntStream.range(0, 64).mapToObj(i -> "n").collect(Collectors.joining());
+    var domain = IntStream.range(0, 250).mapToObj(i -> "d").collect(Collectors.joining());
+    return name + "@" + domain + ".com";
+  }
 }
