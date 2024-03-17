@@ -114,7 +114,7 @@ class FileOpsTest {
     // When
     FileOps.delete(TEST_DIR);
     // then
-    assertThat(FileOps.listDirectories(TEST_DIR).size()).isEqualTo(0);
+    assertThat(FileOps.listDirectories(TEST_DIR).size()).isZero();
   }
 
   @Test
@@ -129,7 +129,7 @@ class FileOpsTest {
 
     // Then
     assertThat(lastModifiedFile).isPresent();
-    assertThat(lastModifiedFile.get()).isEqualTo(TEST_DIR.resolve(lastFileName));
+    assertThat(lastModifiedFile).contains(TEST_DIR.resolve(lastFileName));
   }
 
   @Test
