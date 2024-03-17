@@ -1,13 +1,11 @@
 package io.memoria.atom.eventsourcing.event;
 
 import io.memoria.atom.eventsourcing.command.CommandId;
-import io.memoria.atom.eventsourcing.event.EventId;
-import io.memoria.atom.eventsourcing.event.EventMeta;
 import io.memoria.atom.eventsourcing.state.StateId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class EventMetaTest {
+class EventMetaTest {
   private final StateId stateId = StateId.of(0);
 
   @Test

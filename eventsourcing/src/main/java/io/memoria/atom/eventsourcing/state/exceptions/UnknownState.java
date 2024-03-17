@@ -3,10 +3,10 @@ package io.memoria.atom.eventsourcing.state.exceptions;
 import io.memoria.atom.eventsourcing.state.State;
 
 public class UnknownState extends StateException {
-  private static final String message = "Unknown State: %s[%s] implementation";
+  private static final String MESSAGE = "Unknown State: %s[%s] implementation";
 
   protected UnknownState(State state) {
-    super(message.formatted(state.getClass().getSimpleName(), state.meta()), state);
+    super(MESSAGE.formatted(state.getClass().getSimpleName(), state.meta()), state);
   }
 
   public static UnknownState of(State state) {

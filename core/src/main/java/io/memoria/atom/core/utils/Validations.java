@@ -12,6 +12,11 @@ public class Validations {
   private Validations() {}
 
   public static boolean isValidEmail(String email) {
-    return email.length() < 320 && email.matches(EMAIL_REGEX);
+    var splits = email.split("@");
+    if (splits.length == 2) {
+      return splits[0].length() <= 64 && splits[1].length() <= 255 && email.matches(EMAIL_REGEX);
+    } else {
+      return false;
+    }
   }
 }
