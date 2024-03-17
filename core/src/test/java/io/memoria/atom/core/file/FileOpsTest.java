@@ -166,7 +166,7 @@ class FileOpsTest {
 
   private void createSomeFiles(Path path, int count) {
     try {
-      for (int i : IntStream.range(0, count).toArray()) {
+      for (int i = 0; i < count; i++) {
         var p = FileOps.write(path.resolve(i + ".json"), "hi" + i);
         log.info("Written" + p);
       }
