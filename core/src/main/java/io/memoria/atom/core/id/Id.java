@@ -47,7 +47,6 @@ public class Id implements Serializable, Comparable<Id> {
 
   @Override
   public int compareTo(Id o) {
-    // TODO Check if Id interface would be better
     try {
       return compareToLong(o);
     } catch (Exception e) {
