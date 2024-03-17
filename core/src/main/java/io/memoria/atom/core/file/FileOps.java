@@ -59,8 +59,8 @@ public class FileOps {
   }
 
   public static Optional<Path> lastModifiedFile(Path path) throws IOException {
-    try (var l = Files.list(path)) {
-      return l.reduce(FileOps::lastModifiedFile);
+    try (var paths = Files.list(path)) {
+      return paths.reduce(FileOps::lastModifiedFile);
     }
   }
 

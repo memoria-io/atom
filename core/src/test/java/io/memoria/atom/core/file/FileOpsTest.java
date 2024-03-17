@@ -122,6 +122,7 @@ class FileOpsTest {
 
     // When
     var lastModifiedFile = FileOps.lastModifiedFile(TEST_DIR);
+
     // Then
     assertThat(lastModifiedFile).isPresent();
     assertThat(lastModifiedFile.get()).isEqualTo(TEST_DIR.resolve(lastFileName));
@@ -162,7 +163,8 @@ class FileOpsTest {
   private void createSomeFiles(Path path, int count) {
     try {
       for (int i : IntStream.range(0, count).toArray()) {
-        FileOps.write(path.resolve(i + ".json"), "hi" + i);
+        var p = FileOps.write(path.resolve(i + ".json"), "hi" + i);
+        System.out.println("Written" + p);
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
