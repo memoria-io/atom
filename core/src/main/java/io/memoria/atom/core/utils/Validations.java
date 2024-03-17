@@ -5,8 +5,8 @@ package io.memoria.atom.core.utils;
  *
  * @see <a href="https://owasp.org/www-community/OWASP_Validation_Regex_Repository">OWASP Regex Repository </a>
  */
+@SuppressWarnings("java:S5998")
 public class Validations {
-  //NOSONAR
   public static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$";
 
   private Validations() {}
