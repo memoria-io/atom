@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
@@ -14,9 +15,6 @@ public class FileOps {
 
   private FileOps() {}
 
-  // -------------------------------------------------------------------------
-  // Create
-  // -------------------------------------------------------------------------
   @SuppressWarnings("ResultOfMethodCallIgnored")
   public static void createDir(Path path) {
     path.toFile().mkdirs();
@@ -32,19 +30,13 @@ public class FileOps {
     return Files.writeString(path, content, CREATE_NEW);
   }
 
-  // -------------------------------------------------------------------------
-  // Read
-  // -------------------------------------------------------------------------
-  public static List<Path> listAll(Path path) throws IOException {
-    try (var l = Files.list(path)) {
-      return l.toList();
-    }
-  }
-
   /**
    * @return list of all files in a path
    */
   public static List<Path> listFiles(Path path) throws IOException {
+    if (!Files.exists(path)) {
+      return List.of();
+    }
     try (var paths = Files.list(path)) {
       return paths.filter(f -> !Files.isDirectory(f)).sorted().toList();
     }
@@ -53,20 +45,17 @@ public class FileOps {
   /**
    * @return list of directories inside a path
    */
-  public static List<Path> listDir(Path path) throws IOException {
+  public static List<Path> listDirectories(Path path) throws IOException {
+    if (!Files.exists(path)) {
+      return List.of();
+    }
     try (var paths = Files.list(path)) {
-      return paths.filter(f -> !Files.isDirectory(f)).sorted().toList();
+      return paths.filter(Files::isDirectory).sorted().toList();
     }
   }
 
   public static String read(Path path) throws IOException {
     return Files.readString(path);
-  }
-
-  public static List<String> readAsLines(Path path) throws IOException {
-    try (var l = Files.lines(path)) {
-      return l.toList();
-    }
   }
 
   public static Optional<Path> lastModifiedFile(Path path) throws IOException {
@@ -79,23 +68,17 @@ public class FileOps {
     return (p1.toFile().lastModified() > p2.toFile().lastModified()) ? p1 : p2;
   }
 
-  // -------------------------------------------------------------------------
-  // Delete
-  // -------------------------------------------------------------------------
-
-  public static void deleteDirFiles(Path path) throws IOException {
-    try (var stream = Files.list(path)) {
-      for (Path p : stream.toList()) {
-        Files.deleteIfExists(p);
+  public static void delete(Path path) throws IOException {
+    if (path.isAbsolute() && path.toString().equals("/")) {
+      throw new IllegalArgumentException("Can't delete root directory");
+    }
+    if (Files.isDirectory(path)) {
+      try (Stream<Path> stream = Files.list(path)) {
+        for (Path file : stream.toList()) {
+          delete(file);
+        }
       }
     }
-  }
-
-  public static void deleteDir(Path path) throws IOException {
-    deleteDirFiles(path);
-    for (Path p : listDir(path)) {
-      deleteDir(p);
-    }
-    Files.delete(path);
+    Files.deleteIfExists(path);
   }
 }

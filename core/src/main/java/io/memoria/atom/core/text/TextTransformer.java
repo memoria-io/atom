@@ -1,18 +1,9 @@
 package io.memoria.atom.core.text;
 
-import io.vavr.Function1;
-
+import java.io.IOException;
 
 public interface TextTransformer {
-  default <T> Function1<String, Try<T>> deserialize(Class<T> tClass) {
-    return str -> deserialize(str, tClass);
-  }
+  <T> String serialize(T t) throws IOException;
 
-  <T> Try<T> deserialize(String str, Class<T> tClass);
-
-  default <T> Function1<T, Try<String>> serialize() {
-    return this::serialize;
-  }
-
-  <T> Try<String> serialize(T t);
+  <T> T deserialize(String str, Class<T> tClass) throws IOException, ClassNotFoundException;
 }

@@ -1,6 +1,8 @@
 package io.memoria.atom.core.file;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +42,7 @@ public class ConfigFileOps {
    * if the path parameter doesn't start with "/" it's considered a file under the resources directory
    */
   public String read(String path) throws IOException {
-    return expand(path, null).stream().reduce("", JOIN_LINES);
+    return expand(path, null).stream().reduce(JOIN_LINES).orElse("");
   }
 
   Map<String, String> getEnvVars(boolean enableVariableInterpolation) {
@@ -64,12 +66,11 @@ public class ConfigFileOps {
 
   List<String> expand(String path, String line) throws IOException {
     if (line == null) {
-      List<String> result = new ArrayList<>();
-      for (String l : ResourceFileOps.readResourceOrFile(path)) {
-        var expanded = expand(path, l).stream().map(this::resolveLineExpression).toList();
-        result.addAll(expanded);
+      if (path.startsWith("/")) {
+        return expandFile(path);
+      } else {
+        return expandResource(path);
       }
-      return result;
     }
     if (nestingPrefix != null && line.trim().startsWith(nestingPrefix)) {
       var subFilePath = line.substring(nestingPrefix.length()).trim();
@@ -78,6 +79,26 @@ public class ConfigFileOps {
     } else {
       return List.of(line);
     }
+  }
+
+  private List<String> expandFile(String path) throws IOException {
+    var result = new ArrayList<String>();
+    try (var stream = Files.lines(Path.of(path))) {
+      for (String l : stream.toList()) {
+        var expanded = expand(path, l).stream().map(this::resolveLineExpression).toList();
+        result.addAll(expanded);
+      }
+    }
+    return result;
+  }
+
+  private List<String> expandResource(String path) throws IOException {
+    var result = new ArrayList<String>();
+    for (String l : ResourceFile.of(path).readLines()) {
+      var expanded = expand(path, l).stream().map(this::resolveLineExpression).toList();
+      result.addAll(expanded);
+    }
+    return result;
   }
 
   String removeBraces(String line) {

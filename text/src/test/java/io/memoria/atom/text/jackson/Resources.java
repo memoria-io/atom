@@ -1,6 +1,6 @@
 package io.memoria.atom.text.jackson;
 
-import io.memoria.atom.core.file.ResourceFileOps;
+import io.memoria.atom.core.file.ResourceFile;
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.text.jackson.cases.company.Engineer;
 import io.memoria.atom.text.jackson.cases.company.Manager;
@@ -24,14 +24,14 @@ public class Resources {
 
   static {
     // Json Resources
-    JSON_LIST = ResourceFileOps.read("cases/company/json/List.json").get();
-    BOB_ENGINEER_JSON = ResourceFileOps.read("cases/company/json/Engineer.json").get();
-    ANNIKA_MANAGER_JSON = ResourceFileOps.read("cases/company/json/Manager.json").get();
-    DEPARTMENT_JSON = ResourceFileOps.read("cases/company/json/Department.json").get();
-    NAME_CREATED_JSON = ResourceFileOps.read("cases/company/json/NameCreated.json").get();
+    JSON_LIST = ResourceFile.read("cases/company/json/List.json").get();
+    BOB_ENGINEER_JSON = ResourceFile.read("cases/company/json/Engineer.json").get();
+    ANNIKA_MANAGER_JSON = ResourceFile.read("cases/company/json/Manager.json").get();
+    DEPARTMENT_JSON = ResourceFile.read("cases/company/json/Department.json").get();
+    NAME_CREATED_JSON = ResourceFile.read("cases/company/json/NameCreated.json").get();
 
-    BOB_ENGINEER_YAML = ResourceFileOps.read("cases/company/yaml/Engineer.yaml").get();
-    ANNIKA_MANAGER_YAML = ResourceFileOps.read("cases/company/yaml/Manager.yaml").get();
+    BOB_ENGINEER_YAML = ResourceFile.read("cases/company/yaml/Engineer.yaml").get();
+    ANNIKA_MANAGER_YAML = ResourceFile.read("cases/company/yaml/Manager.yaml").get();
     // Objects
     BOB_ENGINEER = new Engineer(Id.of(0), "bob", LocalDate.of(2000, 1, 1), List.of("fix issue 1", "Fix issue 2"));
     ALEX_ENGINEER = new Engineer(Id.of(1), "alex", LocalDate.of(2000, 1, 1), List.of("fix issue 3", "Fix issue 4"));
