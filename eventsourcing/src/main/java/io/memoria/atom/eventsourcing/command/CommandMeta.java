@@ -6,14 +6,13 @@ import io.memoria.atom.eventsourcing.event.EventId;
 import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Optional;
 
 public record CommandMeta(CommandId commandId, StateId stateId, long timestamp, Optional<EventId> sagaSource)
         implements Shardable, Serializable {
   public CommandMeta {
-    if (sagaSource == null) {
-      throw new IllegalArgumentException("sagaSource can't be null");
-    }
+    Objects.requireNonNull(sagaSource);
   }
 
   public CommandMeta(CommandId commandId, StateId stateId) {
