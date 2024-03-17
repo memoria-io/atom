@@ -5,6 +5,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,6 +16,8 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class FileOpsTest {
+  private static final Logger log = LoggerFactory.getLogger(FileOpsTest.class.getName());
+
   private static final Path TEST_DIR = Path.of("/tmp/rFilesTest");
   private static final Path TEST_DIR_FILE_TXT = TEST_DIR.resolve("file.txt");
 
@@ -164,7 +168,7 @@ class FileOpsTest {
     try {
       for (int i : IntStream.range(0, count).toArray()) {
         var p = FileOps.write(path.resolve(i + ".json"), "hi" + i);
-        System.out.println("Written" + p);
+        log.debug("Written" + p);
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
