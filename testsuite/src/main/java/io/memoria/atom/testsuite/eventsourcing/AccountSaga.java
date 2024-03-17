@@ -10,29 +10,29 @@ import io.memoria.atom.testsuite.eventsourcing.event.AccountEvent;
 import io.memoria.atom.testsuite.eventsourcing.event.CreditRejected;
 import io.memoria.atom.testsuite.eventsourcing.event.Credited;
 import io.memoria.atom.testsuite.eventsourcing.event.Debited;
-import io.vavr.control.Option;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public record AccountSaga(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Saga {
 
   @Override
-  public Option<Command> apply(Event event) {
+  public Optional<Command> apply(Event event) {
     if (event instanceof AccountEvent accountEvent) {
       return apply(accountEvent);
     } else {
-      return Option.none();
+      return Optional.empty();
     }
   }
 
-  public Option<Command> apply(AccountEvent event) {
+  public Optional<Command> apply(AccountEvent event) {
     return switch (event) {
       case Debited e ->
-              Option.some(new Credit(commandMeta(e.creditedAcc(), e.meta().eventId()), e.accountId(), e.amount()));
-      case Credited e -> Option.some(new ConfirmDebit(commandMeta(e.debitedAcc(), e.meta().eventId()), e.accountId()));
+              Optional.of(new Credit(commandMeta(e.creditedAcc(), e.meta().eventId()), e.accountId(), e.amount()));
+      case Credited e -> Optional.of(new ConfirmDebit(commandMeta(e.debitedAcc(), e.meta().eventId()), e.accountId()));
       case CreditRejected e ->
-              Option.some(new Credit(commandMeta(e.debitedAcc(), e.meta().eventId()), e.accountId(), e.amount()));
-      default -> Option.none();
+              Optional.of(new Credit(commandMeta(e.debitedAcc(), e.meta().eventId()), e.accountId(), e.amount()));
+      default -> Optional.empty();
     };
   }
 }

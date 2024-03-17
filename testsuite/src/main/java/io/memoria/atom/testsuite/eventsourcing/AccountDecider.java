@@ -1,13 +1,16 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.eventsourcing.ESException;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.exceptions.InvalidEvolutionCommand;
+import io.memoria.atom.eventsourcing.command.exceptions.MismatchingCommandState;
 import io.memoria.atom.eventsourcing.command.exceptions.UnknownCommand;
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.event.EventMeta;
 import io.memoria.atom.eventsourcing.rule.Decider;
 import io.memoria.atom.eventsourcing.state.State;
+import io.memoria.atom.eventsourcing.state.exceptions.UnknownState;
 import io.memoria.atom.testsuite.eventsourcing.command.AccountCommand;
 import io.memoria.atom.testsuite.eventsourcing.command.ChangeName;
 import io.memoria.atom.testsuite.eventsourcing.command.CloseAccount;
@@ -28,76 +31,88 @@ import io.memoria.atom.testsuite.eventsourcing.event.NameChanged;
 import io.memoria.atom.testsuite.eventsourcing.state.Account;
 import io.memoria.atom.testsuite.eventsourcing.state.ClosedAccount;
 import io.memoria.atom.testsuite.eventsourcing.state.OpenAccount;
-import io.vavr.control.Try;
 
 import java.util.function.Supplier;
-
-import static io.memoria.atom.eventsourcing.Validations.instanceOf;
-import static io.vavr.control.Try.failure;
-import static io.vavr.control.Try.success;
 
 public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Decider {
 
   @Override
-  public Try<Event> apply(Command c) {
-    return instanceOf(c, AccountCommand.class).flatMap(this::handle);
+  public Event apply(Command command) throws ESException {
+    if (command instanceof AccountCommand accountCommand) {
+      return handle(accountCommand);
+    } else {
+      throw UnknownCommand.of(command);
+    }
   }
 
   @Override
-  public Try<Event> apply(State state, Command command) {
-    return instanceOf(state, Account.class, command, AccountCommand.class).flatMap(tup -> handle(tup._1, tup._2));
+  public Event apply(State state, Command command) throws ESException {
+    if (state instanceof Account account) {
+      if (command instanceof AccountCommand accountCommand) {
+        return handle(account, accountCommand);
+      } else {
+        throw UnknownCommand.of(command);
+      }
+    } else {
+      throw UnknownState.of(state);
+    }
   }
 
   @SuppressWarnings("SwitchStatementWithTooFewBranches")
-  private Try<AccountEvent> handle(AccountCommand command) {
-    return eventMeta(command).flatMap(meta -> switch (command) {
-      case CreateAccount cmd -> success(new AccountCreated(meta, cmd.accountName(), cmd.balance()));
-      default -> failure(UnknownCommand.of(command));
-    });
+  private AccountEvent handle(AccountCommand command) throws UnknownCommand {
+    var meta = eventMeta(command);
+    return switch (command) {
+      case CreateAccount cmd -> new AccountCreated(meta, cmd.accountName(), cmd.balance());
+      default -> throw UnknownCommand.of(command);
+    };
   }
 
-  private Try<AccountEvent> handle(Account state, AccountCommand command) {
-    return eventMeta(state, command).flatMap(meta -> switch (state) {
+  private AccountEvent handle(Account state, AccountCommand command)
+          throws MismatchingCommandState, InvalidEvolutionCommand {
+    var meta = eventMeta(state, command);
+    return switch (state) {
       case OpenAccount openAccount -> handle(openAccount, command, meta);
       case ClosedAccount acc -> handle(acc, command, meta);
-    });
+    };
   }
 
-  private Try<AccountEvent> handle(OpenAccount account, AccountCommand command, EventMeta meta) {
+  private AccountEvent handle(OpenAccount account, AccountCommand command, EventMeta meta)
+          throws InvalidEvolutionCommand {
     return switch (command) {
-      case CreateAccount cmd -> failure(InvalidEvolutionCommand.of(cmd, account));
-      case ChangeName cmd -> success(new NameChanged(meta, cmd.name()));
+      case CreateAccount cmd -> throw InvalidEvolutionCommand.of(cmd, account);
+      case ChangeName cmd -> new NameChanged(meta, cmd.name());
       case Debit cmd -> tryToDebit(cmd, account, meta);
-      case Credit cmd -> success(new Credited(meta, cmd.debitedAcc(), cmd.amount()));
-      case ConfirmDebit _ -> success(new DebitConfirmed(meta));
+      case Credit cmd -> new Credited(meta, cmd.debitedAcc(), cmd.amount());
+      case ConfirmDebit _ -> new DebitConfirmed(meta);
       case CloseAccount _ -> tryToClose(account, meta);
     };
   }
 
-  private Try<AccountEvent> handle(ClosedAccount state, AccountCommand command, EventMeta meta) {
+  private AccountEvent handle(ClosedAccount state, AccountCommand command, EventMeta meta)
+          throws InvalidEvolutionCommand {
     return switch (command) {
-      case Credit cmd -> success(new CreditRejected(meta, cmd.debitedAcc(), cmd.amount()));
-      case ConfirmDebit _ -> success(new DebitConfirmed(meta));
-      case ChangeName cmd -> failure(InvalidEvolutionCommand.of(cmd, state));
-      case Debit cmd -> failure(InvalidEvolutionCommand.of(cmd, state));
-      case CreateAccount cmd -> failure(InvalidEvolutionCommand.of(cmd, state));
-      case CloseAccount cmd -> failure(InvalidEvolutionCommand.of(cmd, state));
+      case Credit cmd -> new CreditRejected(meta, cmd.debitedAcc(), cmd.amount());
+      case ConfirmDebit _ -> new DebitConfirmed(meta);
+      case ChangeName cmd -> throw InvalidEvolutionCommand.of(cmd, state);
+      case Debit cmd -> throw InvalidEvolutionCommand.of(cmd, state);
+      case CreateAccount cmd -> throw InvalidEvolutionCommand.of(cmd, state);
+      case CloseAccount cmd -> throw InvalidEvolutionCommand.of(cmd, state);
     };
   }
 
-  private static Try<AccountEvent> tryToDebit(Debit cmd, OpenAccount account, EventMeta meta) {
+  private static AccountEvent tryToDebit(Debit cmd, OpenAccount account, EventMeta meta) {
     if (account.canDebit(cmd.amount())) {
-      return success(new Debited(meta, cmd.creditedAcc(), cmd.amount()));
+      return new Debited(meta, cmd.creditedAcc(), cmd.amount());
     } else {
-      return success(new DebitRejected(meta));
+      return new DebitRejected(meta);
     }
   }
 
-  private static Try<AccountEvent> tryToClose(OpenAccount openAccount, EventMeta meta) {
+  private static AccountEvent tryToClose(OpenAccount openAccount, EventMeta meta) {
     if (openAccount.hasOngoingDebit()) {
-      return success(new ClosureRejected(meta));
+      return new ClosureRejected(meta);
     } else {
-      return success(new AccountClosed(meta));
+      return new AccountClosed(meta);
     }
   }
 }

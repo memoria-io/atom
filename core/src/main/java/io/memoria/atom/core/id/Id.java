@@ -1,18 +1,16 @@
 package io.memoria.atom.core.id;
 
-import io.vavr.control.Try;
-
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Function;
 
 public class Id implements Serializable, Comparable<Id> {
   private final String value;
 
   public Id(String value) {
-    if (value == null || value.isEmpty())
-      throw new IllegalArgumentException("Id value is null or empty.");
+    Objects.requireNonNull(value);
+    if (value.isEmpty())
+      throw new IllegalArgumentException("Id value is empty.");
     this.value = value;
   }
 
@@ -31,22 +29,6 @@ public class Id implements Serializable, Comparable<Id> {
     this.value = id.value;
   }
 
-  public String value() {
-    return value;
-  }
-
-  public static <T extends Id> T to(String value, Function<Id, T> fn) {
-    return fn.apply(Id.of(value));
-  }
-
-  public static <T extends Id> T to(long value, Function<Id, T> fn) {
-    return fn.apply(Id.of(value));
-  }
-
-  public static <T extends Id> T to(UUID value, Function<Id, T> fn) {
-    return fn.apply(Id.of(value));
-  }
-
   public static Id of(String value) {
     return new Id(value);
   }
@@ -59,9 +41,22 @@ public class Id implements Serializable, Comparable<Id> {
     return new Id(uuid.toString());
   }
 
+  public String value() {
+    return value;
+  }
+
   @Override
   public int compareTo(Id o) {
-    return Try.of(() -> compareToLong(o)).orElse(Try.of(() -> compareToUuid(o))).getOrElse(compareToString(o));
+    // TODO Check if Id interface would be better
+    try {
+      return compareToLong(o);
+    } catch (Exception e) {
+      try {
+        return compareToUuid(o);
+      } catch (Exception ex) {
+        return compareToString(o);
+      }
+    }
   }
 
   @Override
@@ -79,6 +74,11 @@ public class Id implements Serializable, Comparable<Id> {
     return Objects.hash(value);
   }
 
+  @Override
+  public String toString() {
+    return value;
+  }
+
   private int compareToString(Id o) {
     return value.compareTo(o.value);
   }
@@ -89,10 +89,5 @@ public class Id implements Serializable, Comparable<Id> {
 
   private int compareToUuid(Id o) {
     return UUID.fromString(value).compareTo(UUID.fromString(o.value));
-  }
-
-  @Override
-  public String toString() {
-    return value;
   }
 }

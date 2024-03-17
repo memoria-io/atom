@@ -4,12 +4,11 @@ import io.memoria.atom.actor.Actor;
 import io.memoria.atom.actor.ActorFactory;
 import io.memoria.atom.actor.ActorId;
 import io.memoria.atom.core.domain.Shardable;
-import io.vavr.control.Try;
 
 import java.io.Closeable;
 import java.util.function.BiFunction;
 
-public interface ActorSystem extends Closeable, Iterable<Actor>, BiFunction<ActorId, Shardable, Try<Shardable>> {
+public interface ActorSystem extends Closeable, Iterable<Actor>, BiFunction<ActorId, Shardable, Shardable> {
   ActorStore actorStore();
 
   ActorFactory actorFactory();

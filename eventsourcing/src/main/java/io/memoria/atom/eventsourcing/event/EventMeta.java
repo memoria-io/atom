@@ -3,25 +3,24 @@ package io.memoria.atom.eventsourcing.event;
 import io.memoria.atom.core.domain.Shardable;
 import io.memoria.atom.core.domain.Versioned;
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.eventsourcing.state.StateId;
 import io.memoria.atom.eventsourcing.command.CommandId;
-import io.vavr.control.Option;
+import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.Optional;
 
 public record EventMeta(EventId eventId,
                         long version,
                         StateId stateId,
                         CommandId commandId,
                         long timestamp,
-                        Option<EventId> sagaSource) implements Shardable, Versioned, Serializable {
+                        Optional<EventId> sagaSource) implements Shardable, Versioned, Serializable {
   public EventMeta {
     if (version < 0) {
       throw new IllegalArgumentException("version can't be less than zero");
     }
-    if (sagaSource == null) {
-      throw new IllegalArgumentException("Saga source can't be null");
-    }
+    Objects.requireNonNull(sagaSource);
   }
 
   public EventMeta(EventId id, long version, StateId stateId, CommandId commandId) {
@@ -29,7 +28,7 @@ public record EventMeta(EventId eventId,
   }
 
   public EventMeta(EventId id, long version, StateId stateId, CommandId commandId, long timestamp) {
-    this(id, version, stateId, commandId, timestamp, Option.none());
+    this(id, version, stateId, commandId, timestamp, Optional.empty());
   }
 
   @Override

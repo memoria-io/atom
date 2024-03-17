@@ -1,5 +1,6 @@
 package io.memoria.atom.text.jackson.adapters;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.memoria.atom.text.jackson.JacksonUtils;
 import io.memoria.atom.text.jackson.JsonJackson;
@@ -13,14 +14,14 @@ class GenericObjectTransformerTest {
   private static final JsonJackson json = new JsonJackson(createMapper());
 
   @Test
-  void genericValueObjectDirectMapping() {
+  void genericValueObjectDirectMapping() throws JsonProcessingException {
     // Given
     var jsonStr = "\"some_id\"";
     var obj = new SomeId("some_id");
 
     // When
-    var serResult = json.serialize(obj).get();
-    var desResult = json.deserialize(jsonStr, SomeId.class).get();
+    var serResult = json.serialize(obj);
+    var desResult = json.deserialize(jsonStr, SomeId.class);
 
     // Then
     assertThat(serResult).isEqualTo(jsonStr);
@@ -28,7 +29,7 @@ class GenericObjectTransformerTest {
   }
 
   @Test
-  void genericValueObjectInsideAnother() {
+  void genericValueObjectInsideAnother() throws JsonProcessingException {
     // Given
     var jsonStr = """
             {
@@ -39,8 +40,8 @@ class GenericObjectTransformerTest {
     var obj = new Person(new SomeId("some_id"), "jack");
 
     // When
-    var serResult = json.serialize(obj).get();
-    var desResult = json.deserialize(jsonStr, Person.class).get();
+    var serResult = json.serialize(obj);
+    var desResult = json.deserialize(jsonStr, Person.class);
 
     // Then
     assertThat(serResult).isEqualTo(jsonStr);

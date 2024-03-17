@@ -75,7 +75,7 @@ certain event.
 The Saga generated commands should be idempotent, but the issue here is that they're generated with new ids for example
 when duplicated due to saga generation on startup mentioned previously, so in order to reach idempotency, we'll
 propagate the only fact which is eventId hopping from the generated command eventually to the generated event, which
-will require `Option<EventId> sagaSource` should be added to the command meta and eventMeta.
+will require `Optional<EventId> sagaSource` should be added to the command meta and eventMeta.
 
 For an empty pipeline scenario, the newly handled saga commands would contain `sagaSource`, and the sagaSource
 eventId would be **propagated** to the generated saga events, when such events are re-ingested on startup they'd

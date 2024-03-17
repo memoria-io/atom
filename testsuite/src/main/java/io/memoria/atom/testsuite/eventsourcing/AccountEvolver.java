@@ -2,9 +2,10 @@ package io.memoria.atom.testsuite.eventsourcing;
 
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.event.exceptions.UnknownEvent;
+import io.memoria.atom.eventsourcing.rule.Evolver;
 import io.memoria.atom.eventsourcing.state.State;
 import io.memoria.atom.eventsourcing.state.StateMeta;
-import io.memoria.atom.eventsourcing.rule.Evolver;
+import io.memoria.atom.eventsourcing.state.exceptions.UnknownState;
 import io.memoria.atom.testsuite.eventsourcing.event.AccountClosed;
 import io.memoria.atom.testsuite.eventsourcing.event.AccountCreated;
 import io.memoria.atom.testsuite.eventsourcing.event.AccountEvent;
@@ -15,8 +16,6 @@ import io.memoria.atom.testsuite.eventsourcing.event.NameChanged;
 import io.memoria.atom.testsuite.eventsourcing.state.Account;
 import io.memoria.atom.testsuite.eventsourcing.state.ClosedAccount;
 import io.memoria.atom.testsuite.eventsourcing.state.OpenAccount;
-
-import static io.memoria.atom.eventsourcing.Validations.instanceOf;
 
 public record AccountEvolver() implements Evolver {
 
@@ -34,10 +33,18 @@ public record AccountEvolver() implements Evolver {
 
   @Override
   public Account apply(State state, Event event) {
-    return instanceOf(state, Account.class, event, AccountEvent.class).map(tup -> switch (tup._1) {
-      case OpenAccount openAccount -> handle(openAccount, tup._2);
-      case ClosedAccount acc -> acc;
-    }).get();
+    if (state instanceof Account account) {
+      if (event instanceof AccountEvent accountEvent) {
+        return switch (account) {
+          case OpenAccount openAccount -> handle(openAccount, accountEvent);
+          case ClosedAccount acc -> acc;
+        };
+      } else {
+        throw new RuntimeException(UnknownEvent.of(event));
+      }
+    } else {
+      throw new RuntimeException(UnknownState.of(state));
+    }
   }
 
   private Account handle(OpenAccount account, AccountEvent accountEvent) {

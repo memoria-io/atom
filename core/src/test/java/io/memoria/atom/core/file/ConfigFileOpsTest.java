@@ -1,11 +1,12 @@
 package io.memoria.atom.core.file;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.util.stream.Stream;
 
 class ConfigFileOpsTest {
@@ -20,28 +21,29 @@ class ConfigFileOpsTest {
   @ParameterizedTest
   @MethodSource("paths")
   @DisplayName("should read the nested files")
-  void readNestedFile(String path) {
+  void readNestedFile(String path) throws IOException {
+    // Given
+    var expectedConfig = ResourceFile.of(TEST_DIR + "expectedConfig.yaml").read();
+
     // When
-    var file = configOps.read(path).get();
+    var configFile = configOps.read(path);
+
     // Then
-    var expected = ResourceFileOps.readResourceOrFile(TEST_DIR + "expectedConfig.yaml")
-                                  .get()
-                                  .reduce(ConfigFileOps.JOIN_LINES);
-    Assertions.assertEquals(expected, file);
+    Assertions.assertThat(configFile).isEqualTo(expectedConfig);
   }
 
   @Test
-  void readSystemEnv() {
+  void readSystemEnv() throws IOException {
     // When
-    var file = configOps.read(TEST_DIR + "systemEnv.yaml").get();
+    var file = configOps.read(TEST_DIR + "systemEnv.yaml");
     // Then
     var lines = file.split("\n");
-    Assertions.assertNotEquals("javaHomePath: /hello/java", lines[0]);
-    Assertions.assertEquals("otherValue: defaultValue", lines[1]);
-    Assertions.assertEquals("routeValue: /defaultValue/{paramName}/someOther", lines[2]);
-    Assertions.assertEquals("routeValueWithSpace: /defaultValue/{paramName}/someOther", lines[3]);
-    Assertions.assertTrue(lines[4].startsWith("javaVersionSystemProperty: 21"));
-    Assertions.assertEquals("mySysProp: 2000", lines[5]);
+    Assertions.assertThat(lines[0]).isNotEqualTo("javaHomePath: /hello/java");
+    Assertions.assertThat(lines[1]).isEqualTo("otherValue: defaultValue");
+    Assertions.assertThat(lines[2]).isEqualTo("routeValue: /defaultValue/{paramName}/someOther");
+    Assertions.assertThat(lines[3]).isEqualTo("routeValueWithSpace: /defaultValue/{paramName}/someOther");
+    Assertions.assertThat(lines[4]).startsWith("javaVersionSystemProperty: 21");
+    Assertions.assertThat(lines[5]).isEqualTo("mySysProp: 2000");
   }
 
   private static Stream<String> paths() {

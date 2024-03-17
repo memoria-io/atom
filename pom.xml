@@ -6,13 +6,13 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>jbom</artifactId>
-        <version>21.4.0</version>
+        <version>21.5.0</version>
     </parent>
 
     <!--suppress MavenRedundantGroupId -->
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>21.17.0</version>
+    <version>21.18.0</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
@@ -35,8 +35,10 @@
     <properties>
         <jsonwebtoken.version>0.12.3</jsonwebtoken.version>
         <sonar.coverage.exclusions>
+            **/Main.java,
             **/exceptions/*.java,
-            **/*Exception.java
+            **/*Exception.java,
+            **/testsuite/*
         </sonar.coverage.exclusions>
     </properties>
 
@@ -120,10 +122,6 @@
         <!--======================================================================================== -->
         <!-- Core Dependencies -->
         <!--======================================================================================== -->
-        <dependency>
-            <groupId>io.vavr</groupId>
-            <artifactId>vavr</artifactId>
-        </dependency>
 
         <!--======================================================================================== -->
         <!-- Logging Dependencies -->

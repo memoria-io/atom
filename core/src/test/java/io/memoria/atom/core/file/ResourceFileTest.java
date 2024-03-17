@@ -3,12 +3,20 @@ package io.memoria.atom.core.file;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ResourceFileOpsTest {
+import java.io.IOException;
+
+class ResourceFileTest {
   private static final String TEST_DIR = "file/resourceFileOps/";
 
   @Test
-  void readResource() {
-    var str = ResourceFileOps.read(TEST_DIR + "resourceFile.yaml").get();
+  void readResource() throws IOException {
+    // Given
+    String path = TEST_DIR + "resourceFile.yaml";
+
+    // When
+    var str = ResourceFile.of(path).read();
+
+    // Then
     Assertions.assertEquals("hello world\nbye bye", str);
   }
 }

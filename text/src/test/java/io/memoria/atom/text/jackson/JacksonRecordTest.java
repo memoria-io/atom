@@ -6,11 +6,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import io.vavr.collection.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static io.memoria.atom.text.jackson.TestDeps.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,9 +72,9 @@ class JacksonRecordTest {
   }
 
   @Test
-  void toList() {
+  void toList() throws IOException, ClassNotFoundException {
     // When
-    var list = json.deserialize(Resources.JSON_LIST, String[].class).get();
+    var list = json.deserialize(Resources.JSON_LIST, String[].class);
     // Then
     assert list != null;
     assertEquals(List.of("mercedes", "chevy", "porsche"), List.of(list));
