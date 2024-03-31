@@ -1,6 +1,7 @@
 package io.memoria.atom.eventsourcing.rule;
 
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.eventsourcing.ESCallable;
 import io.memoria.atom.eventsourcing.ESException;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.exceptions.MismatchingCommandState;
@@ -9,6 +10,7 @@ import io.memoria.atom.eventsourcing.event.EventId;
 import io.memoria.atom.eventsourcing.event.EventMeta;
 import io.memoria.atom.eventsourcing.state.State;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface Decider {
@@ -16,9 +18,17 @@ public interface Decider {
 
   Supplier<Long> timeSupplier();
 
-  Event apply(Command c);
+  Function<EventMeta, Event> createBy(Command command);
 
-  Event apply(State state, Command command) throws ESException;
+  Function<EventMeta, ESCallable<Event>> decide(State state, Command command) throws ESException;
+
+  default Event apply(Command command) {
+    return createBy(command).apply(eventMeta(command));
+  }
+
+  default Event apply(State state, Command command) throws ESException {
+    return decide(state, command).apply(eventMeta(state, command)).call();
+  }
 
   default EventMeta eventMeta(Command cmd) {
     return new EventMeta(EventId.of(idSupplier().get()),

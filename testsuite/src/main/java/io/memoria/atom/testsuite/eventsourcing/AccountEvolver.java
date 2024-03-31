@@ -17,22 +17,20 @@ import io.memoria.atom.testsuite.eventsourcing.state.Account;
 import io.memoria.atom.testsuite.eventsourcing.state.ClosedAccount;
 import io.memoria.atom.testsuite.eventsourcing.state.OpenAccount;
 
+import java.util.function.Function;
+
 public record AccountEvolver() implements Evolver {
 
   @SuppressWarnings("SwitchStatementWithTooFewBranches")
   @Override
-  public Account apply(Event event) {
-    return switch (event) {
-      case AccountCreated e -> {
-        StateMeta meta = new StateMeta(e.accountId());
-        yield new OpenAccount(meta, e.name(), e.balance(), 0, 0, 0);
-      }
+  public Function<StateMeta, State> createBy(Event event) {
+    return stateMeta -> switch (event) {
+      case AccountCreated e -> new OpenAccount(stateMeta, e.name(), e.balance(), 0, 0, 0);
       default -> throw UnknownEvent.of(event);
     };
   }
 
-  @Override
-  public Account apply(State state, Event event) {
+  public Function<StateMeta, State> evolve(State state, Event event) {
     if (state instanceof Account account) {
       if (event instanceof AccountEvent accountEvent) {
         return switch (account) {
