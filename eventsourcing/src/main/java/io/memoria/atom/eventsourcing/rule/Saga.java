@@ -5,7 +5,6 @@ import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
 import io.memoria.atom.eventsourcing.event.Event;
-import io.memoria.atom.eventsourcing.event.EventId;
 import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.util.Optional;
@@ -19,7 +18,8 @@ public interface Saga extends Function<Event, Optional<Command>> {
 
   Optional<Command> apply(Event event);
 
-  default CommandMeta commandMeta(StateId stateId, EventId sagaSource) {
-    return new CommandMeta(CommandId.of(idSupplier().get()), stateId, timeSupplier().get(), Optional.of(sagaSource));
+  default CommandMeta commandMeta(StateId stateId, Event event) {
+    var sagaSource = Optional.of(event.meta().eventId());
+    return new CommandMeta(CommandId.of(idSupplier().get()), stateId, timeSupplier().get(), sagaSource);
   }
 }
