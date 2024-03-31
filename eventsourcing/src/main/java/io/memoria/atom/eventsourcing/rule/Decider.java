@@ -38,7 +38,7 @@ public interface Decider {
                            timeSupplier().get(),
                            cmd.meta().sagaSource());
     } else {
-      throw MismatchingCommandState.of(cmd, state.meta().stateId());
+      throw MismatchingCommandState.of(state.meta().stateId(), cmd);
     }
   }
 }

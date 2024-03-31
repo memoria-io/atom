@@ -79,7 +79,7 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
   private AccountEvent handle(OpenAccount account, AccountCommand command, EventMeta meta)
           throws InvalidEvolutionCommand {
     return switch (command) {
-      case CreateAccount cmd -> throw InvalidEvolutionCommand.of(cmd, account);
+      case CreateAccount cmd -> throw InvalidEvolutionCommand.of(account, cmd);
       case ChangeName cmd -> new NameChanged(meta, cmd.name());
       case Debit cmd -> tryToDebit(cmd, account, meta);
       case Credit cmd -> new Credited(meta, cmd.debitedAcc(), cmd.amount());
@@ -93,10 +93,10 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
     return switch (command) {
       case Credit cmd -> new CreditRejected(meta, cmd.debitedAcc(), cmd.amount());
       case ConfirmDebit _ -> new DebitConfirmed(meta);
-      case ChangeName cmd -> throw InvalidEvolutionCommand.of(cmd, state);
-      case Debit cmd -> throw InvalidEvolutionCommand.of(cmd, state);
-      case CreateAccount cmd -> throw InvalidEvolutionCommand.of(cmd, state);
-      case CloseAccount cmd -> throw InvalidEvolutionCommand.of(cmd, state);
+      case ChangeName cmd -> throw InvalidEvolutionCommand.of(state, cmd);
+      case Debit cmd -> throw InvalidEvolutionCommand.of(state, cmd);
+      case CreateAccount cmd -> throw InvalidEvolutionCommand.of(state, cmd);
+      case CloseAccount cmd -> throw InvalidEvolutionCommand.of(state, cmd);
     };
   }
 
