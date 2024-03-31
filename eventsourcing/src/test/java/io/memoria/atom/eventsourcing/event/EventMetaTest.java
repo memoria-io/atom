@@ -22,5 +22,4 @@ class EventMetaTest {
     Assertions.assertThatNullPointerException()
               .isThrownBy(() -> new EventMeta(EventId.of(0), 0, stateId, CommandId.of(0), 0, null));
   }
-
 }

@@ -26,6 +26,11 @@
             <artifactId>core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.f4b6a3</groupId>
+            <artifactId>uuid-creator</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
 

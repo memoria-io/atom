@@ -8,7 +8,7 @@ public class InvalidEvolutionCommand extends CommandException {
     super(msg, command);
   }
 
-  public static InvalidEvolutionCommand of(Command command, State state) {
+  public static InvalidEvolutionCommand of(State state, Command command) {
     var msg = "Invalid evolution command: %s[%s] to the state: %s[%s]".formatted(command.getClass().getSimpleName(),
                                                                                  command.meta(),
                                                                                  state.getClass().getSimpleName(),

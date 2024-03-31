@@ -16,9 +16,30 @@ public interface Decider {
 
   Supplier<Long> timeSupplier();
 
-  Event apply(Command c);
+  /**
+   * @param command   the incoming command
+   * @param eventMeta the new EventMeta
+   * @return a new Event with eventMeta as its value
+   */
+  Event createBy(Command command, EventMeta eventMeta);
 
-  Event apply(State state, Command command) throws ESException;
+  /**
+   * @param state     the initial state
+   * @param command   the incoming command
+   * @param eventMeta the new EventMeta
+   * @return a new Event with eventMeta as its value
+   *
+   * @throws ESException when a checked ESException happens
+   */
+  Event decide(State state, Command command, EventMeta eventMeta) throws ESException;
+
+  default Event apply(Command command) {
+    return createBy(command, eventMeta(command));
+  }
+
+  default Event apply(State state, Command command) throws ESException {
+    return decide(state, command, eventMeta(state, command));
+  }
 
   default EventMeta eventMeta(Command cmd) {
     return new EventMeta(EventId.of(idSupplier().get()),
@@ -38,7 +59,7 @@ public interface Decider {
                            timeSupplier().get(),
                            cmd.meta().sagaSource());
     } else {
-      throw MismatchingCommandState.of(cmd, state.meta().stateId());
+      throw MismatchingCommandState.of(state.meta().stateId(), cmd);
     }
   }
 }

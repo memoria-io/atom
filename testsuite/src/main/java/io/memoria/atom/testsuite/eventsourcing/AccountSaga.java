@@ -27,11 +27,14 @@ public record AccountSaga(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) 
 
   public Optional<Command> apply(AccountEvent event) {
     return switch (event) {
-      case Debited e ->
-              Optional.of(new Credit(commandMeta(e.creditedAcc(), e.meta().eventId()), e.accountId(), e.amount()));
-      case Credited e -> Optional.of(new ConfirmDebit(commandMeta(e.debitedAcc(), e.meta().eventId()), e.accountId()));
-      case CreditRejected e ->
-              Optional.of(new Credit(commandMeta(e.debitedAcc(), e.meta().eventId()), e.accountId(), e.amount()));
+      case Debited debited -> Optional.of(new Credit(commandMeta(debited.creditedAcc(), debited),
+                                                     debited.accountId(),
+                                                     debited.amount()));
+      case Credited credited ->
+              Optional.of(new ConfirmDebit(commandMeta(credited.debitedAcc(), credited), credited.accountId()));
+      case CreditRejected rejected -> Optional.of(new Credit(commandMeta(rejected.debitedAcc(), rejected),
+                                                             rejected.accountId(),
+                                                             rejected.amount()));
       default -> Optional.empty();
     };
   }
