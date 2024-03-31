@@ -34,7 +34,7 @@ class DeciderTest {
 
     // Then
     assertThat(event).isInstanceOf(StateCreated.class);
-    assertThat(event.version()).isEqualTo(0);
+    assertThat(event.version()).isZero();
   }
 
   @Test
@@ -48,7 +48,7 @@ class DeciderTest {
 
     // Then
     assertThat(event).isInstanceOf(StateChanged.class);
-    assertThat(event.version()).isEqualTo(1);
+    assertThat(event.version()).isOne();
   }
 
   @Test

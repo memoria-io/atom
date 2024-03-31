@@ -33,9 +33,7 @@ class EventIdTest {
     var id2 = EventId.of(uuidStr);
 
     // Then
-    Assertions.assertThat(id1).isEqualTo(id2);
-    Assertions.assertThat(id1.toString()).isEqualTo(uuidStr);
-    Assertions.assertThat(id2.toString()).isEqualTo(uuidStr);
+    Assertions.assertThat(id1).isEqualTo(id2).hasToString(uuidStr);
   }
 
   @Test

@@ -26,8 +26,7 @@ class IdTest {
     var id2 = Id.of(uuidStr);
 
     // Then
-    Assertions.assertThat(id1).isEqualTo(id2);
-    Assertions.assertThat(id1).hasToString(uuidStr);
+    Assertions.assertThat(id1).isEqualTo(id2).hasToString(uuidStr);
     Assertions.assertThat(id2).hasToString(uuidStr);
   }
 

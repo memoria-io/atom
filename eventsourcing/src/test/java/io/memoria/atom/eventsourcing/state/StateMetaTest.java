@@ -3,7 +3,7 @@ package io.memoria.atom.eventsourcing.state;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class StateMetaTest {
+class StateMetaTest {
   private final StateId stateId = StateId.of(0);
 
   @Test
