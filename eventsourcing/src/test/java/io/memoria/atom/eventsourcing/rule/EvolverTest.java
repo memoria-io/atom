@@ -13,6 +13,7 @@ import io.memoria.atom.eventsourcing.state.exceptions.UnknownState;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class EvolverTest {
   private final Evolver evolver = new SomeEvolver();
@@ -42,6 +43,16 @@ public class EvolverTest {
     // Then
     assertThat(event).isInstanceOf(SomeState.class);
     assertThat(event.version()).isEqualTo(1);
+  }
+
+  @Test
+  void applyEvolutionFail() {
+    // Given
+    var someState = new SomeState(new StateMeta(StateId.of(0)));
+    var stateChanged = new StateChanged(new EventMeta(EventId.of(0), 10, StateId.of(0), CommandId.of(0)));
+
+    // When
+    assertThatThrownBy(() -> evolver.apply(someState, stateChanged)).isInstanceOf(InvalidEvolutionEvent.class);
   }
 
   private record SomeEvolver() implements Evolver {
