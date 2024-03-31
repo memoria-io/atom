@@ -13,6 +13,11 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+/**
+ * Using Standard deviation to see if there's max of 10% outliers or sharding distribution
+ * @see <a href="https://study.com/skill/learn/determining-outliers-using-standard-deviation-explanation.html">Determine
+ * outliers using standard deviation</a>
+ */
 public class ShardableTest {
   private static final int totalShards = 1000;
   private static final int minPartitions = 25;
