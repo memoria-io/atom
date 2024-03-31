@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 /**
  * Using Standard deviation to see if there's max of 10% outliers or sharding distribution
+ *
  * @see <a href="https://study.com/skill/learn/determining-outliers-using-standard-deviation-explanation.html">Determine
  * outliers using standard deviation</a>
  */
@@ -61,17 +62,17 @@ public class ShardableTest {
     return (int) (totalPartitions * 0.1);
   }
 
-  private static List<Shard> createShards(Function<Integer, Id> idGen) {
-    return IntStream.range(0, totalShards).mapToObj(idGen::apply).map(Shard::new).toList();
+  private static List<Shardable> createShards(Function<Integer, Id> idGen) {
+    return IntStream.range(0, totalShards).mapToObj(idGen::apply).map(Shard::new).map(s -> (Shardable) s).toList();
   }
 
-  private static List<Long> partitionSizeList(List<Shard> shards, int totalPartitions) {
+  private static List<Long> partitionSizeList(List<Shardable> shards, int totalPartitions) {
     return IntStream.range(0, totalPartitions)
                     .mapToObj(partition -> isInPartition(shards, partition, totalPartitions))
                     .toList();
   }
 
-  private static long isInPartition(List<Shard> shards, int partition, int totalPartitions) {
+  private static long isInPartition(List<Shardable> shards, int partition, int totalPartitions) {
     return shards.stream().filter(sh -> sh.isInPartition(partition, totalPartitions)).count();
   }
 
