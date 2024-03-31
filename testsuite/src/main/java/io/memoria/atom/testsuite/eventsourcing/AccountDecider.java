@@ -37,19 +37,19 @@ import java.util.function.Supplier;
 public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Decider {
 
   @Override
-  public Event apply(Command command) {
+  public Event createBy(Command command, EventMeta eventMeta) {
     if (command instanceof AccountCommand accountCommand) {
-      return handle(accountCommand);
+      return handle(accountCommand, eventMeta);
     } else {
       throw UnknownCommand.of(command);
     }
   }
 
   @Override
-  public Event apply(State state, Command command) throws ESException {
+  public Event decide(State state, Command command, EventMeta eventMeta) throws ESException {
     if (state instanceof Account account) {
       if (command instanceof AccountCommand accountCommand) {
-        return handle(account, accountCommand);
+        return handle(account, accountCommand, eventMeta);
       } else {
         throw UnknownCommand.of(command);
       }
@@ -59,20 +59,18 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
   }
 
   @SuppressWarnings("SwitchStatementWithTooFewBranches")
-  private AccountEvent handle(AccountCommand command) {
-    var meta = eventMeta(command);
+  private AccountEvent handle(AccountCommand command, EventMeta newEventMeta) {
     return switch (command) {
-      case CreateAccount cmd -> new AccountCreated(meta, cmd.accountName(), cmd.balance());
+      case CreateAccount cmd -> new AccountCreated(newEventMeta, cmd.accountName(), cmd.balance());
       default -> throw UnknownCommand.of(command);
     };
   }
 
-  private AccountEvent handle(Account state, AccountCommand command)
+  private AccountEvent handle(Account state, AccountCommand command, EventMeta newEventMeta)
           throws MismatchingCommandState, InvalidEvolutionCommand {
-    var meta = eventMeta(state, command);
     return switch (state) {
-      case OpenAccount openAccount -> handle(openAccount, command, meta);
-      case ClosedAccount acc -> handle(acc, command, meta);
+      case OpenAccount openAccount -> handle(openAccount, command, newEventMeta);
+      case ClosedAccount acc -> handle(acc, command, newEventMeta);
     };
   }
 

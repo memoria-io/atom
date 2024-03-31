@@ -12,8 +12,6 @@ import io.memoria.atom.eventsourcing.state.StateMeta;
 import io.memoria.atom.eventsourcing.state.exceptions.UnknownState;
 import org.junit.jupiter.api.Test;
 
-import java.util.function.Function;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EvolverTest {
@@ -47,31 +45,26 @@ public class EvolverTest {
   }
 
   private record SomeEvolver() implements Evolver {
-
     @Override
-    public Function<StateMeta, State> createBy(Event e) {
-      return stateMeta -> {
-        if (e instanceof StateCreated stateCreated) {
-          return new SomeState(stateMeta);
-        } else {
-          throw UnknownEvent.of(e);
-        }
-      };
+    public State createBy(Event event, StateMeta stateMeta) {
+      if (event instanceof StateCreated) {
+        return new SomeState(stateMeta);
+      } else {
+        throw UnknownEvent.of(event);
+      }
     }
 
     @Override
-    public Function<StateMeta, State> evolve(State state, Event event) {
-      return stateMeta -> {
-        if (state instanceof SomeState someState) {
-          return switch (event) {
-            case StateCreated stateCreated -> throw InvalidEvolutionEvent.of(someState, stateCreated);
-            case StateChanged _ -> new SomeState(stateMeta);
-            default -> throw UnknownState.of(someState);
-          };
-        } else {
-          throw UnknownState.of(state);
-        }
-      };
+    public State evolve(State state, Event event, StateMeta stateMeta) {
+      if (state instanceof SomeState someState) {
+        return switch (event) {
+          case StateCreated stateCreated -> throw InvalidEvolutionEvent.of(someState, stateCreated);
+          case StateChanged _ -> new SomeState(stateMeta);
+          default -> throw UnknownState.of(someState);
+        };
+      } else {
+        throw UnknownState.of(state);
+      }
     }
   }
 }

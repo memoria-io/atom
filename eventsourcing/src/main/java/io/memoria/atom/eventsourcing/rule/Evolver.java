@@ -5,20 +5,29 @@ import io.memoria.atom.eventsourcing.event.exceptions.InvalidEvolutionEvent;
 import io.memoria.atom.eventsourcing.state.State;
 import io.memoria.atom.eventsourcing.state.StateMeta;
 
-import java.util.function.Function;
-
 public interface Evolver {
 
-  Function<StateMeta, State> createBy(Event event);
+  /**
+   * @param event     A creational event
+   * @param stateMeta the new State stateMeta
+   * @return a new State with stateMeta as its meta value
+   */
+  State createBy(Event event, StateMeta stateMeta);
 
-  Function<StateMeta, State> evolve(State state, Event event);
+  /**
+   * @param state     initial State
+   * @param event     evolution event to be applied upon the initial state
+   * @param stateMeta of
+   * @return state with stateMeta as its meta value
+   */
+  State evolve(State state, Event event, StateMeta stateMeta);
 
   default State apply(Event e) {
-    return createBy(e).apply(stateMeta(e));
+    return createBy(e, stateMeta(e));
   }
 
   default State apply(State state, Event event) {
-    return evolve(state, event).apply(stateMeta(state, event));
+    return evolve(state, event, stateMeta(state, event));
   }
 
   default StateMeta stateMeta(Event e) {

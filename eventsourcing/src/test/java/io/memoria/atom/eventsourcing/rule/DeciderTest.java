@@ -1,7 +1,6 @@
 package io.memoria.atom.eventsourcing.rule;
 
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.eventsourcing.ESCallable;
 import io.memoria.atom.eventsourcing.ESException;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.CommandId;
@@ -16,7 +15,6 @@ import io.memoria.atom.eventsourcing.state.StateMeta;
 import io.memoria.atom.eventsourcing.state.exceptions.UnknownState;
 import org.junit.jupiter.api.Test;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,27 +51,21 @@ class DeciderTest {
 
   private record SomeDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Decider {
     @Override
-    public Function<EventMeta, Event> createBy(Command command) {
-      return eventMeta -> {
-        if (command instanceof CreateState) {
-          return new StateCreated(eventMeta);
-        } else {
-          throw UnknownCommand.of(command);
-        }
-      };
+    public Event createBy(Command command, EventMeta eventMeta) {
+      if (command instanceof CreateState) {
+        return new StateCreated(eventMeta);
+      } else {
+        throw UnknownCommand.of(command);
+      }
     }
 
     @Override
-    public Function<EventMeta, ESCallable<Event>> decide(State state, Command command) {
-      return eventMeta -> {
-        if (state instanceof SomeState someState) {
-          return () -> handle(command, someState);
-        } else {
-          return () -> {
-            throw UnknownState.of(state);
-          };
-        }
-      };
+    public Event decide(State state, Command command, EventMeta eventMeta) throws ESException {
+      if (state instanceof SomeState someState) {
+        return handle(command, someState);
+      } else {
+        throw UnknownState.of(state);
+      }
     }
 
     private Event handle(Command command, SomeState someState) throws InvalidEvolutionCommand {
