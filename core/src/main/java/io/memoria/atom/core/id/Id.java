@@ -38,7 +38,7 @@ public class Id implements Serializable, Comparable<Id> {
   }
 
   public static Id of(UUID uuid) {
-    return new Id(uuid.toString());
+    return new Id(uuid);
   }
 
   public String value() {

@@ -5,10 +5,28 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 class IdTest {
+
+  @Test
+  void idEquality() {
+    // Given
+    var uuid = UUID.randomUUID();
+    var uuidStr = uuid.toString();
+
+    // When
+    var id1 = Id.of(uuid);
+    var id2 = Id.of(uuidStr);
+
+    // Then
+    Assertions.assertThat(id1).isEqualTo(id2);
+    Assertions.assertThat(id1.toString()).isEqualTo(uuidStr);
+    Assertions.assertThat(id2.toString()).isEqualTo(uuidStr);
+  }
+
   @Test
   void happyPath() {
     var id = Id.of(UuidCreator.getTimeOrderedEpoch());
