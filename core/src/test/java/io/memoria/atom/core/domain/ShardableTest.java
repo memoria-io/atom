@@ -1,6 +1,7 @@
 package io.memoria.atom.core.domain;
 
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.core.math.MathOps;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,13 +23,13 @@ public class ShardableTest {
   void uuidShardsShouldBeNormal(int totalPartitions) {
     // Given
     var shards = createShards(_ -> Id.of(UUID.randomUUID()));
+    var partitionSizeList = partitionSizeList(shards, totalPartitions).stream().map(Long::doubleValue).toList();
+    int maxOutliers = getMaxOutliers(totalPartitions);
 
     // When
-    var outliers = validate(shards, totalPartitions);
+    var outliers = MathOps.findStdDevOutliers(partitionSizeList);
 
     // Then
-    var maxOutliers = (int) (totalPartitions * 0.1);
-    System.out.println(STR. "Max outliers:\{ maxOutliers }, Found outliers:\{ outliers }" );
     Assertions.assertThat(outliers).size().isLessThanOrEqualTo(maxOutliers);
   }
 
@@ -37,56 +38,35 @@ public class ShardableTest {
   void longShardsShouldBeNormal(int totalPartitions) {
     // Given
     var shards = createShards(Id::of);
+    var partitionSizeList = partitionSizeList(shards, totalPartitions).stream().map(Long::doubleValue).toList();
 
     // When
-    var outliers = validate(shards, totalPartitions);
+    var outliers = MathOps.findStdDevOutliers(partitionSizeList);
 
     // Then
-    var maxOutliers = (int) (totalPartitions * 0.1);
-    System.out.println(STR. "Max outliers:\{ maxOutliers }, Found outliers:\{ outliers }" );
+    var maxOutliers = getMaxOutliers(totalPartitions);
     Assertions.assertThat(outliers).size().isLessThanOrEqualTo(maxOutliers);
-  }
-
-  private List<Double> validate(List<Shard> shards, int totalPartitions) {
-    var partitionSizeList = IntStream.range(0, totalPartitions)
-                                     .mapToObj(partition -> partitionSize(shards, partition, totalPartitions))
-                                     .map(Long::doubleValue)
-                                     .toList();
-
-    // Then
-    double mean = mean(partitionSizeList);
-    double sigma = standardDeviation(mean, partitionSizeList);
-    var high = mean + (3 * sigma);
-    var low = mean + (-3 * sigma);
-
-    return partitionSizeList.stream().filter(i -> i > high || i < low).toList();
-  }
-
-  private static List<Shard> createShards(Function<Integer, Id> idGen) {
-    return IntStream.range(0, totalShards).mapToObj(idGen::apply).map(Shard::new).toList();
-  }
-
-  public static double standardDeviation(double mean, List<Double> list) {
-    double standardDeviation = 0.0;
-    for (double num : list) {
-      standardDeviation += Math.pow(num - mean, 2);
-    }
-    return Math.sqrt(standardDeviation / (list.size() - 1));
-  }
-
-  private static double mean(List<Double> list) {
-    double sum = 0.0;
-    for (double i : list) {
-      sum += i;
-    }
-    return sum / list.size();
   }
 
   public static Stream<Arguments> totalPartitions() {
     return IntStream.range(minPartitions, maxPartitions).mapToObj(Arguments::of);
   }
 
-  private static long partitionSize(List<Shard> shards, int partition, int totalPartitions) {
+  private static int getMaxOutliers(int totalPartitions) {
+    return (int) (totalPartitions * 0.1);
+  }
+
+  private static List<Shard> createShards(Function<Integer, Id> idGen) {
+    return IntStream.range(0, totalShards).mapToObj(idGen::apply).map(Shard::new).toList();
+  }
+
+  private static List<Long> partitionSizeList(List<Shard> shards, int totalPartitions) {
+    return IntStream.range(0, totalPartitions)
+                    .mapToObj(partition -> isInPartition(shards, partition, totalPartitions))
+                    .toList();
+  }
+
+  private static long isInPartition(List<Shard> shards, int partition, int totalPartitions) {
     return shards.stream().filter(sh -> sh.isInPartition(partition, totalPartitions)).count();
   }
 
