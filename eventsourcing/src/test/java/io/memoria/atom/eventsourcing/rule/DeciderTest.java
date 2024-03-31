@@ -6,6 +6,7 @@ import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
 import io.memoria.atom.eventsourcing.command.exceptions.InvalidEvolutionCommand;
+import io.memoria.atom.eventsourcing.command.exceptions.MismatchingCommandState;
 import io.memoria.atom.eventsourcing.command.exceptions.UnknownCommand;
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.event.EventMeta;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DeciderTest {
   private final Decider decider = new SomeDecider(() -> Id.of(0), () -> 0L);
@@ -47,6 +49,16 @@ class DeciderTest {
     // Then
     assertThat(event).isInstanceOf(StateChanged.class);
     assertThat(event.version()).isEqualTo(1);
+  }
+
+  @Test
+  void applyEvolutionFail() {
+    // Given
+    var someState = new SomeState(new StateMeta(StateId.of("stateId")));
+    var changeState = new ChangeState(new CommandMeta(CommandId.of(0), StateId.of("differentStateId")));
+
+    // then
+    assertThatThrownBy(() -> decider.apply(someState, changeState)).isInstanceOf(MismatchingCommandState.class);
   }
 
   private record SomeDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Decider {
