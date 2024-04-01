@@ -18,6 +18,22 @@ class EventMetaTest {
   }
 
   @Test
+  void wrongVersion() {
+    Assertions.assertThatIllegalArgumentException()
+              .isThrownBy(() -> new EventMeta(EventId.of(0), -1, stateId, CommandId.of(0), 0));
+  }
+
+  @Test
+  void equality() {
+    // Given
+    var eventMeta1 = new EventMeta(EventId.of(0), 0, stateId, CommandId.of(0), 0);
+    var eventMeta2 = new EventMeta(EventId.of(0), 0, stateId, CommandId.of(0), 0);
+
+    // Then
+    Assertions.assertThat(eventMeta1).isEqualTo(eventMeta2);
+  }
+
+  @Test
   void nullSagaSource() {
     // Given
     var meta = new EventMeta(EventId.of(0), 0, stateId, CommandId.of(0), 0, null);

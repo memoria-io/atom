@@ -9,11 +9,21 @@ class CommandMetaTest {
 
   @Test
   void init() {
-    // When
+    // Given
     var commandMeta = new CommandMeta(CommandId.of(0), stateId, 0);
 
     // Then
     Assertions.assertThat(commandMeta.shardKey()).isEqualTo(stateId);
+  }
+
+  @Test
+  void equality() {
+    // Given
+    var commandMeta1 = new CommandMeta(CommandId.of(0), stateId, 0);
+    var commandMeta2 = new CommandMeta(CommandId.of(0), stateId, 0);
+
+    // Then
+    Assertions.assertThat(commandMeta1).isEqualTo(commandMeta2);
   }
 
   @Test
