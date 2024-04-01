@@ -19,7 +19,10 @@ class EventMetaTest {
 
   @Test
   void nullSagaSource() {
-    Assertions.assertThatNullPointerException()
-              .isThrownBy(() -> new EventMeta(EventId.of(0), 0, stateId, CommandId.of(0), 0, null));
+    // Given
+    var meta = new EventMeta(EventId.of(0), 0, stateId, CommandId.of(0), 0, null);
+
+    // Then
+    Assertions.assertThat(meta.sagaSource()).isEmpty();
   }
 }
