@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 public final class Person implements Serializable {
+  @Serial
+  private static final long serialVersionUID = 0L;
   private final String name;
   private final int age;
   private final Location l;
