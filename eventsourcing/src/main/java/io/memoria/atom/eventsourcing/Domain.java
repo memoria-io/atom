@@ -8,7 +8,8 @@ import io.memoria.atom.eventsourcing.rule.Saga;
 import io.memoria.atom.eventsourcing.state.State;
 
 public record Domain(Decider decider, Evolver evolver, Saga saga) {
-  public String toShortString() {
+  @Override
+  public String toString() {
     return "Domain(%s,%s,%s)".formatted(State.class.getSimpleName(),
                                         Command.class.getSimpleName(),
                                         Event.class.getSimpleName());
