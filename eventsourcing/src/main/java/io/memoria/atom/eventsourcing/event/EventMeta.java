@@ -65,19 +65,19 @@ public final class EventMeta implements Shardable, Versioned, Serializable {
   public Optional<EventId> sagaSource() {return Optional.ofNullable(sagaSource);}
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == this)
+  public boolean equals(Object o) {
+    if (this == o)
       return true;
-    if (obj == null || obj.getClass() != this.getClass())
+    if (o == null || getClass() != o.getClass())
       return false;
-    var that = (EventMeta) obj;
-    return Objects.equals(this.eventId, that.eventId)
-           && this.version == that.version
-           && Objects.equals(this.stateId,
-                             that.stateId)
-           && Objects.equals(this.commandId, that.commandId)
-           && this.timestamp == that.timestamp
-           && Objects.equals(this.sagaSource, that.sagaSource);
+    EventMeta eventMeta = (EventMeta) o;
+    return version == eventMeta.version
+           && timestamp == eventMeta.timestamp
+           && Objects.equals(eventId,
+                             eventMeta.eventId)
+           && Objects.equals(stateId, eventMeta.stateId)
+           && Objects.equals(commandId, eventMeta.commandId)
+           && Objects.equals(sagaSource, eventMeta.sagaSource);
   }
 
   @Override

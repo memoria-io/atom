@@ -47,16 +47,17 @@ public final class CommandMeta implements Shardable, Serializable {
   public Optional<EventId> sagaSource() {return Optional.ofNullable(sagaSource);}
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == this)
+  public boolean equals(Object o) {
+    if (this == o)
       return true;
-    if (obj == null || obj.getClass() != this.getClass())
+    if (o == null || getClass() != o.getClass())
       return false;
-    var that = (CommandMeta) obj;
-    return Objects.equals(this.commandId, that.commandId)
-           && Objects.equals(this.stateId, that.stateId)
-           && this.timestamp == that.timestamp
-           && Objects.equals(this.sagaSource, that.sagaSource);
+    CommandMeta that = (CommandMeta) o;
+    return timestamp == that.timestamp
+           && Objects.equals(commandId, that.commandId)
+           && Objects.equals(stateId,
+                             that.stateId)
+           && Objects.equals(sagaSource, that.sagaSource);
   }
 
   @Override
