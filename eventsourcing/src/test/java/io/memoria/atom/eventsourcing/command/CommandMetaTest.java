@@ -18,6 +18,10 @@ class CommandMetaTest {
 
   @Test
   void nullSagaSource() {
-    Assertions.assertThatNullPointerException().isThrownBy(() -> new CommandMeta(CommandId.of(0), stateId, 0, null));
+    // Given
+    var meta = new CommandMeta(CommandId.of(0), stateId, 0, null);
+
+    // Then
+    Assertions.assertThat(meta.sagaSource()).isEmpty();
   }
 }
