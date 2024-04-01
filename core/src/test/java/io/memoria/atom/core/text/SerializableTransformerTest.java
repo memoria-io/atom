@@ -1,10 +1,9 @@
 package io.memoria.atom.core.text;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SerializableTransformerTest {
   @Test
@@ -18,6 +17,7 @@ class SerializableTransformerTest {
     var obj = transformer.deserialize(str, Person.class);
 
     // Then
-    assertEquals(personObj, obj);
+    Assertions.assertThat(personObj).isEqualTo(obj);
+    Assertions.assertThat(personObj.i()).isEmpty();
   }
 }

@@ -9,7 +9,7 @@ class CommandMetaTest {
 
   @Test
   void init() {
-    // When
+    // Given
     var commandMeta = new CommandMeta(CommandId.of(0), stateId, 0);
 
     // Then
@@ -17,7 +17,21 @@ class CommandMetaTest {
   }
 
   @Test
+  void equality() {
+    // Given
+    var commandMeta1 = new CommandMeta(CommandId.of(0), stateId, 0);
+    var commandMeta2 = new CommandMeta(CommandId.of(0), stateId, 0);
+
+    // Then
+    Assertions.assertThat(commandMeta1).isEqualTo(commandMeta2);
+  }
+
+  @Test
   void nullSagaSource() {
-    Assertions.assertThatNullPointerException().isThrownBy(() -> new CommandMeta(CommandId.of(0), stateId, 0, null));
+    // Given
+    var meta = new CommandMeta(CommandId.of(0), stateId, 0, null);
+
+    // Then
+    Assertions.assertThat(meta.sagaSource()).isEmpty();
   }
 }

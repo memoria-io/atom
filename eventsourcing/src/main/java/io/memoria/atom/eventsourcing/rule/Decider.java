@@ -47,7 +47,7 @@ public interface Decider {
                          cmd.meta().stateId(),
                          cmd.meta().commandId(),
                          timeSupplier().get(),
-                         cmd.meta().sagaSource());
+                         cmd.meta().sagaSource().orElse(null));
   }
 
   default EventMeta eventMeta(State state, Command cmd) {
@@ -57,7 +57,7 @@ public interface Decider {
                            state.meta().stateId(),
                            cmd.meta().commandId(),
                            timeSupplier().get(),
-                           cmd.meta().sagaSource());
+                           cmd.meta().sagaSource().orElse(null));
     } else {
       throw MismatchingCommandState.of(state.meta().stateId(), cmd);
     }

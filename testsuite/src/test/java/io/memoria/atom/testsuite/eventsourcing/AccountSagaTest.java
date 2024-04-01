@@ -9,8 +9,6 @@ import io.memoria.atom.testsuite.eventsourcing.event.Debited;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static io.memoria.atom.testsuite.eventsourcing.TestData.aliceId;
 import static io.memoria.atom.testsuite.eventsourcing.TestData.bobId;
 import static io.memoria.atom.testsuite.eventsourcing.TestData.saga;
@@ -23,7 +21,7 @@ class AccountSagaTest {
     StateId debitedAccount = aliceId;
     StateId creditedAcc = bobId;
 
-    var sagaEventId = Optional.of(EventId.of("SomeSagaEventId"));
+    var sagaEventId = EventId.of("SomeSagaEventId");
     var commandId = CommandId.of(randomUUID());
     var eventId = EventId.of(randomUUID());
     var eventMetaWithSaga = new EventMeta(eventId, 1, debitedAccount, commandId, 0, sagaEventId);
