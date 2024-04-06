@@ -1,6 +1,7 @@
 package io.memoria.atom.actor.system;
 
 import io.memoria.atom.actor.Actor;
+import io.memoria.atom.actor.ActorException;
 import io.memoria.atom.actor.ActorId;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -35,7 +36,11 @@ public class ActorSystemTest {
     Thread.ofVirtual().start(() -> {
       //      System.out.println("Starting: " + actorId);
       IntStream.range(0, numOfRequests).forEach(_ -> {
-        actorSystem.apply(actorId, new Message());
+        try {
+          actorSystem.apply(actorId, new Message());
+        } catch (ActorException e) {
+          throw new RuntimeException(e);
+        }
       });
     });
   }
