@@ -1,6 +1,5 @@
 package io.memoria.atom.eventsourcing.state.exceptions;
 
-
 import io.memoria.atom.eventsourcing.state.State;
 
 public class StateRuntimeException extends RuntimeException {

@@ -1,6 +1,5 @@
 package io.memoria.atom.eventsourcing.event.exceptions;
 
-
 import io.memoria.atom.eventsourcing.event.Event;
 
 public class EventRuntimeException extends RuntimeException {

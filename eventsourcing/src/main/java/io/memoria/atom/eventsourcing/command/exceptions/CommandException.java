@@ -1,6 +1,5 @@
 package io.memoria.atom.eventsourcing.command.exceptions;
 
-
 import io.memoria.atom.eventsourcing.command.Command;
 
 public class CommandException extends Exception {

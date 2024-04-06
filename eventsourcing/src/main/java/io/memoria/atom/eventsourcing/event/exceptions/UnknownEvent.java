@@ -2,7 +2,6 @@ package io.memoria.atom.eventsourcing.event.exceptions;
 
 import io.memoria.atom.eventsourcing.event.Event;
 
-
 public class UnknownEvent extends EventRuntimeException {
   private static final String MESSAGE = "Unknown Event: %s[%s] implementation";
 
