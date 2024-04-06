@@ -3,10 +3,22 @@ package io.memoria.atom.eventsourcing.event.exceptions;
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.state.StateId;
 
-@SuppressWarnings("java:S110")
-public class MismatchingEventState extends EventRuntimeException {
+public class MismatchingEventState extends RuntimeException implements EventException {
+  private final Event event;
+
   protected MismatchingEventState(String msg, Event event) {
-    super(msg, event);
+    super(msg);
+    this.event = event;
+  }
+
+  @Override
+  public String message() {
+    return super.getMessage();
+  }
+
+  @Override
+  public Event event() {
+    return event;
   }
 
   public static MismatchingEventState of(Event event) {

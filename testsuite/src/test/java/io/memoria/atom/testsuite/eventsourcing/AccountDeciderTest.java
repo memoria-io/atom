@@ -23,7 +23,7 @@ class AccountDeciderTest {
 
   @ParameterizedTest
   @ValueSource(ints = {300, 500, 600})
-  void debit(int debitAmount) throws ESException {
+  void debit(int debitAmount) throws Exception {
     // Given
     int balance = 500;
     var openAccount = new OpenAccount(new StateMeta(aliceId), alice, balance);

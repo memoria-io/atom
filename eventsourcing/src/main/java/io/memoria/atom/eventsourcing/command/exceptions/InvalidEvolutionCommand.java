@@ -3,9 +3,22 @@ package io.memoria.atom.eventsourcing.command.exceptions;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.state.State;
 
-public class InvalidEvolutionCommand extends CommandException {
+public class InvalidEvolutionCommand extends Exception implements CommandException {
+  private final Command command;
+
   protected InvalidEvolutionCommand(String msg, Command command) {
-    super(msg, command);
+    super(msg);
+    this.command = command;
+  }
+
+  @Override
+  public String message() {
+    return super.getMessage();
+  }
+
+  @Override
+  public Command command() {
+    return command;
   }
 
   public static InvalidEvolutionCommand of(State state, Command command) {

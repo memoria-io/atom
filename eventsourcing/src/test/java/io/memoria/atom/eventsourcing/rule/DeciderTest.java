@@ -38,7 +38,7 @@ class DeciderTest {
   }
 
   @Test
-  void applyEvolution() throws ESException {
+  void applyEvolution() throws Exception {
     // Given
     var someState = new SomeState(new StateMeta(StateId.of(0)));
     var changeState = new ChangeState(new CommandMeta(CommandId.of(0), StateId.of(0)));
@@ -72,7 +72,7 @@ class DeciderTest {
     }
 
     @Override
-    public Event decide(State state, Command command, EventMeta eventMeta) throws ESException {
+    public Event decide(State state, Command command, EventMeta eventMeta) throws Exception {
       if (state instanceof SomeState someState) {
         return handle(command, someState);
       } else {

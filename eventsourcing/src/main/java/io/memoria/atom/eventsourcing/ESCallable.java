@@ -9,7 +9,7 @@ public interface ESCallable<V extends Shardable> {
    *
    * @return computed result
    *
-   * @throws ESException if unable to compute a result
+   * @throws Exception if unable to compute a result
    */
-  V call() throws ESException;
+  V call() throws Exception;
 }
