@@ -1,6 +1,7 @@
 package io.memoria.atom.core.file;
 
 import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -167,6 +169,7 @@ class FileOpsTest {
     try {
       for (int i = 0; i < count; i++) {
         var p = FileOps.write(path.resolve(i + ".json"), "hi" + i);
+        Awaitility.await().atMost(Duration.ofMillis(200)).until(() -> Files.exists(p));
         log.info("Written" + p);
       }
     } catch (IOException e) {
