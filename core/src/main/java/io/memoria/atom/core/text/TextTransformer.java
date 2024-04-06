@@ -1,9 +1,7 @@
 package io.memoria.atom.core.text;
 
-import java.io.IOException;
-
 public interface TextTransformer {
-  <T> String serialize(T t) throws IOException;
+  <T> String serialize(T t) throws TextException;
 
-  <T> T deserialize(String str, Class<T> tClass) throws IOException, ClassNotFoundException;
+  <T> T deserialize(String str, Class<T> tClass) throws TextException;
 }

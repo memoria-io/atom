@@ -1,8 +1,8 @@
 package io.memoria.atom.text.jackson.adapters;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.core.text.TextException;
 import io.memoria.atom.text.jackson.JacksonUtils;
 import io.memoria.atom.text.jackson.JsonJackson;
 import io.memoria.atom.text.jackson.adapters.id.AnotherId;
@@ -16,7 +16,7 @@ class IdTransformerTest {
   private static final JsonJackson json = new JsonJackson(createMapper());
 
   @Test
-  void idSubTypesDirectMapping() throws JsonProcessingException {
+  void idSubTypesDirectMapping() throws TextException {
     // Given
     var jsonStr = "\"some_id\"";
     var obj = SomeId.of(Id.of("some_id"));
@@ -31,7 +31,7 @@ class IdTransformerTest {
   }
 
   @Test
-  void idSubTypesInObject() throws JsonProcessingException {
+  void idSubTypesInObject() throws TextException {
     // Given
     var jsonStr = """
             {

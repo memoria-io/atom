@@ -1,7 +1,7 @@
 package io.memoria.atom.text.jackson.adapters;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.memoria.atom.core.text.TextException;
 import io.memoria.atom.text.jackson.JacksonUtils;
 import io.memoria.atom.text.jackson.JsonJackson;
 import io.memoria.atom.text.jackson.adapters.value.Person;
@@ -14,7 +14,7 @@ class ValueObjectTransformerTest {
   private static final JsonJackson json = new JsonJackson(createMapper());
 
   @Test
-  void valueObjectDirectMapping() throws JsonProcessingException {
+  void valueObjectDirectMapping() throws TextException {
     // Given
     var jsonStr = "\"some_id\"";
     var obj = new SomeId("some_id");
@@ -29,7 +29,7 @@ class ValueObjectTransformerTest {
   }
 
   @Test
-  void valueObjectInsideAnother() throws JsonProcessingException {
+  void valueObjectInsideAnother() throws TextException {
     // Given
     var jsonStr = """
             {

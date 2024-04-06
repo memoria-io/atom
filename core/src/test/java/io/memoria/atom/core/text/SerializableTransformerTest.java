@@ -3,11 +3,9 @@ package io.memoria.atom.core.text;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 class SerializableTransformerTest {
   @Test
-  void serializableTest() throws IOException, ClassNotFoundException {
+  void serializableTest() throws TextException {
     // Given
     var transformer = new SerializableTransformer();
     var personObj = new Person("bob", 19, new Location(10, 20));
