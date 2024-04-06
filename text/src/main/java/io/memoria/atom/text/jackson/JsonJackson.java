@@ -7,7 +7,6 @@ import io.memoria.atom.core.text.Json;
 public record JsonJackson(ObjectMapper mapper) implements Json {
 
   @Override
-  @SuppressWarnings("unchecked")
   public <T> T deserialize(String str, Class<T> tClass) throws JsonProcessingException {
     return mapper.readValue(str, tClass);
   }
