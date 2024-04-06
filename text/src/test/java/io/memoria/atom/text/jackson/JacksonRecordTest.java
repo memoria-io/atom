@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import io.memoria.atom.core.text.TextException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +17,8 @@ import static io.memoria.atom.text.jackson.TestDeps.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * A Copy from
- * https://github.com/FasterXML/jackson-databind/blob/977fbb3dcfa7ad7fda4f45f7f0c1afa0916b702e/src/test/java/com/fasterxml/jackson/databind/BaseMapTest.java
+ * A Copy from <a
+ * href="https://github.com/FasterXML/jackson-databind/blob/977fbb3dcfa7ad7fda4f45f7f0c1afa0916b702e/src/test/java/com/fasterxml/jackson/databind/BaseMapTest.java">BaseMapTest</a>
  */
 class JacksonRecordTest {
 
@@ -72,7 +73,7 @@ class JacksonRecordTest {
   }
 
   @Test
-  void toList() throws IOException, ClassNotFoundException {
+  void toList() throws TextException {
     // When
     var list = json.deserialize(Resources.JSON_LIST, String[].class);
     // Then
@@ -89,11 +90,7 @@ class JacksonRecordTest {
 
   record RecordOfRecord(SimpleRecord record) {}
 
-  record RecordWithConstructor(int id, String name) {
-    public RecordWithConstructor(int id) {
-      this(id, "name");
-    }
-  }
+  record RecordWithConstructor(int id, String name) {}
 
   record SimpleRecord(int id, String name) {}
 }

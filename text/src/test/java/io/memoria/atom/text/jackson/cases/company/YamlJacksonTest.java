@@ -1,16 +1,15 @@
 package io.memoria.atom.text.jackson.cases.company;
 
+import io.memoria.atom.core.text.TextException;
 import io.memoria.atom.text.jackson.Resources;
 import io.memoria.atom.text.jackson.TestDeps;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 class YamlJacksonTest {
 
   @Test
-  void serializeEngineer() throws IOException {
+  void serializeEngineer() throws TextException {
     // When
     var yamlEngineer = TestDeps.yaml.serialize(Resources.BOB_ENGINEER);
 
@@ -19,7 +18,7 @@ class YamlJacksonTest {
   }
 
   @Test
-  void serializeManager() throws IOException {
+  void serializeManager() throws TextException {
     // When
     var yamlEngineer = TestDeps.yaml.serialize(Resources.ANNIKA_MANAGER);
 
@@ -28,7 +27,7 @@ class YamlJacksonTest {
   }
 
   @Test
-  void toEngineer() throws IOException, ClassNotFoundException {
+  void toEngineer() throws TextException {
     // When
     var engineer = TestDeps.yaml.deserialize(Resources.BOB_ENGINEER_YAML, Engineer.class);
 
@@ -37,7 +36,7 @@ class YamlJacksonTest {
   }
 
   @Test
-  void toManager() throws IOException, ClassNotFoundException {
+  void toManager() throws TextException {
     // When
     var manager = TestDeps.yaml.deserialize(Resources.ANNIKA_MANAGER_YAML, Manager.class);
     // Then

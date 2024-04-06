@@ -1,31 +1,31 @@
 package io.memoria.atom.text.jackson.cases.company;
 
+import io.memoria.atom.core.text.TextException;
 import io.memoria.atom.text.jackson.Resources;
 import io.memoria.atom.text.jackson.TestDeps;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JsonJacksonTest {
   @Test
-  void serializeEngineer() throws IOException {
+  void serializeEngineer() throws TextException {
     var yamlEngineer = TestDeps.json.serialize(Resources.BOB_ENGINEER);
     assert Resources.BOB_ENGINEER_JSON != null;
     assertEquals(Resources.BOB_ENGINEER_JSON, yamlEngineer);
   }
 
   @Test
-  void serializeManager() throws IOException {
+  void serializeManager() throws TextException {
     var yamlEngineer = TestDeps.json.serialize(Resources.ANNIKA_MANAGER);
     assert Resources.ANNIKA_MANAGER_JSON != null;
     assertEquals(Resources.ANNIKA_MANAGER_JSON, yamlEngineer);
   }
 
   @Test
-  void deserializeDepartment() throws IOException, ClassNotFoundException {
+  void deserializeDepartment() throws TextException {
     // Given
     var expectedDepartment = new Department(List.of(Resources.ANNIKA_MANAGER,
                                                     Resources.BOB_ENGINEER,
@@ -38,7 +38,7 @@ class JsonJacksonTest {
   }
 
   @Test
-  void deserializeEngineer() throws IOException, ClassNotFoundException {
+  void deserializeEngineer() throws TextException {
     // When
     var engineer = TestDeps.json.deserialize(Resources.BOB_ENGINEER_JSON, Engineer.class);
     // Then
@@ -46,7 +46,7 @@ class JsonJacksonTest {
   }
 
   @Test
-  void deserializeManager() throws IOException, ClassNotFoundException {
+  void deserializeManager() throws TextException {
     // When
     var manager = TestDeps.json.deserialize(Resources.ANNIKA_MANAGER_JSON, Manager.class);
     // Then
