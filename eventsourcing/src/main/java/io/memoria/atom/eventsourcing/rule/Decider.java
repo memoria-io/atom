@@ -1,7 +1,6 @@
 package io.memoria.atom.eventsourcing.rule;
 
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.eventsourcing.ESException;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.exceptions.MismatchingCommandState;
 import io.memoria.atom.eventsourcing.event.Event;
@@ -28,16 +27,14 @@ public interface Decider {
    * @param command   the incoming command
    * @param eventMeta the new EventMeta
    * @return a new Event with eventMeta as its value
-   *
-   * @throws ESException when a checked ESException happens
    */
-  Event decide(State state, Command command, EventMeta eventMeta) throws ESException;
+  Event decide(State state, Command command, EventMeta eventMeta) throws Exception;
 
   default Event apply(Command command) {
     return createBy(command, eventMeta(command));
   }
 
-  default Event apply(State state, Command command) throws ESException {
+  default Event apply(State state, Command command) throws Exception {
     return decide(state, command, eventMeta(state, command));
   }
 

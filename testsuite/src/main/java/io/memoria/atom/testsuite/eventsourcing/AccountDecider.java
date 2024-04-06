@@ -46,7 +46,7 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
   }
 
   @Override
-  public Event decide(State state, Command command, EventMeta eventMeta) throws ESException {
+  public Event decide(State state, Command command, EventMeta eventMeta) throws Exception {
     if (state instanceof Account account) {
       if (command instanceof AccountCommand accountCommand) {
         return handle(account, accountCommand, eventMeta);
