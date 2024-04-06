@@ -1,7 +1,7 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.eventsourcing.ESException;
+
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.exceptions.InvalidEvolutionCommand;
 import io.memoria.atom.eventsourcing.command.exceptions.MismatchingCommandState;
@@ -46,7 +46,7 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
   }
 
   @Override
-  public Event decide(State state, Command command, EventMeta eventMeta) throws Exception {
+  public Event decide(State state, Command command, EventMeta eventMeta) throws ESException {
     if (state instanceof Account account) {
       if (command instanceof AccountCommand accountCommand) {
         return handle(account, accountCommand, eventMeta);

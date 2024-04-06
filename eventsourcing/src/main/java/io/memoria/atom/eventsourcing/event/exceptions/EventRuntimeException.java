@@ -3,10 +3,10 @@ package io.memoria.atom.eventsourcing.event.exceptions;
 
 import io.memoria.atom.eventsourcing.event.Event;
 
-public class EventException extends Exception {
+public class EventRuntimeException extends RuntimeException {
   private final Event event;
 
-  protected EventException(String msg, Event event) {
+  protected EventRuntimeException(String msg, Event event) {
     super(msg);
     this.event = event;
   }
