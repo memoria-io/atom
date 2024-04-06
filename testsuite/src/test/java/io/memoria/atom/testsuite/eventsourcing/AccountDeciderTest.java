@@ -1,8 +1,8 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
-import io.memoria.atom.eventsourcing.ESException;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
+import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
 import io.memoria.atom.eventsourcing.state.StateMeta;
 import io.memoria.atom.testsuite.eventsourcing.command.Debit;
 import io.memoria.atom.testsuite.eventsourcing.event.AccountEvent;
@@ -23,7 +23,7 @@ class AccountDeciderTest {
 
   @ParameterizedTest
   @ValueSource(ints = {300, 500, 600})
-  void debit(int debitAmount) throws Exception {
+  void debit(int debitAmount) throws CommandException {
     // Given
     int balance = 500;
     var openAccount = new OpenAccount(new StateMeta(aliceId), alice, balance);

@@ -3,22 +3,9 @@ package io.memoria.atom.eventsourcing.event.exceptions;
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.state.StateId;
 
-public class MismatchingEventState extends RuntimeException implements EventException {
-  private final Event event;
-
+public class MismatchingEventState extends EventRuntimeException {
   protected MismatchingEventState(String msg, Event event) {
-    super(msg);
-    this.event = event;
-  }
-
-  @Override
-  public String message() {
-    return super.getMessage();
-  }
-
-  @Override
-  public Event event() {
-    return event;
+    super(msg, event);
   }
 
   public static MismatchingEventState of(Event event) {

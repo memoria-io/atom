@@ -1,10 +1,10 @@
 package io.memoria.atom.eventsourcing.rule;
 
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.eventsourcing.ESException;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
+import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
 import io.memoria.atom.eventsourcing.command.exceptions.InvalidEvolutionCommand;
 import io.memoria.atom.eventsourcing.command.exceptions.MismatchingCommandState;
 import io.memoria.atom.eventsourcing.command.exceptions.UnknownCommand;
@@ -38,7 +38,7 @@ class DeciderTest {
   }
 
   @Test
-  void applyEvolution() throws Exception {
+  void applyEvolution() throws CommandException {
     // Given
     var someState = new SomeState(new StateMeta(StateId.of(0)));
     var changeState = new ChangeState(new CommandMeta(CommandId.of(0), StateId.of(0)));
@@ -72,7 +72,7 @@ class DeciderTest {
     }
 
     @Override
-    public Event decide(State state, Command command, EventMeta eventMeta) throws Exception {
+    public Event decide(State state, Command command, EventMeta eventMeta) throws CommandException {
       if (state instanceof SomeState someState) {
         return handle(command, someState);
       } else {
