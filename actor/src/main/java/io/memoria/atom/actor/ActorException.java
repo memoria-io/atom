@@ -6,7 +6,7 @@ public class ActorException extends Exception {
     super(e);
   }
 
-  protected ActorException(String message){
+  protected ActorException(String message) {
     super(message);
   }
 
