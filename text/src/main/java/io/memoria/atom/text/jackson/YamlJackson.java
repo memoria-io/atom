@@ -8,18 +8,18 @@ import io.memoria.atom.core.text.Yaml;
 public record YamlJackson(ObjectMapper mapper) implements Yaml {
 
   @Override
-  public <T> T deserialize(String str, Class<T> tClass) throws TextException {
+  public <T> String serialize(T t) {
     try {
-      return mapper.readValue(str, tClass);
+      return mapper.writeValueAsString(t);
     } catch (JsonProcessingException e) {
-      throw TextException.of(e);
+      throw new RuntimeException(e);
     }
   }
 
   @Override
-  public <T> String serialize(T t) throws TextException {
+  public <T> T deserialize(String str, Class<T> tClass) throws TextException {
     try {
-      return mapper.writeValueAsString(t);
+      return mapper.readValue(str, tClass);
     } catch (JsonProcessingException e) {
       throw TextException.of(e);
     }
