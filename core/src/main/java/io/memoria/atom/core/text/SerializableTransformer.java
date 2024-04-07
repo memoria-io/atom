@@ -14,7 +14,7 @@ public class SerializableTransformer implements TextTransformer {
     try (var out = new ObjectOutputStream(os)) {
       out.writeObject(t);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw TextRuntimeException.of(e);
     }
     return Base64.getEncoder().encodeToString(os.toByteArray());
   }

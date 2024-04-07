@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.memoria.atom.core.text.Json;
 import io.memoria.atom.core.text.TextException;
+import io.memoria.atom.core.text.TextRuntimeException;
 
 public record JsonJackson(ObjectMapper mapper) implements Json {
 
@@ -12,7 +13,7 @@ public record JsonJackson(ObjectMapper mapper) implements Json {
     try {
       return mapper.writeValueAsString(t);
     } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
+      throw TextRuntimeException.of(e);
     }
   }
 

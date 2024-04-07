@@ -3,6 +3,7 @@ package io.memoria.atom.text.jackson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.memoria.atom.core.text.TextException;
+import io.memoria.atom.core.text.TextRuntimeException;
 import io.memoria.atom.core.text.Yaml;
 
 public record YamlJackson(ObjectMapper mapper) implements Yaml {
@@ -12,7 +13,7 @@ public record YamlJackson(ObjectMapper mapper) implements Yaml {
     try {
       return mapper.writeValueAsString(t);
     } catch (JsonProcessingException e) {
-      throw new RuntimeException(e);
+      throw TextRuntimeException.of(e);
     }
   }
 
