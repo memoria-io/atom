@@ -29,7 +29,7 @@ class SagaTest {
 
     // Then
     assertThat(command).isInstanceOf(ChangeState.class);
-    assertThat(command.meta().sagaSource().get()).isEqualTo(stateCreated.meta().eventId());
+    assertThat(command.meta().sagaSource()).contains(stateCreated.meta().eventId());
   }
 
   private record SomeSaga(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Saga {
