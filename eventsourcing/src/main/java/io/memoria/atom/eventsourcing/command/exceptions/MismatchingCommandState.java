@@ -9,12 +9,12 @@ public class MismatchingCommandState extends CommandRuntimeException {
   }
 
   public static MismatchingCommandState of(Command command) {
-    var msg = "The command's stateId:%s doesn't belong here".formatted(command.shardKey());
+    var msg = "The command's stateId:%s doesn't belong here".formatted(command.pKey());
     return new MismatchingCommandState(msg, command);
   }
 
   public static MismatchingCommandState of(StateId stateId, Command command) {
-    var msg = "The command's stateId:%s doesn't match expected stateId:%s".formatted(command.shardKey(), stateId);
+    var msg = "The command's stateId:%s doesn't match expected stateId:%s".formatted(command.pKey(), stateId);
     return new MismatchingCommandState(msg, command);
   }
 }

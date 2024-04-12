@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  * @see <a href="https://study.com/skill/learn/determining-outliers-using-standard-deviation-explanation.html">Determine
  * outliers using standard deviation</a>
  */
-public class ShardableTest {
+public class PartitionedTest {
   private static final int totalShards = 1000;
   private static final int minPartitions = 25;
   private static final int maxPartitions = 75;
@@ -62,19 +62,19 @@ public class ShardableTest {
     return (int) (totalPartitions * 0.1);
   }
 
-  private static List<Shardable> createShards(Function<Integer, Id> idGen) {
-    return IntStream.range(0, totalShards).mapToObj(idGen::apply).map(Shard::new).map(s -> (Shardable) s).toList();
+  private static List<Partitioned> createShards(Function<Integer, Id> idGen) {
+    return IntStream.range(0, totalShards).mapToObj(idGen::apply).map(Shard::new).map(s -> (Partitioned) s).toList();
   }
 
-  private static List<Long> partitionSizeList(List<Shardable> shards, int totalPartitions) {
+  private static List<Long> partitionSizeList(List<Partitioned> shards, int totalPartitions) {
     return IntStream.range(0, totalPartitions)
                     .mapToObj(partition -> isInPartition(shards, partition, totalPartitions))
                     .toList();
   }
 
-  private static long isInPartition(List<Shardable> shards, int partition, int totalPartitions) {
+  private static long isInPartition(List<Partitioned> shards, int partition, int totalPartitions) {
     return shards.stream().filter(sh -> sh.isInPartition(partition, totalPartitions)).count();
   }
 
-  private record Shard(Id shardKey) implements Shardable {}
+  private record Shard(Id pKey) implements Partitioned {}
 }

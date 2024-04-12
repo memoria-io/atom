@@ -9,12 +9,12 @@ public class MismatchingEventState extends EventRuntimeException {
   }
 
   public static MismatchingEventState of(Event event) {
-    var msg = "The event's stateId:%s doesn't belong here".formatted(event.shardKey());
+    var msg = "The event's stateId:%s doesn't belong here".formatted(event.pKey());
     return new MismatchingEventState(msg, event);
   }
 
   public static MismatchingEventState of(StateId stateId, Event event) {
-    var msg = "The event's stateId:%s doesn't match expected stateId:%s".formatted(event.shardKey(), stateId);
+    var msg = "The event's stateId:%s doesn't match expected stateId:%s".formatted(event.pKey(), stateId);
     return new MismatchingEventState(msg, event);
   }
 }

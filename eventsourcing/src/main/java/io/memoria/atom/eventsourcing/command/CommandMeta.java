@@ -1,6 +1,6 @@
 package io.memoria.atom.eventsourcing.command;
 
-import io.memoria.atom.core.domain.Shardable;
+import io.memoria.atom.core.domain.Partitioned;
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.event.EventId;
 import io.memoria.atom.eventsourcing.state.StateId;
@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
-public final class CommandMeta implements Shardable, Serializable {
+public final class CommandMeta implements Partitioned, Serializable {
   @Serial
   private static final long serialVersionUID = 0L;
   private final CommandId commandId;
@@ -34,7 +34,7 @@ public final class CommandMeta implements Shardable, Serializable {
   }
 
   @Override
-  public Id shardKey() {
+  public Id pKey() {
     return stateId;
   }
 

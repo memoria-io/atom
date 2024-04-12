@@ -14,7 +14,7 @@ class EventMetaTest {
     var eventMeta = new EventMeta(EventId.of(0), 0, stateId, CommandId.of(0), 0);
 
     // Then
-    Assertions.assertThat(eventMeta.shardKey()).isEqualTo(stateId);
+    Assertions.assertThat(eventMeta.pKey()).isEqualTo(stateId);
   }
 
   @Test

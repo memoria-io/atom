@@ -4,7 +4,7 @@ import io.memoria.atom.actor.Actor;
 import io.memoria.atom.actor.ActorException;
 import io.memoria.atom.actor.ActorFactory;
 import io.memoria.atom.actor.ActorId;
-import io.memoria.atom.core.domain.Shardable;
+import io.memoria.atom.core.domain.Partitioned;
 
 import java.io.Closeable;
 
@@ -13,7 +13,7 @@ public interface ActorSystem extends Closeable, Iterable<Actor> {
 
   ActorFactory actorFactory();
 
-  Shardable apply(ActorId actorId, Shardable shardable) throws ActorException;
+  Partitioned apply(ActorId actorId, Partitioned partitioned) throws ActorException;
 
   static ActorSystem create(ActorStore actorStore, ActorFactory actorFactory) {
     return new DefaultActorSystem(actorStore, actorFactory);
