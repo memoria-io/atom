@@ -30,7 +30,6 @@ class DefaultCommandHandler extends AbstractCommandHandler {
 
   // State
   private final AtomicReference<State> stateRef;
-  private final AtomicReference<EventId> prevEventIdRef;
   private final Set<CommandId> processedCommands;
   private final Set<EventId> sagaSources;
 
@@ -44,7 +43,6 @@ class DefaultCommandHandler extends AbstractCommandHandler {
     // State
     this.stateRef = new AtomicReference<>();
     this.processedCommands = new HashSet<>();
-    this.prevEventIdRef = new AtomicReference<>();
     this.sagaSources = new HashSet<>();
   }
 
@@ -67,9 +65,6 @@ class DefaultCommandHandler extends AbstractCommandHandler {
   }
 
   void evolve(Event event) {
-    if (isDuplicate(event)) {
-      return;
-    }
     validate(event);
     State currentState = stateRef.get();
     State newState;
@@ -86,10 +81,6 @@ class DefaultCommandHandler extends AbstractCommandHandler {
     var alreadyProcessedCmd = processedCommands.contains(command.meta().commandId());
     var alreadyProcessedSagaCmd = command.meta().sagaSource().map(sagaSources::contains).orElse(false);
     return alreadyProcessedCmd || alreadyProcessedSagaCmd;
-  }
-
-  boolean isDuplicate(Event event) {
-    return prevEventIdRef.get() != null && prevEventIdRef.get().equals(event.meta().eventId());
   }
 
   void validate(Event event) {
