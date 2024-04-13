@@ -1,11 +1,11 @@
-package io.memoria.atom.eventsourcing.actor;
+package io.memoria.atom.eventsourcing.aggregate;
 
 import io.memoria.atom.eventsourcing.state.StateId;
 
-public abstract class AbstractStateAggregate implements StateAggregate {
+public abstract class AbstractAggregate implements Aggregate {
   private final StateId stateId;
 
-  protected AbstractStateAggregate(StateId stateId) {
+  protected AbstractAggregate(StateId stateId) {
     this.stateId = stateId;
   }
 

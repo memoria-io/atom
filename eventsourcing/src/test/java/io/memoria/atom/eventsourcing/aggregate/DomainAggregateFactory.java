@@ -1,4 +1,4 @@
-package io.memoria.atom.eventsourcing.actor;
+package io.memoria.atom.eventsourcing.aggregate;
 
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.rule.Decider;
@@ -9,12 +9,12 @@ import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.util.UUID;
 
-public class DomainActorFactory implements ActorFactory {
+public class DomainAggregateFactory implements AggregateFactory {
   private final Decider decider = new SomeDecider(() -> Id.of(UUID.randomUUID()), () -> 0L);
   private final Evolver evolver = new SomeEvolver();
 
   @Override
-  public StateAggregate create(StateId stateId) {
-    return StateAggregate.create(decider, evolver, stateId);
+  public Aggregate create(StateId stateId) {
+    return Aggregate.create(decider, evolver, stateId);
   }
 }

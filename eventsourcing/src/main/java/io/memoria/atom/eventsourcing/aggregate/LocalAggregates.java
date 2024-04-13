@@ -1,7 +1,6 @@
-package io.memoria.atom.eventsourcing.actor.system;
+package io.memoria.atom.eventsourcing.aggregate;
 
-import io.memoria.atom.eventsourcing.actor.ActorFactory;
-import io.memoria.atom.eventsourcing.actor.StateAggregate;
+import io.memoria.atom.eventsourcing.aggregate.store.AggregateStore;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
 import io.memoria.atom.eventsourcing.event.Event;
@@ -11,16 +10,16 @@ import io.memoria.atom.eventsourcing.state.StateId;
 import java.io.Closeable;
 import java.util.Optional;
 
-public interface ActorSystem extends Closeable, Iterable<StateAggregate> {
-  ActorStore actorStore();
+public interface LocalAggregates extends Closeable, Iterable<Aggregate> {
+  AggregateStore aggregateStore();
 
-  ActorFactory actorFactory();
+  AggregateFactory aggregateFactory();
 
   Optional<Event> decide(StateId stateId, Command command) throws CommandException;
 
   Optional<State> evolve(StateId stateId, Event event);
 
-  static ActorSystem create(ActorStore actorStore, ActorFactory actorFactory) {
-    return new DefaultActorSystem(actorStore, actorFactory);
+  static LocalAggregates create(AggregateStore aggregateStore, AggregateFactory aggregateFactory) {
+    return new DefaultLocalAggregates(aggregateStore, aggregateFactory);
   }
 }

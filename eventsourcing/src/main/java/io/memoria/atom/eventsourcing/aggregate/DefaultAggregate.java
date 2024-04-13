@@ -1,4 +1,4 @@
-package io.memoria.atom.eventsourcing.actor;
+package io.memoria.atom.eventsourcing.aggregate;
 
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.CommandId;
@@ -19,36 +19,30 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-class DefaultStateAggregate implements StateAggregate {
-  private static final Logger log = LoggerFactory.getLogger(DefaultStateAggregate.class.getName());
+class DefaultAggregate extends AbstractAggregate {
+  private static final Logger log = LoggerFactory.getLogger(DefaultAggregate.class.getName());
 
   // Rules
   private final Decider decider;
   private final Evolver evolver;
 
   // State
-  private final StateId stateId;
   private final AtomicReference<State> stateRef;
   private final AtomicReference<EventId> prevEventIdRef;
   private final Set<CommandId> processedCommands;
   private final Set<EventId> sagaSources;
 
-  public DefaultStateAggregate(Decider decider, Evolver evolver, StateId stateId) {
+  public DefaultAggregate(Decider decider, Evolver evolver, StateId stateId) {
+    super(stateId);
     // Rules
     this.decider = decider;
     this.evolver = evolver;
 
     // State
-    this.stateId = stateId;
     this.stateRef = new AtomicReference<>();
     this.processedCommands = new HashSet<>();
     this.prevEventIdRef = new AtomicReference<>();
     this.sagaSources = new HashSet<>();
-  }
-
-  @Override
-  public StateId stateId() {
-    return stateId;
   }
 
   @Override
@@ -97,8 +91,8 @@ class DefaultStateAggregate implements StateAggregate {
 
   void validate(Event event) {
     // Check if matches stateId
-    if (!stateId.equals(event.stateId())) {
-      throw MismatchingEvent.of(stateId, event);
+    if (!stateId().equals(event.stateId())) {
+      throw MismatchingEvent.of(stateId(), event);
     }
     // Check if matches expected version
     long expectedVersion = Optional.ofNullable(stateRef.get()).map(State::version).map(v -> v + 1).orElse(0L);
@@ -109,8 +103,8 @@ class DefaultStateAggregate implements StateAggregate {
 
   void validate(Command command) {
     // Check if matches stateId
-    if (!stateId.equals(command.stateId())) {
-      throw MismatchingCommandState.of(stateId, command);
+    if (!stateId().equals(command.stateId())) {
+      throw MismatchingCommandState.of(stateId(), command);
     }
   }
 
