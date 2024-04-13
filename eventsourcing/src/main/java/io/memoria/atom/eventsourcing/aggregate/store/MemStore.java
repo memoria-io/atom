@@ -7,10 +7,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
 
-class MapAdapter implements AggregateStore {
+class MemStore implements Store {
   private final Map<StateId, Aggregate> map;
 
-  public MapAdapter(Map<StateId, Aggregate> map) {
+  public MemStore(Map<StateId, Aggregate> map) {
     this.map = map;
   }
 

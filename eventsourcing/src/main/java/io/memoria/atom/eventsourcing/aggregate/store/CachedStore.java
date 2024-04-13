@@ -9,10 +9,10 @@ import java.util.Iterator;
 import java.util.function.Function;
 import java.util.stream.StreamSupport;
 
-class CacheAdapter implements AggregateStore {
+class CachedStore implements Store {
   private final Cache<StateId, Aggregate> cache;
 
-  public CacheAdapter(Cache<StateId, Aggregate> cache) {
+  public CachedStore(Cache<StateId, Aggregate> cache) {
     this.cache = cache;
   }
 

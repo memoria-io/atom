@@ -1,6 +1,6 @@
 package io.memoria.atom.eventsourcing.aggregate;
 
-import io.memoria.atom.eventsourcing.aggregate.store.AggregateStore;
+import io.memoria.atom.eventsourcing.aggregate.store.Store;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
 import io.memoria.atom.eventsourcing.event.Event;
@@ -14,7 +14,7 @@ public interface LocalAggregates  {
 
   Optional<State> evolve(StateId stateId, Event event);
 
-  static LocalAggregates create(AggregateStore aggregateStore, AggregateFactory aggregateFactory) {
-    return new DefaultLocalAggregates(aggregateStore, aggregateFactory);
+  static LocalAggregates create(Store store, AggregateFactory aggregateFactory) {
+    return new DefaultLocalAggregates(store, aggregateFactory);
   }
 }

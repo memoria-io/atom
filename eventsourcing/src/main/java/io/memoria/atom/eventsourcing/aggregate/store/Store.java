@@ -8,18 +8,18 @@ import java.io.Closeable;
 import java.util.Map;
 import java.util.function.Function;
 
-public interface AggregateStore extends Closeable, Iterable<Aggregate> {
+public interface Store extends Closeable, Iterable<Aggregate> {
   void computeIfAbsent(StateId stateId, Function<StateId, Aggregate> actorFn);
 
   Aggregate get(StateId stateId);
 
   void remove(StateId stateId);
 
-  static AggregateStore mapStore(Map<StateId, Aggregate> map) {
-    return new MapAdapter(map);
+  static Store mapStore(Map<StateId, Aggregate> map) {
+    return new MemStore(map);
   }
 
-  static AggregateStore cacheStore(Cache<StateId, Aggregate> cache) {
-    return new CacheAdapter(cache);
+  static Store cacheStore(Cache<StateId, Aggregate> cache) {
+    return new CachedStore(cache);
   }
 }

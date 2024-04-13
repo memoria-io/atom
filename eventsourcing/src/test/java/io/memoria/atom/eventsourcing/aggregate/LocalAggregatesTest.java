@@ -1,6 +1,6 @@
 package io.memoria.atom.eventsourcing.aggregate;
 
-import io.memoria.atom.eventsourcing.aggregate.store.AggregateStore;
+import io.memoria.atom.eventsourcing.aggregate.store.Store;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
@@ -48,7 +48,7 @@ public class LocalAggregatesTest {
   //    return ActorStore.cacheStore(cache);
   //  }
 
-  private static AggregateStore createStore() {
-    return AggregateStore.mapStore(new ConcurrentHashMap<>());
+  private static Store createStore() {
+    return Store.mapStore(new ConcurrentHashMap<>());
   }
 }
