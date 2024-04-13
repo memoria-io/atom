@@ -49,7 +49,7 @@ class DefaultCommandHandler extends AbstractCommandHandler {
   }
 
   @Override
-  public Optional<Event> decide(Command command) throws CommandException {
+  public Optional<Event> handle(Command command) throws CommandException {
     if (isDuplicate(command)) {
       return Optional.empty();
     }

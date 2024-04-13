@@ -6,9 +6,8 @@ import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.rule.Saga;
 
 import java.util.Optional;
-import java.util.function.Function;
 
-public class EventHandler implements Function<Event, Optional<Command>> {
+public class EventHandler {
   private final Saga saga;
   private final CommandPublisher commandPublisher;
 
@@ -17,7 +16,7 @@ public class EventHandler implements Function<Event, Optional<Command>> {
     this.commandPublisher = commandPublisher;
   }
 
-  public Optional<Command> apply(Event event) {
+  public Optional<Command> handle(Event event) {
     Optional<Command> result = saga.apply(event);
     result.ifPresent(commandPublisher::publish);
     return result;

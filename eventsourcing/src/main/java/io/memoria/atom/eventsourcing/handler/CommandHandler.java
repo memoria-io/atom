@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface CommandHandler {
   StateId stateId();
 
-  Optional<Event> decide(Command command) throws CommandException;
+  Optional<Event> handle(Command command) throws CommandException;
 
   static CommandHandler create(StateId stateId, Decider decider, Evolver evolver, EventRepo eventRepo) {
     return new DefaultCommandHandler(stateId, decider, evolver, eventRepo);
