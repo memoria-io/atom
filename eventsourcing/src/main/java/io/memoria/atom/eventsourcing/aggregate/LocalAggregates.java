@@ -9,11 +9,7 @@ import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.util.Optional;
 
-public interface LocalAggregates extends Iterable<Aggregate> {
-  AggregateStore aggregateStore();
-
-  AggregateFactory aggregateFactory();
-
+public interface LocalAggregates  {
   Optional<Event> decide(StateId stateId, Command command) throws CommandException;
 
   Optional<State> evolve(StateId stateId, Event event);

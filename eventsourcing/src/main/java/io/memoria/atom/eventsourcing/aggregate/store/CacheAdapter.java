@@ -22,8 +22,13 @@ class CacheAdapter implements AggregateStore {
   }
 
   @Override
-  public Aggregate get(StateId actorId) {
-    return cache.get(actorId);
+  public Aggregate get(StateId stateId) {
+    return cache.get(stateId);
+  }
+
+  @Override
+  public void remove(StateId stateId) {
+    cache.remove(stateId);
   }
 
   @Override

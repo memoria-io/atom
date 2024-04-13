@@ -11,7 +11,9 @@ import java.util.function.Function;
 public interface AggregateStore extends Closeable, Iterable<Aggregate> {
   void computeIfAbsent(StateId stateId, Function<StateId, Aggregate> actorFn);
 
-  Aggregate get(StateId actorId);
+  Aggregate get(StateId stateId);
+
+  void remove(StateId stateId);
 
   static AggregateStore mapStore(Map<StateId, Aggregate> map) {
     return new MapAdapter(map);

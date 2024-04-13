@@ -20,8 +20,13 @@ class MapAdapter implements AggregateStore {
   }
 
   @Override
-  public Aggregate get(StateId actorId) {
-    return map.get(actorId);
+  public Aggregate get(StateId stateId) {
+    return map.get(stateId);
+  }
+
+  @Override
+  public void remove(StateId stateId) {
+    map.remove(stateId);
   }
 
   @Override
