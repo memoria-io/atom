@@ -1,4 +1,4 @@
-package io.memoria.atom.actor.system;
+package io.memoria.atom.eventsourcing.actor;
 
 import io.memoria.atom.core.domain.Partitioned;
 import io.memoria.atom.core.id.Id;

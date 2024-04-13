@@ -1,8 +1,10 @@
-package io.memoria.atom.actor.system;
+package io.memoria.atom.eventsourcing.actor;
 
 import io.memoria.atom.actor.Actor;
 import io.memoria.atom.actor.ActorException;
 import io.memoria.atom.actor.ActorId;
+import io.memoria.atom.eventsourcing.actor.system.ActorStore;
+import io.memoria.atom.eventsourcing.actor.system.ActorSystem;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

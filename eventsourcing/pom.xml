@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>atom</artifactId>
-        <version>21.31.2</version>
+        <version>21.32.0</version>
     </parent>
 
     <groupId>io.memoria.atom</groupId>
     <artifactId>eventsourcing</artifactId>
-    <version>21.31.2</version>
+    <version>21.32.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
@@ -29,6 +29,18 @@
         <dependency>
             <groupId>com.github.f4b6a3</groupId>
             <artifactId>uuid-creator</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--======================================================================================== -->
+        <!-- Caching Dependencies -->
+        <!--======================================================================================== -->
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -1,9 +1,10 @@
-package io.memoria.atom.actor.system;
+package io.memoria.atom.eventsourcing.actor;
 
 import io.memoria.atom.actor.AbstractActor;
 import io.memoria.atom.actor.ActorId;
 import io.memoria.atom.core.domain.Partitioned;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 class MyActor extends AbstractActor {
@@ -15,7 +16,12 @@ class MyActor extends AbstractActor {
   }
 
   @Override
-  public synchronized Partitioned apply(Partitioned message) {
+  public List<Partitioned> init() {
+    return null;
+  }
+
+  @Override
+  public synchronized Partitioned handle(Partitioned message) {
     latch.countDown();
     return message;
   }

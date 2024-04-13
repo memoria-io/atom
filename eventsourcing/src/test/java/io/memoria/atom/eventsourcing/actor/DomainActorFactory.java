@@ -1,7 +1,6 @@
-package io.memoria.atom.actor.system;
+package io.memoria.atom.eventsourcing.actor;
 
 import io.memoria.atom.actor.Actor;
-import io.memoria.atom.actor.ActorFactory;
 import io.memoria.atom.actor.ActorId;
 
 import java.util.concurrent.CountDownLatch;
