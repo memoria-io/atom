@@ -1,4 +1,4 @@
-package io.memoria.atom.eventsourcing.aggregate;
+package io.memoria.atom.eventsourcing.handler;
 
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.CommandId;
@@ -7,6 +7,7 @@ import io.memoria.atom.eventsourcing.command.exceptions.MismatchingCommandState;
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.event.EventId;
 import io.memoria.atom.eventsourcing.event.exceptions.MismatchingEvent;
+import io.memoria.atom.eventsourcing.event.repo.EventRepo;
 import io.memoria.atom.eventsourcing.rule.Decider;
 import io.memoria.atom.eventsourcing.rule.Evolver;
 import io.memoria.atom.eventsourcing.state.State;
@@ -19,12 +20,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-class DefaultAggregate extends AbstractAggregate {
-  private static final Logger log = LoggerFactory.getLogger(DefaultAggregate.class.getName());
+class DefaultCommandHandler extends AbstractCommandHandler {
+  private static final Logger log = LoggerFactory.getLogger(DefaultCommandHandler.class.getName());
 
   // Rules
   private final Decider decider;
   private final Evolver evolver;
+  private final EventRepo eventRepo;
 
   // State
   private final AtomicReference<State> stateRef;
@@ -32,11 +34,12 @@ class DefaultAggregate extends AbstractAggregate {
   private final Set<CommandId> processedCommands;
   private final Set<EventId> sagaSources;
 
-  public DefaultAggregate(Decider decider, Evolver evolver, StateId stateId) {
+  public DefaultCommandHandler(StateId stateId, Decider decider, Evolver evolver, EventRepo eventRepo) {
     super(stateId);
     // Rules
     this.decider = decider;
     this.evolver = evolver;
+    this.eventRepo = eventRepo;
 
     // State
     this.stateRef = new AtomicReference<>();
@@ -51,20 +54,21 @@ class DefaultAggregate extends AbstractAggregate {
       return Optional.empty();
     }
     validate(command);
-    Optional<Event> result;
+    Event event;
     if (stateRef.get() == null) {
-      result = Optional.of(decider.apply(command));
+      eventRepo.fetch(stateId()).forEach(this::evolve);
+      event = decider.apply(command);
     } else {
-      result = Optional.of(decider.apply(stateRef.get(), command));
+      event = decider.apply(stateRef.get(), command);
     }
+    eventRepo.append(event);
     command.meta().sagaSource().ifPresent(sagaSources::add);
-    return result;
+    return Optional.of(event);
   }
 
-  @Override
-  public Optional<State> evolve(Event event) {
+  void evolve(Event event) {
     if (isDuplicate(event)) {
-      return Optional.empty();
+      return;
     }
     validate(event);
     State currentState = stateRef.get();
@@ -76,7 +80,6 @@ class DefaultAggregate extends AbstractAggregate {
     }
     stateRef.set(newState);
     processedCommands.add(event.meta().commandId());
-    return Optional.of(newState);
   }
 
   boolean isDuplicate(Command command) {

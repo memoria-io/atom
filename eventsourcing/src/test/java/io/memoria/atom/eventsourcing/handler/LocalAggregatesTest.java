@@ -1,6 +1,6 @@
-package io.memoria.atom.eventsourcing.aggregate;
+package io.memoria.atom.eventsourcing.handler;
 
-import io.memoria.atom.eventsourcing.aggregate.store.Store;
+import io.memoria.atom.eventsourcing.handler.store.Store;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
@@ -30,7 +30,7 @@ public class LocalAggregatesTest {
       // And Given
       var event = eventOpt.get();
       // When
-      var state = actorSystem.evolve(stateId, event);
+      var state = actorSystem.init(stateId, event);
       // Then
       assertThat(state).isPresent().hasValueSatisfying(s -> {
         assertThat(s.version()).isZero();

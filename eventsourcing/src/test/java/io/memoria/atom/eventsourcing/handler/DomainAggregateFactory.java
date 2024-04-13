@@ -1,4 +1,4 @@
-package io.memoria.atom.eventsourcing.aggregate;
+package io.memoria.atom.eventsourcing.handler;
 
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.rule.Decider;
@@ -14,7 +14,7 @@ public class DomainAggregateFactory implements AggregateFactory {
   private final Evolver evolver = new SomeEvolver();
 
   @Override
-  public Aggregate create(StateId stateId) {
-    return Aggregate.create(decider, evolver, stateId);
+  public DefaultCommandHandler create(StateId stateId) {
+    return DefaultCommandHandler.create(decider, evolver, stateId);
   }
 }
