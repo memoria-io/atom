@@ -7,7 +7,6 @@ import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.state.State;
 import io.memoria.atom.eventsourcing.state.StateId;
 
-import java.io.Closeable;
 import java.util.Optional;
 
 public interface LocalAggregates extends Iterable<Aggregate> {

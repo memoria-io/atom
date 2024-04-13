@@ -9,7 +9,6 @@ import io.memoria.atom.eventsourcing.rule.StateCreated;
 import io.memoria.atom.eventsourcing.state.StateId;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
