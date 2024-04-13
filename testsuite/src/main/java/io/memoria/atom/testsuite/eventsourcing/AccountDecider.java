@@ -8,7 +8,7 @@ import io.memoria.atom.eventsourcing.command.exceptions.MismatchingCommandState;
 import io.memoria.atom.eventsourcing.command.exceptions.UnknownCommand;
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.event.EventMeta;
-import io.memoria.atom.eventsourcing.rule.Decider;
+import io.memoria.atom.eventsourcing.aggregate.Decider;
 import io.memoria.atom.eventsourcing.state.State;
 import io.memoria.atom.eventsourcing.state.exceptions.UnknownState;
 import io.memoria.atom.testsuite.eventsourcing.command.AccountCommand;

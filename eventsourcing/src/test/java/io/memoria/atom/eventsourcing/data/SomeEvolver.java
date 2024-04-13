@@ -1,5 +1,6 @@
-package io.memoria.atom.eventsourcing.rule;
+package io.memoria.atom.eventsourcing.data;
 
+import io.memoria.atom.eventsourcing.aggregate.Evolver;
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.event.exceptions.InvalidEvolutionEvent;
 import io.memoria.atom.eventsourcing.event.exceptions.UnknownEvent;

@@ -1,5 +1,10 @@
-package io.memoria.atom.eventsourcing.rule;
+package io.memoria.atom.eventsourcing.aggregate;
 
+import io.memoria.atom.eventsourcing.data.SomeEvolver;
+import io.memoria.atom.eventsourcing.data.SomeState;
+import io.memoria.atom.eventsourcing.data.StateChanged;
+import io.memoria.atom.eventsourcing.data.StateCreated;
+import io.memoria.atom.eventsourcing.aggregate.Evolver;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.event.EventId;
 import io.memoria.atom.eventsourcing.event.EventMeta;

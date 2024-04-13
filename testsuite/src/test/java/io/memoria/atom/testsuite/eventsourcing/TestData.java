@@ -1,9 +1,9 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.eventsourcing.rule.Decider;
-import io.memoria.atom.eventsourcing.rule.Evolver;
-import io.memoria.atom.eventsourcing.rule.Saga;
+import io.memoria.atom.eventsourcing.aggregate.Decider;
+import io.memoria.atom.eventsourcing.aggregate.Evolver;
+import io.memoria.atom.eventsourcing.saga.Saga;
 import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.util.concurrent.atomic.AtomicLong;

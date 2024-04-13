@@ -1,11 +1,11 @@
-package io.memoria.atom.eventsourcing.handler;
+package io.memoria.atom.eventsourcing.aggregate;
 
-import io.memoria.atom.eventsourcing.handler.store.Store;
+import io.memoria.atom.eventsourcing.aggregate.store.Store;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
-import io.memoria.atom.eventsourcing.rule.CreateState;
-import io.memoria.atom.eventsourcing.rule.StateCreated;
+import io.memoria.atom.eventsourcing.data.CreateState;
+import io.memoria.atom.eventsourcing.data.StateCreated;
 import io.memoria.atom.eventsourcing.state.StateId;
 import org.junit.jupiter.api.Test;
 

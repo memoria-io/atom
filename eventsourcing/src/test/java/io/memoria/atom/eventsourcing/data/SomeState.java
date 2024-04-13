@@ -1,4 +1,4 @@
-package io.memoria.atom.eventsourcing.rule;
+package io.memoria.atom.eventsourcing.data;
 
 import io.memoria.atom.eventsourcing.state.State;
 import io.memoria.atom.eventsourcing.state.StateMeta;

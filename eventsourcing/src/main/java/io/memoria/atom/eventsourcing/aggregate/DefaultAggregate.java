@@ -1,4 +1,4 @@
-package io.memoria.atom.eventsourcing.handler;
+package io.memoria.atom.eventsourcing.aggregate;
 
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.CommandId;
@@ -8,8 +8,6 @@ import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.event.EventId;
 import io.memoria.atom.eventsourcing.event.exceptions.MismatchingEvent;
 import io.memoria.atom.eventsourcing.event.repo.EventRepo;
-import io.memoria.atom.eventsourcing.rule.Decider;
-import io.memoria.atom.eventsourcing.rule.Evolver;
 import io.memoria.atom.eventsourcing.state.State;
 import io.memoria.atom.eventsourcing.state.StateId;
 import org.slf4j.Logger;
@@ -20,8 +18,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-class DefaultCommandHandler extends AbstractCommandHandler {
-  private static final Logger log = LoggerFactory.getLogger(DefaultCommandHandler.class.getName());
+class DefaultAggregate extends AbstractAggregate {
+  private static final Logger log = LoggerFactory.getLogger(DefaultAggregate.class.getName());
 
   // Rules
   private final Decider decider;
@@ -33,7 +31,7 @@ class DefaultCommandHandler extends AbstractCommandHandler {
   private final Set<CommandId> processedCommands;
   private final Set<EventId> sagaSources;
 
-  public DefaultCommandHandler(StateId stateId, Decider decider, Evolver evolver, EventRepo eventRepo) {
+  public DefaultAggregate(StateId stateId, Decider decider, Evolver evolver, EventRepo eventRepo) {
     super(stateId);
     // Rules
     this.decider = decider;

@@ -1,6 +1,9 @@
-package io.memoria.atom.eventsourcing.rule;
+package io.memoria.atom.eventsourcing.saga;
 
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.eventsourcing.data.ChangeState;
+import io.memoria.atom.eventsourcing.data.SomeSaga;
+import io.memoria.atom.eventsourcing.data.StateCreated;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.event.EventId;
 import io.memoria.atom.eventsourcing.event.EventMeta;

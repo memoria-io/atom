@@ -1,8 +1,9 @@
-package io.memoria.atom.eventsourcing.rule;
+package io.memoria.atom.eventsourcing.data;
 
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.event.Event;
+import io.memoria.atom.eventsourcing.saga.Saga;
 import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.util.Optional;

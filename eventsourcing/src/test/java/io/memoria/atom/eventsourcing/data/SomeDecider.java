@@ -1,6 +1,7 @@
-package io.memoria.atom.eventsourcing.rule;
+package io.memoria.atom.eventsourcing.data;
 
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.eventsourcing.aggregate.Decider;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
 import io.memoria.atom.eventsourcing.command.exceptions.InvalidEvolutionCommand;
