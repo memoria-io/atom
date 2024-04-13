@@ -1,6 +1,6 @@
 package io.memoria.atom.eventsourcing.actor.system;
 
-import io.memoria.atom.eventsourcing.actor.StateActor;
+import io.memoria.atom.eventsourcing.actor.StateAggregate;
 import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.util.Iterator;
@@ -8,19 +8,19 @@ import java.util.Map;
 import java.util.function.Function;
 
 class MapAdapter implements ActorStore {
-  private final Map<StateId, StateActor> map;
+  private final Map<StateId, StateAggregate> map;
 
-  public MapAdapter(Map<StateId, StateActor> map) {
+  public MapAdapter(Map<StateId, StateAggregate> map) {
     this.map = map;
   }
 
   @Override
-  public void computeIfAbsent(StateId stateId, Function<StateId, StateActor> actorFn) {
+  public void computeIfAbsent(StateId stateId, Function<StateId, StateAggregate> actorFn) {
     map.computeIfAbsent(stateId, actorFn);
   }
 
   @Override
-  public StateActor get(StateId actorId) {
+  public StateAggregate get(StateId actorId) {
     return map.get(actorId);
   }
 
@@ -30,7 +30,7 @@ class MapAdapter implements ActorStore {
   }
 
   @Override
-  public Iterator<StateActor> iterator() {
+  public Iterator<StateAggregate> iterator() {
     return map.values().iterator();
   }
 }

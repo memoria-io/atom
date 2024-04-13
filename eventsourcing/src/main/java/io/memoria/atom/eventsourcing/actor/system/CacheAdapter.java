@@ -1,6 +1,6 @@
 package io.memoria.atom.eventsourcing.actor.system;
 
-import io.memoria.atom.eventsourcing.actor.StateActor;
+import io.memoria.atom.eventsourcing.actor.StateAggregate;
 import io.memoria.atom.eventsourcing.state.StateId;
 
 import javax.cache.Cache;
@@ -10,19 +10,19 @@ import java.util.function.Function;
 import java.util.stream.StreamSupport;
 
 class CacheAdapter implements ActorStore {
-  private final Cache<StateId, StateActor> cache;
+  private final Cache<StateId, StateAggregate> cache;
 
-  public CacheAdapter(Cache<StateId, StateActor> cache) {
+  public CacheAdapter(Cache<StateId, StateAggregate> cache) {
     this.cache = cache;
   }
 
   @Override
-  public void computeIfAbsent(StateId stateId, Function<StateId, StateActor> actorFn) {
+  public void computeIfAbsent(StateId stateId, Function<StateId, StateAggregate> actorFn) {
     cache.putIfAbsent(stateId, actorFn.apply(stateId));
   }
 
   @Override
-  public StateActor get(StateId actorId) {
+  public StateAggregate get(StateId actorId) {
     return cache.get(actorId);
   }
 
@@ -32,7 +32,7 @@ class CacheAdapter implements ActorStore {
   }
 
   @Override
-  public Iterator<StateActor> iterator() {
+  public Iterator<StateAggregate> iterator() {
     return StreamSupport.stream(cache.spliterator(), false).map(Entry::getValue).iterator();
   }
 }
