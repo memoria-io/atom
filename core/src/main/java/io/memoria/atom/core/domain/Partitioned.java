@@ -5,7 +5,6 @@ import io.memoria.atom.core.id.Id;
 public interface Partitioned {
 
   /**
-   *
    * @return the partitioning Key
    */
   Id pKey();
