@@ -7,7 +7,6 @@ import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.state.State;
 import io.memoria.atom.eventsourcing.state.StateId;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -24,11 +23,6 @@ record DefaultLocalAggregates(AggregateStore aggregateStore, AggregateFactory ag
   public Optional<Event> decide(StateId stateId, Command command) throws CommandException {
     aggregateStore.computeIfAbsent(stateId, aggregateFactory::create);
     return aggregateStore.get(stateId).decide(command);
-  }
-
-  @Override
-  public void close() throws IOException {
-    aggregateStore.close();
   }
 
   @Override

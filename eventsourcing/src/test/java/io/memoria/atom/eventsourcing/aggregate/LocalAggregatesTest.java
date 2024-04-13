@@ -19,8 +19,9 @@ public class LocalAggregatesTest {
   @Test
   void defaultSystem() {
     var actorStore = createStore();
-    try (var actorSystem = LocalAggregates.create(actorStore, new DomainAggregateFactory())) {
+    try {
       // Given
+      var actorSystem = LocalAggregates.create(actorStore, new DomainAggregateFactory());
       StateId stateId = StateId.of(0);
       var meta = new CommandMeta(CommandId.of(UUID.randomUUID()), stateId);
       // When
@@ -35,7 +36,7 @@ public class LocalAggregatesTest {
       assertThat(state).isPresent().hasValueSatisfying(s -> {
         assertThat(s.version()).isZero();
       });
-    } catch (IOException | CommandException e) {
+    } catch (CommandException e) {
       throw new RuntimeException(e);
     }
   }

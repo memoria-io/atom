@@ -10,7 +10,7 @@ import io.memoria.atom.eventsourcing.state.StateId;
 import java.io.Closeable;
 import java.util.Optional;
 
-public interface LocalAggregates extends Closeable, Iterable<Aggregate> {
+public interface LocalAggregates extends Iterable<Aggregate> {
   AggregateStore aggregateStore();
 
   AggregateFactory aggregateFactory();
