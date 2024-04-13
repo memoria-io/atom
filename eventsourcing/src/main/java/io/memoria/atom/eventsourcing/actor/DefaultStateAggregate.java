@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class DefaultStateAggregate implements StateAggregate {
+class DefaultStateAggregate implements StateAggregate {
   private static final Logger log = LoggerFactory.getLogger(DefaultStateAggregate.class.getName());
 
   // Rules
@@ -88,7 +88,7 @@ public class DefaultStateAggregate implements StateAggregate {
   boolean isDuplicate(Command command) {
     var alreadyProcessedCmd = processedCommands.contains(command.meta().commandId());
     var alreadyProcessedSagaCmd = command.meta().sagaSource().map(sagaSources::contains).orElse(false);
-    return !alreadyProcessedCmd && !alreadyProcessedSagaCmd;
+    return alreadyProcessedCmd || alreadyProcessedSagaCmd;
   }
 
   boolean isDuplicate(Event event) {
