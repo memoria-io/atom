@@ -1,6 +1,7 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.eventsourcing.aggregate.Decider;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
 import io.memoria.atom.eventsourcing.command.exceptions.InvalidEvolutionCommand;
@@ -8,7 +9,6 @@ import io.memoria.atom.eventsourcing.command.exceptions.MismatchingCommandState;
 import io.memoria.atom.eventsourcing.command.exceptions.UnknownCommand;
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.event.EventMeta;
-import io.memoria.atom.eventsourcing.aggregate.Decider;
 import io.memoria.atom.eventsourcing.state.State;
 import io.memoria.atom.eventsourcing.state.exceptions.UnknownState;
 import io.memoria.atom.testsuite.eventsourcing.command.AccountCommand;

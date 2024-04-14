@@ -30,11 +30,6 @@ class MemStore implements Store {
   }
 
   @Override
-  public void close() {
-    // Silence is golden
-  }
-
-  @Override
   public Iterator<Aggregate> iterator() {
     return map.values().iterator();
   }

@@ -8,11 +8,11 @@ import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.util.Optional;
 
-class Aggregates {
+public class Aggregates {
   private final Store store;
   private final AggregateFactory aggregateFactory;
 
-  Aggregates(Store store, AggregateFactory aggregateFactory) {
+  private Aggregates(Store store, AggregateFactory aggregateFactory) {
     this.store = store;
     this.aggregateFactory = aggregateFactory;
   }
@@ -20,5 +20,9 @@ class Aggregates {
   public Optional<Event> handle(StateId stateId, Command command) throws CommandException {
     store.computeIfAbsent(stateId, aggregateFactory::create);
     return store.get(stateId).handle(command);
+  }
+
+  public static Aggregates create(Store store, AggregateFactory aggregateFactory) {
+    return new Aggregates(store, aggregateFactory);
   }
 }

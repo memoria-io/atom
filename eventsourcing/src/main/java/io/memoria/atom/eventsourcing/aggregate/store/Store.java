@@ -4,16 +4,20 @@ import io.memoria.atom.eventsourcing.aggregate.Aggregate;
 import io.memoria.atom.eventsourcing.state.StateId;
 
 import javax.cache.Cache;
-import java.io.Closeable;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public interface Store extends Closeable, Iterable<Aggregate> {
+public interface Store extends Iterable<Aggregate> {
   void computeIfAbsent(StateId stateId, Function<StateId, Aggregate> actorFn);
 
   Aggregate get(StateId stateId);
 
   void remove(StateId stateId);
+
+  static Store mapStore() {
+    return new MemStore(new ConcurrentHashMap<>());
+  }
 
   static Store mapStore(Map<StateId, Aggregate> map) {
     return new MemStore(map);

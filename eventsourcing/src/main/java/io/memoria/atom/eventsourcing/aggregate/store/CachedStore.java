@@ -32,11 +32,6 @@ class CachedStore implements Store {
   }
 
   @Override
-  public void close() {
-    cache.close();
-  }
-
-  @Override
   public Iterator<Aggregate> iterator() {
     return StreamSupport.stream(cache.spliterator(), false).map(Entry::getValue).iterator();
   }

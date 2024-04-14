@@ -1,8 +1,8 @@
 package io.memoria.atom.testsuite.eventsourcing;
 
+import io.memoria.atom.eventsourcing.aggregate.Evolver;
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.event.exceptions.UnknownEvent;
-import io.memoria.atom.eventsourcing.aggregate.Evolver;
 import io.memoria.atom.eventsourcing.state.State;
 import io.memoria.atom.eventsourcing.state.StateMeta;
 import io.memoria.atom.eventsourcing.state.exceptions.UnknownState;
