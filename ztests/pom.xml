@@ -9,24 +9,19 @@
         <version>21.33.0</version>
     </parent>
     <groupId>io.memoria.atom</groupId>
-    <artifactId>xetcd</artifactId>
+    <artifactId>ztests</artifactId>
     <version>21.33.0</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
-    <description>ETCD Module</description>
-
+    <description>Event sourcing Module</description>
     <dependencies>
+        <!--======================================================================================== -->
+        <!-- Module Dependencies -->
+        <!--======================================================================================== -->
         <dependency>
             <groupId>io.memoria.atom</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>eventsourcing</artifactId>
             <version>${project.parent.version}</version>
-        </dependency>
-        <!-- ===============================================================   -->
-        <!-- etcd Dependencies                                                 -->
-        <!-- ===============================================================   -->
-        <dependency>
-            <groupId>io.etcd</groupId>
-            <artifactId>jetcd-core</artifactId>
         </dependency>
     </dependencies>
 </project>
