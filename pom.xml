@@ -28,11 +28,16 @@
         <module>text</module>
         <module>security</module>
         <module>eventsourcing</module>
-        <module>testsuite</module>
+        <module>xcassandra</module>
+        <module>xhelidon</module>
+        <module>xtests</module>
     </modules>
 
     <properties>
         <jsonwebtoken.version>0.12.3</jsonwebtoken.version>
+        <cassandra.version>4.15.0</cassandra.version>
+        <helidon.version>4.0.0</helidon.version>
+        <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
         <sonar.coverage.exclusions>
             **/Main.java,
             **/exceptions/*.java,
@@ -114,6 +119,76 @@
                 <version>2.16.0</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+
+            <!-- ===============================================================   -->
+            <!-- Adapters Dependencies                                                 -->
+            <!-- ===============================================================   -->
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>3.5.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>io.nats</groupId>
+                <artifactId>jnats</artifactId>
+                <version>2.16.13</version>
+            </dependency>
+            <dependency>
+                <groupId>io.etcd</groupId>
+                <artifactId>jetcd-core</artifactId>
+                <version>0.7.5</version>
+            </dependency>
+            <dependency>
+                <groupId>com.datastax.oss</groupId>
+                <artifactId>java-driver-core</artifactId>
+                <version>${cassandra.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.datastax.oss</groupId>
+                <artifactId>java-driver-query-builder</artifactId>
+                <version>${cassandra.version}</version>
+            </dependency>
+            <!--======================================================================================== -->
+            <!-- Helidon Dependencies -->
+            <!--======================================================================================== -->
+            <dependency>
+                <groupId>io.helidon.webserver</groupId>
+                <artifactId>helidon-webserver</artifactId>
+                <version>${helidon.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.helidon.webserver</groupId>
+                <artifactId>helidon-webserver-http2</artifactId>
+                <version>${helidon.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.helidon.webclient</groupId>
+                <artifactId>helidon-webclient</artifactId>
+                <version>${helidon.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.helidon.webserver.testing.junit5</groupId>
+                <artifactId>helidon-webserver-testing-junit5</artifactId>
+                <version>${helidon.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.helidon.webserver.testing.junit5</groupId>
+                <artifactId>helidon-webserver-testing-junit5-http2</artifactId>
+                <version>${helidon.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
