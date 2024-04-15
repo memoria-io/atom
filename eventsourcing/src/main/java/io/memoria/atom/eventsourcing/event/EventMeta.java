@@ -87,26 +87,7 @@ public final class EventMeta implements Partitioned, Versioned, Serializable {
 
   @Override
   public String toString() {
-    return "EventMeta["
-           + "eventId="
-           + eventId
-           + ", "
-           + "version="
-           + version
-           + ", "
-           + "stateId="
-           + stateId
-           + ", "
-           + "commandId="
-           + commandId
-           + ", "
-           + "timestamp="
-           + timestamp
-           + ", "
-           + "sagaSource="
-           + sagaSource
-           + ']';
+    return STR."EventMeta[eventId=\{eventId}, version=\{version}, stateId=\{stateId}, commandId=\{commandId}, timestamp=\{timestamp}, sagaSource=\{sagaSource}\{']'}";
   }
-
 }
 
