@@ -44,10 +44,14 @@ class EventTableStatementsIT {
 
   @Test
   @Order(0)
-  void push() {
+  void insert() {
     // When
     var statements = IntStream.range(0, COUNT)
-                              .mapToObj(i -> EventTableStatements.push(KEYSPACE, TABLE, PARTITION_KEY, i, "hello world"));
+                              .mapToObj(i -> EventTableStatements.insert(KEYSPACE,
+                                                                         TABLE,
+                                                                         PARTITION_KEY,
+                                                                         i,
+                                                                         "hello world"));
     // Then
     Assertions.assertThatCode(() -> statements.forEach(session::execute)).doesNotThrowAnyException();
   }

@@ -36,11 +36,11 @@ public class EventTableStatements {
                         .build();
   }
 
-  public static SimpleStatement push(String keyspace,
-                                     String table,
-                                     String partitionKey,
-                                     long clusterKey,
-                                     String payload) {
+  public static SimpleStatement insert(String keyspace,
+                                       String table,
+                                       String partitionKey,
+                                       long clusterKey,
+                                       String payload) {
     long createdAt = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
     return QueryBuilder.insertInto(keyspace, table)
                        .value(PARTITION_KEY_COL, literal(partitionKey))

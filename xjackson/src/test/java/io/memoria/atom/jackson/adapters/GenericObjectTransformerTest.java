@@ -2,10 +2,10 @@ package io.memoria.atom.jackson.adapters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.memoria.atom.core.text.TextException;
-import io.memoria.atom.jackson.adapters.generic.Person;
-import io.memoria.atom.jackson.adapters.generic.SomeId;
 import io.memoria.atom.jackson.JacksonUtils;
 import io.memoria.atom.jackson.JsonJackson;
+import io.memoria.atom.jackson.adapters.generic.Person;
+import io.memoria.atom.jackson.adapters.generic.SomeId;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -4,7 +4,7 @@ import com.datastax.oss.driver.api.core.ConsistencyLevel;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.Row;
 import io.memoria.atom.cassandra.exceptions.RowInfo;
-import io.memoria.atom.cassandra.exceptions.XCassandraRTEAppend;
+import io.memoria.atom.cassandra.exceptions.XCassandraRTEAppendFailure;
 import io.memoria.atom.cassandra.exceptions.XCassandraRTETransform;
 import io.memoria.atom.core.text.TextException;
 import io.memoria.atom.core.text.TextTransformer;
@@ -53,12 +53,12 @@ public class CassandraEventRepo implements EventRepo {
     var payload = transformer.serialize(event);
     String partitionKey = event.pKey().value();
     long clusterKey = event.version();
-    var st = EventTableStatements.push(keyspace, table, partitionKey, clusterKey, payload)
+    var st = EventTableStatements.insert(keyspace, table, partitionKey, clusterKey, payload)
                                  .setConsistencyLevel(writeConsistency);
     var result = session.execute(st);
     if (!result.wasApplied()) {
       var rowInfo = new RowInfo(keyspace, table, partitionKey, clusterKey);
-      throw new XCassandraRTEAppend(rowInfo);
+      throw new XCassandraRTEAppendFailure(rowInfo);
     }
   }
 

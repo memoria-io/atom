@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class EtcdKVStoreTest {
   private final static Random random = new Random();
-  private final static String keyPrefix = "key_" + random.nextInt(1000);
+  private final static String keyPrefix = STR."key_\{random.nextInt(1000)}";
   private final Client client = Client.builder().endpoints("http://localhost:2379").build();
   private final EtcdKVStore kvStore = new EtcdKVStore(client);
 
@@ -23,7 +23,7 @@ class EtcdKVStoreTest {
 
     // When
     IntStream.range(0, count).forEach(this::setValue);
-    var getKV = IntStream.range(0, count).mapToObj(EtcdKVStoreTest::toKey).toList();
+    var getKV = IntStream.range(0, count).mapToObj(EtcdKVStoreTest::toValue).toList();
 
     // Then
     assertThat(getKV).hasSize(count).hasSameElementsAs(expectedValues);
@@ -43,10 +43,10 @@ class EtcdKVStoreTest {
   }
 
   private static String toKey(int i) {
-    return keyPrefix + "_" + i;
+    return STR."\{keyPrefix}_\{i}";
   }
 
   private static String toValue(int i) {
-    return "value:" + i;
+    return STR."value:\{i}";
   }
 }
