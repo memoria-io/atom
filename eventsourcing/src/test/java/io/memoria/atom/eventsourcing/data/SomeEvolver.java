@@ -2,7 +2,7 @@ package io.memoria.atom.eventsourcing.data;
 
 import io.memoria.atom.eventsourcing.aggregate.Evolver;
 import io.memoria.atom.eventsourcing.event.Event;
-import io.memoria.atom.eventsourcing.event.exceptions.InvalidEvolutionEvent;
+import io.memoria.atom.eventsourcing.event.exceptions.InvalidEvent;
 import io.memoria.atom.eventsourcing.event.exceptions.UnknownEvent;
 import io.memoria.atom.eventsourcing.state.State;
 import io.memoria.atom.eventsourcing.state.StateMeta;
@@ -22,7 +22,7 @@ public record SomeEvolver() implements Evolver {
   public State evolve(State state, Event event, StateMeta stateMeta) {
     if (state instanceof SomeState someState) {
       return switch (event) {
-        case StateCreated stateCreated -> throw InvalidEvolutionEvent.of(someState, stateCreated);
+        case StateCreated stateCreated -> throw InvalidEvent.ofEvolution(someState, stateCreated);
         case StateChanged _ -> new SomeState(stateMeta);
         default -> throw UnknownState.of(someState);
       };

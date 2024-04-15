@@ -22,12 +22,12 @@ class DeciderTest {
   private final Decider decider = new SomeDecider(() -> Id.of(0), () -> 0L);
 
   @Test
-  void applyCreation() {
+  void decideCreation() throws CommandException {
     // Given
     var createState = new CreateState(new CommandMeta(CommandId.of(0), StateId.of(0)));
 
     // When
-    var event = decider.apply(createState);
+    var event = decider.decide(createState);
 
     // Then
     assertThat(event).isInstanceOf(StateCreated.class);
@@ -35,13 +35,13 @@ class DeciderTest {
   }
 
   @Test
-  void applyEvolution() throws CommandException {
+  void decideEvolution() throws CommandException {
     // Given
     var someState = new SomeState(new StateMeta(StateId.of(0)));
     var changeState = new ChangeState(new CommandMeta(CommandId.of(0), StateId.of(0)));
 
     // When
-    var event = decider.apply(someState, changeState);
+    var event = decider.decide(someState, changeState);
 
     // Then
     assertThat(event).isInstanceOf(StateChanged.class);
@@ -49,12 +49,12 @@ class DeciderTest {
   }
 
   @Test
-  void applyEvolutionFail() {
+  void decideEvolutionFail() {
     // Given
     var someState = new SomeState(new StateMeta(StateId.of("stateId")));
     var changeState = new ChangeState(new CommandMeta(CommandId.of(0), StateId.of("differentStateId")));
 
     // then
-    assertThatThrownBy(() -> decider.apply(someState, changeState)).isInstanceOf(MismatchingCommandState.class);
+    assertThatThrownBy(() -> decider.decide(someState, changeState)).isInstanceOf(MismatchingCommandState.class);
   }
 }

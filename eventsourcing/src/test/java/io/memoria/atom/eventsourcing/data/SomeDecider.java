@@ -4,8 +4,8 @@ import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.aggregate.Decider;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
-import io.memoria.atom.eventsourcing.command.exceptions.InvalidEvolutionCommand;
-import io.memoria.atom.eventsourcing.command.exceptions.UnknownCommand;
+import io.memoria.atom.eventsourcing.command.exceptions.InvalidCommand;
+import io.memoria.atom.eventsourcing.command.exceptions.UnknownCommandRTE;
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.event.EventMeta;
 import io.memoria.atom.eventsourcing.state.State;
@@ -19,7 +19,7 @@ public record SomeDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) 
     if (command instanceof CreateState) {
       return new StateCreated(eventMeta);
     } else {
-      throw UnknownCommand.of(command);
+      throw UnknownCommandRTE.of(command);
     }
   }
 
@@ -32,11 +32,11 @@ public record SomeDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) 
     }
   }
 
-  private Event decide(Command command, SomeState someState) throws InvalidEvolutionCommand {
+  private Event decide(Command command, SomeState someState) throws InvalidCommand {
     return switch (command) {
-      case CreateState createState -> throw InvalidEvolutionCommand.of(someState, createState);
+      case CreateState createState -> throw InvalidCommand.ofEvolution(someState, createState);
       case ChangeState changeState -> new StateChanged(eventMeta(someState, changeState));
-      default -> throw UnknownCommand.of(command);
+      default -> throw UnknownCommandRTE.of(command);
     };
   }
 }

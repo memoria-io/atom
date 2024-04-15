@@ -26,7 +26,7 @@ class AccountDeciderTest {
     var debit = new Debit(new CommandMeta(CommandId.of(randomUUID()), TestData.aliceId), TestData.bobId, debitAmount);
 
     // When
-    var event = TestData.decider.apply(openAccount, debit);
+    var event = TestData.decider.decide(openAccount, debit);
     var accountEvent = (AccountEvent) event;
 
     // Then

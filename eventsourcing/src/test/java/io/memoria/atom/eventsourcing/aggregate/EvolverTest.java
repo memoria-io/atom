@@ -7,7 +7,7 @@ import io.memoria.atom.eventsourcing.data.StateChanged;
 import io.memoria.atom.eventsourcing.data.StateCreated;
 import io.memoria.atom.eventsourcing.event.EventId;
 import io.memoria.atom.eventsourcing.event.EventMeta;
-import io.memoria.atom.eventsourcing.event.exceptions.InvalidEvolutionEvent;
+import io.memoria.atom.eventsourcing.event.exceptions.InvalidEvent;
 import io.memoria.atom.eventsourcing.state.StateId;
 import io.memoria.atom.eventsourcing.state.StateMeta;
 import org.junit.jupiter.api.Test;
@@ -19,12 +19,12 @@ public class EvolverTest {
   private final Evolver evolver = new SomeEvolver();
 
   @Test
-  void applyCreation() {
+  void evolveCreation() {
     // Given
     var stateCreated = new StateCreated(new EventMeta(EventId.of(0), 0, StateId.of(0), CommandId.of(0)));
 
     // When
-    var event = evolver.apply(stateCreated);
+    var event = evolver.evolve(stateCreated);
 
     // Then
     assertThat(event).isInstanceOf(SomeState.class);
@@ -32,13 +32,13 @@ public class EvolverTest {
   }
 
   @Test
-  void applyEvolution() {
+  void evolveEvolution() {
     // Given
     var someState = new SomeState(new StateMeta(StateId.of(0)));
     var stateChanged = new StateChanged(new EventMeta(EventId.of(0), 1, StateId.of(0), CommandId.of(0)));
 
     // When
-    var event = evolver.apply(someState, stateChanged);
+    var event = evolver.evolve(someState, stateChanged);
 
     // Then
     assertThat(event).isInstanceOf(SomeState.class);
@@ -46,12 +46,12 @@ public class EvolverTest {
   }
 
   @Test
-  void applyEvolutionFail() {
+  void evolveEvolutionFail() {
     // Given
     var someState = new SomeState(new StateMeta(StateId.of(0)));
     var stateChanged = new StateChanged(new EventMeta(EventId.of(0), 10, StateId.of(0), CommandId.of(0)));
 
     // When
-    assertThatThrownBy(() -> evolver.apply(someState, stateChanged)).isInstanceOf(InvalidEvolutionEvent.class);
+    assertThatThrownBy(() -> evolver.evolve(someState, stateChanged)).isInstanceOf(InvalidEvent.class);
   }
 }

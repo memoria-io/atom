@@ -3,7 +3,7 @@ package io.memoria.atom.eventsourcing.command.exceptions;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.state.StateId;
 
-public class MismatchingCommandState extends CommandRuntimeException {
+public class MismatchingCommandState extends CommandRTE {
   protected MismatchingCommandState(String msg, Command command) {
     super(msg, command);
   }
