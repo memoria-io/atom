@@ -50,7 +50,7 @@ class ValueObjectTransformerTest {
 
   private static ObjectMapper createMapper() {
     var subIdModule = JacksonUtils.valueObjectsModule(SomeId.class, SomeId::new);
-    var om = JacksonUtils.json(subIdModule);
+    var om = JacksonUtils.defaultJson(subIdModule);
     JacksonUtils.prettyJson(om);
     JacksonUtils.addMixInPropertyFormat(om, Person.class);
     return om;

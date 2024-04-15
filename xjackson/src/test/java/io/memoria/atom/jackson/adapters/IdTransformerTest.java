@@ -53,7 +53,7 @@ class IdTransformerTest {
   }
 
   private static ObjectMapper createMapper() {
-    var om = JacksonUtils.json();
+    var om = JacksonUtils.defaultJson();
     om.registerSubtypes(SomeId.class, AnotherId.class);
     JacksonUtils.prettyJson(om);
     JacksonUtils.addMixInPropertyFormat(om, Person.class);
