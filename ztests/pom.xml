@@ -20,7 +20,22 @@
         <!--======================================================================================== -->
         <dependency>
             <groupId>io.memoria.atom</groupId>
-            <artifactId>eventsourcing</artifactId>
+            <artifactId>xcassandra</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.memoria.atom</groupId>
+            <artifactId>xetcd</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.memoria.atom</groupId>
+            <artifactId>xhelidon</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.memoria.atom</groupId>
+            <artifactId>xjackson</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
