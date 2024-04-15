@@ -26,7 +26,7 @@ class AccountSagaTest {
     var debited = new Debited(eventMetaWithSaga, creditedAcc, 300);
 
     // When
-    var command = TestData.saga.apply(debited);
+    var command = TestData.saga.react(debited);
 
     // Then
     Assertions.assertThat(command).isPresent();

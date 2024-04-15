@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 public record AccountSaga(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Saga {
 
   @Override
-  public Optional<Command> apply(Event event) {
+  public Optional<Command> react(Event event) {
     if (event instanceof AccountEvent accountEvent) {
       return apply(accountEvent);
     } else {

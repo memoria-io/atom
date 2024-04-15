@@ -21,7 +21,7 @@ public record AccountEvolver() implements Evolver {
 
   @Override
   @SuppressWarnings("SwitchStatementWithTooFewBranches")
-  public State createBy(Event event, StateMeta stateMeta) {
+  public State evolve(Event event, StateMeta stateMeta) {
     return switch (event) {
       case AccountCreated e -> new OpenAccount(stateMeta, e.name(), e.balance(), 0, 0, 0);
       default -> throw UnknownEvent.of(event);

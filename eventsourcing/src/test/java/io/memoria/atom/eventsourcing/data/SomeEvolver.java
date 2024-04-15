@@ -10,7 +10,7 @@ import io.memoria.atom.eventsourcing.state.exceptions.UnknownState;
 
 public record SomeEvolver() implements Evolver {
   @Override
-  public State createBy(Event event, StateMeta stateMeta) {
+  public State evolve(Event event, StateMeta stateMeta) {
     if (event instanceof StateCreated) {
       return new SomeState(stateMeta);
     } else {

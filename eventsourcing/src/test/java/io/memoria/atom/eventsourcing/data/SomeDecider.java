@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 
 public record SomeDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Decider {
   @Override
-  public Event createBy(Command command, EventMeta eventMeta) {
+  public Event decide(Command command, EventMeta eventMeta) {
     if (command instanceof CreateState) {
       return new StateCreated(eventMeta);
     } else {
@@ -26,13 +26,13 @@ public record SomeDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) 
   @Override
   public Event decide(State state, Command command, EventMeta eventMeta) throws CommandException {
     if (state instanceof SomeState someState) {
-      return handle(command, someState);
+      return decide(command, someState);
     } else {
       throw UnknownState.of(state);
     }
   }
 
-  private Event handle(Command command, SomeState someState) throws InvalidEvolutionCommand {
+  private Event decide(Command command, SomeState someState) throws InvalidEvolutionCommand {
     return switch (command) {
       case CreateState createState -> throw InvalidEvolutionCommand.of(someState, createState);
       case ChangeState changeState -> new StateChanged(eventMeta(someState, changeState));

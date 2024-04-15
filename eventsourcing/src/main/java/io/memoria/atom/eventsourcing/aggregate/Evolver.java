@@ -12,7 +12,7 @@ public interface Evolver {
    * @param stateMeta the new State stateMeta
    * @return a new State with stateMeta as its meta value
    */
-  State createBy(Event event, StateMeta stateMeta);
+  State evolve(Event event, StateMeta stateMeta);
 
   /**
    * @param state     initial State
@@ -23,7 +23,7 @@ public interface Evolver {
   State evolve(State state, Event event, StateMeta stateMeta);
 
   default State apply(Event e) {
-    return createBy(e, stateMeta(e));
+    return evolve(e, stateMeta(e));
   }
 
   default State apply(State state, Event event) {

@@ -15,8 +15,8 @@ public class SagaHandler {
     this.commandPublisher = commandPublisher;
   }
 
-  public Optional<Command> handle(Event event) {
-    Optional<Command> result = saga.apply(event);
+  public Optional<Command> react(Event event) {
+    Optional<Command> result = saga.react(event);
     result.ifPresent(commandPublisher::publish);
     return result;
   }

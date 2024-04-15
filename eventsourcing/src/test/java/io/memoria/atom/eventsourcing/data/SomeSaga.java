@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public record SomeSaga(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Saga {
   @Override
-  public Optional<Command> apply(Event event) {
+  public Optional<Command> react(Event event) {
     return Optional.of(new ChangeState(commandMeta(StateId.of(0), event)));
   }
 }

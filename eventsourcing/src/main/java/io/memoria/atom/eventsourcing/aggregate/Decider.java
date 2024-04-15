@@ -21,7 +21,7 @@ public interface Decider {
    * @param eventMeta the new EventMeta
    * @return a new Event with eventMeta as its value
    */
-  Event createBy(Command command, EventMeta eventMeta);
+  Event decide(Command command, EventMeta eventMeta);
 
   /**
    * @param state     the initial state
@@ -34,7 +34,7 @@ public interface Decider {
   Event decide(State state, Command command, EventMeta eventMeta) throws CommandException;
 
   default Event apply(Command command) {
-    return createBy(command, eventMeta(command));
+    return decide(command, eventMeta(command));
   }
 
   default Event apply(State state, Command command) throws CommandException {

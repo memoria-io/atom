@@ -8,15 +8,14 @@ import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-public interface Saga extends Function<Event, Optional<Command>> {
+public interface Saga {
   Supplier<Id> idSupplier();
 
   Supplier<Long> timeSupplier();
 
-  Optional<Command> apply(Event event);
+  Optional<Command> react(Event event);
 
   default CommandMeta commandMeta(StateId stateId, Event event) {
     return new CommandMeta(CommandId.of(idSupplier().get()), stateId, timeSupplier().get(), event.meta().eventId());

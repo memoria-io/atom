@@ -17,13 +17,13 @@ class SagaTest {
 
   @Test
   @SuppressWarnings("OptionalGetWithoutIsPresent")
-  void apply() {
+  void react() {
     // Given
     var eventMeta = new EventMeta(EventId.of(0), 0, StateId.of(0), CommandId.of(0));
     var stateCreated = new StateCreated(eventMeta);
 
     // When
-    var command = saga.apply(stateCreated).get();
+    var command = saga.react(stateCreated).get();
 
     // Then
     assertThat(command).isInstanceOf(ChangeState.class);

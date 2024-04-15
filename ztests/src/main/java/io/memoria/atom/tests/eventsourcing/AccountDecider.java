@@ -37,9 +37,9 @@ import java.util.function.Supplier;
 public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplier) implements Decider {
 
   @Override
-  public Event createBy(Command command, EventMeta eventMeta) {
+  public Event decide(Command command, EventMeta eventMeta) {
     if (command instanceof AccountCommand accountCommand) {
-      return handle(accountCommand, eventMeta);
+      return decide(accountCommand, eventMeta);
     } else {
       throw UnknownCommand.of(command);
     }
@@ -49,7 +49,7 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
   public Event decide(State state, Command command, EventMeta eventMeta) throws CommandException {
     if (state instanceof Account account) {
       if (command instanceof AccountCommand accountCommand) {
-        return handle(account, accountCommand, eventMeta);
+        return decide(account, accountCommand, eventMeta);
       } else {
         throw UnknownCommand.of(command);
       }
@@ -59,22 +59,22 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
   }
 
   @SuppressWarnings("SwitchStatementWithTooFewBranches")
-  private AccountEvent handle(AccountCommand command, EventMeta newEventMeta) {
+  private AccountEvent decide(AccountCommand command, EventMeta newEventMeta) {
     return switch (command) {
       case CreateAccount cmd -> new AccountCreated(newEventMeta, cmd.accountName(), cmd.balance());
       default -> throw UnknownCommand.of(command);
     };
   }
 
-  private AccountEvent handle(Account state, AccountCommand command, EventMeta newEventMeta)
+  private AccountEvent decide(Account state, AccountCommand command, EventMeta newEventMeta)
           throws MismatchingCommandState, InvalidEvolutionCommand {
     return switch (state) {
-      case OpenAccount openAccount -> handle(openAccount, command, newEventMeta);
-      case ClosedAccount acc -> handle(acc, command, newEventMeta);
+      case OpenAccount openAccount -> decide(openAccount, command, newEventMeta);
+      case ClosedAccount acc -> decide(acc, command, newEventMeta);
     };
   }
 
-  private AccountEvent handle(OpenAccount account, AccountCommand command, EventMeta meta)
+  private AccountEvent decide(OpenAccount account, AccountCommand command, EventMeta meta)
           throws InvalidEvolutionCommand {
     return switch (command) {
       case CreateAccount cmd -> throw InvalidEvolutionCommand.of(account, cmd);
@@ -86,7 +86,7 @@ public record AccountDecider(Supplier<Id> idSupplier, Supplier<Long> timeSupplie
     };
   }
 
-  private AccountEvent handle(ClosedAccount state, AccountCommand command, EventMeta meta)
+  private AccountEvent decide(ClosedAccount state, AccountCommand command, EventMeta meta)
           throws InvalidEvolutionCommand {
     return switch (command) {
       case Credit cmd -> new CreditRejected(meta, cmd.debitedAcc(), cmd.amount());
