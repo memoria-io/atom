@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
-public final class CommandMeta implements Partitioned, Serializable {
+public class CommandMeta implements Partitioned, Serializable {
   @Serial
   private static final long serialVersionUID = 0L;
   private final CommandId commandId;
