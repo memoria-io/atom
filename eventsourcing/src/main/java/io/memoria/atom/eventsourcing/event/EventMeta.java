@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
-public final class EventMeta implements Partitioned, Versioned, Serializable {
+public class EventMeta implements Partitioned, Versioned, Serializable {
   @Serial
   private static final long serialVersionUID = 0L;
   private final EventId eventId;
@@ -87,26 +87,7 @@ public final class EventMeta implements Partitioned, Versioned, Serializable {
 
   @Override
   public String toString() {
-    return "EventMeta["
-           + "eventId="
-           + eventId
-           + ", "
-           + "version="
-           + version
-           + ", "
-           + "stateId="
-           + stateId
-           + ", "
-           + "commandId="
-           + commandId
-           + ", "
-           + "timestamp="
-           + timestamp
-           + ", "
-           + "sagaSource="
-           + sagaSource
-           + ']';
+    return STR."EventMeta[eventId=\{eventId}, version=\{version}, stateId=\{stateId}, commandId=\{commandId}, timestamp=\{timestamp}, sagaSource=\{sagaSource}\{']'}";
   }
-
 }
 

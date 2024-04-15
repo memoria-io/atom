@@ -53,9 +53,9 @@ class DefaultAggregate extends AbstractAggregate {
     Event event;
     if (stateRef.get() == null) {
       eventRepo.fetch(stateId()).forEach(this::evolve);
-      event = decider.apply(command);
+      event = decider.decide(command);
     } else {
-      event = decider.apply(stateRef.get(), command);
+      event = decider.decide(stateRef.get(), command);
     }
     eventRepo.append(event);
     command.meta().sagaSource().ifPresent(sagaSources::add);
@@ -67,9 +67,9 @@ class DefaultAggregate extends AbstractAggregate {
     State currentState = stateRef.get();
     State newState;
     if (isInitializerEvent(event)) {
-      newState = evolver.apply(event);
+      newState = evolver.evolve(event);
     } else {
-      newState = evolver.apply(currentState, event);
+      newState = evolver.evolve(currentState, event);
     }
     stateRef.set(newState);
     processedCommands.add(event.meta().commandId());

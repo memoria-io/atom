@@ -6,18 +6,18 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>atom</artifactId>
-        <version>21.34.0</version>
+        <version>21.35.0</version>
     </parent>
     <groupId>io.memoria.atom</groupId>
     <artifactId>xetcd</artifactId>
-    <version>21.34.0</version>
+    <version>21.35.0</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
     <description>ETCD Module</description>
 
     <dependencies>
         <dependency>
-            <groupId>io.memoria.atom</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

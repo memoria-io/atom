@@ -3,7 +3,7 @@ package io.memoria.atom.eventsourcing.event.exceptions;
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.state.StateId;
 
-public class MismatchingEvent extends EventRuntimeException {
+public class MismatchingEvent extends EventRTE {
   protected MismatchingEvent(String msg, Event event) {
     super(msg, event);
   }

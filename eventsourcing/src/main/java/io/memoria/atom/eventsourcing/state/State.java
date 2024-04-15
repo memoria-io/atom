@@ -9,6 +9,8 @@ import java.io.Serializable;
 public interface State extends Partitioned, Versioned, Serializable {
   StateMeta meta();
 
+  State withMeta(StateMeta meta);
+
   default StateId stateId() {
     return meta().stateId();
   }

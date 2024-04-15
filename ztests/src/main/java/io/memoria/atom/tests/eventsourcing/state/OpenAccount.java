@@ -1,5 +1,6 @@
 package io.memoria.atom.tests.eventsourcing.state;
 
+import io.memoria.atom.eventsourcing.state.State;
 import io.memoria.atom.eventsourcing.state.StateMeta;
 
 public record OpenAccount(StateMeta meta,
@@ -48,5 +49,10 @@ public record OpenAccount(StateMeta meta,
 
   public boolean canDebit(long amount) {
     return balance - amount > 0;
+  }
+
+  @Override
+  public State withMeta(StateMeta meta) {
+    return new OpenAccount(meta, name, balance, debitCount, confirmedDebit, creditCount);
   }
 }
