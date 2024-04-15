@@ -22,7 +22,7 @@
         <!-- Modules Dependencies -->
         <!--======================================================================================== -->
         <dependency>
-            <groupId>io.memoria.atom</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

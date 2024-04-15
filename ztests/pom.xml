@@ -19,22 +19,22 @@
         <!-- Module Dependencies -->
         <!--======================================================================================== -->
         <dependency>
-            <groupId>io.memoria.atom</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>xcassandra</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.memoria.atom</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>xetcd</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.memoria.atom</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>xhelidon</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.memoria.atom</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>xjackson</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

@@ -19,7 +19,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.memoria.atom</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>eventsourcing</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
