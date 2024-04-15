@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>jbom</artifactId>
-        <version>21.6.0</version>
+        <version>21.7.0</version>
     </parent>
 
     <!--suppress MavenRedundantGroupId -->
@@ -37,9 +37,9 @@
 
     <properties>
         <jsonwebtoken.version>0.12.3</jsonwebtoken.version>
-        <cassandra.version>4.15.0</cassandra.version>
-        <helidon.version>4.0.0</helidon.version>
-        <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
+        <cassandra.version>4.17.0</cassandra.version>
+        <helidon.version>4.0.7</helidon.version>
+        <jsonwebtoken.version>0.12.5</jsonwebtoken.version>
         <sonar.coverage.exclusions>
             **/Main.java,
             **/exceptions/*.java,
@@ -80,7 +80,7 @@
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-bom</artifactId>
-                <version>1.10.6</version>
+                <version>1.12.5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -95,7 +95,7 @@
             <dependency>
                 <groupId>org.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
-                <version>3.9.6</version>
+                <version>3.10.8</version>
             </dependency>
             <!--======================================================================================== -->
             <!-- Security Dependencies -->
@@ -139,7 +139,7 @@
             <dependency>
                 <groupId>io.etcd</groupId>
                 <artifactId>jetcd-core</artifactId>
-                <version>0.7.5</version>
+                <version>0.7.7</version>
             </dependency>
             <dependency>
                 <groupId>com.datastax.oss</groupId>
