@@ -34,12 +34,6 @@
             <groupId>com.datastax.oss</groupId>
             <artifactId>java-driver-query-builder</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.helidon.inject</groupId>
-            <artifactId>helidon-inject-api</artifactId>
-            <version>4.0.0</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 </project>
 
