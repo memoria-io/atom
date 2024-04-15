@@ -3,9 +3,7 @@ package io.memoria.atom.eventsourcing.aggregate;
 import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
 import io.memoria.atom.eventsourcing.event.Event;
-import io.memoria.atom.eventsourcing.rule.Decider;
-import io.memoria.atom.eventsourcing.rule.Evolver;
-import io.memoria.atom.eventsourcing.state.State;
+import io.memoria.atom.eventsourcing.event.repo.EventRepo;
 import io.memoria.atom.eventsourcing.state.StateId;
 
 import java.util.Optional;
@@ -13,11 +11,9 @@ import java.util.Optional;
 public interface Aggregate {
   StateId stateId();
 
-  Optional<Event> decide(Command command) throws CommandException;
+  Optional<Event> handle(Command command) throws CommandException;
 
-  Optional<State> evolve(Event event);
-
-  static Aggregate create(Decider decider, Evolver evolver, StateId stateId) {
-    return new DefaultAggregate(decider, evolver, stateId);
+  static Aggregate create(StateId stateId, Decider decider, Evolver evolver, EventRepo eventRepo) {
+    return new DefaultAggregate(stateId, decider, evolver, eventRepo);
   }
 }

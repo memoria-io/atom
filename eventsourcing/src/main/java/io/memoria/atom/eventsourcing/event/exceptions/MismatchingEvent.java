@@ -7,6 +7,7 @@ public class MismatchingEvent extends EventRuntimeException {
   protected MismatchingEvent(String msg, Event event) {
     super(msg, event);
   }
+
   public static MismatchingEvent of(Event event, long expectedVersion) {
     var msg = "The event:%s version doesn't match expected version:%d".formatted(event.pKey(), expectedVersion);
     return new MismatchingEvent(msg, event);
