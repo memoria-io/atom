@@ -24,11 +24,6 @@
             <artifactId>security</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.memoria.atom</groupId>
-            <artifactId>xjackson</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
     </dependencies>
 </project>
 
