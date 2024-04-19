@@ -18,9 +18,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-class DefaultAggregate extends AbstractAggregate {
+class DefaultAggregate implements Aggregate {
   private static final Logger log = LoggerFactory.getLogger(DefaultAggregate.class.getName());
 
+  private final StateId stateId;
   // Rules
   private final Decider decider;
   private final Evolver evolver;
@@ -32,7 +33,7 @@ class DefaultAggregate extends AbstractAggregate {
   private final Set<EventId> sagaSources;
 
   public DefaultAggregate(StateId stateId, Decider decider, Evolver evolver, EventRepo eventRepo) {
-    super(stateId);
+    this.stateId = stateId;
     // Rules
     this.decider = decider;
     this.evolver = evolver;
@@ -45,14 +46,21 @@ class DefaultAggregate extends AbstractAggregate {
   }
 
   @Override
+  public StateId stateId() {
+    return this.stateId;
+  }
+
+  @Override
   public Optional<Event> handle(Command command) throws CommandException {
+    initialize();
+    // Validations should be after initialization
     if (isDuplicate(command)) {
       return Optional.empty();
     }
     validate(command);
     Event event;
     if (stateRef.get() == null) {
-      eventRepo.fetch(stateId()).forEach(this::evolve);
+      // If still no state, expect a creation command
       event = decider.decide(command);
     } else {
       event = decider.decide(stateRef.get(), command);
@@ -60,6 +68,15 @@ class DefaultAggregate extends AbstractAggregate {
     eventRepo.append(event);
     command.meta().sagaSource().ifPresent(sagaSources::add);
     return Optional.of(event);
+  }
+
+  /**
+   * Initialize if no initial state
+   */
+  private void initialize() {
+    if (stateRef.get() == null) {
+      eventRepo.fetch(stateId()).forEach(this::evolve);
+    }
   }
 
   void evolve(Event event) {
