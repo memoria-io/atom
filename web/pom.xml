@@ -6,16 +6,20 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>atom</artifactId>
-        <version>21.35.0</version>
+        <version>21.37.0</version>
     </parent>
     <groupId>io.memoria.atom</groupId>
     <artifactId>web</artifactId>
-    <version>21.35.0</version>
+    <version>21.37.0</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
     <description>Web module</description>
 
     <dependencies>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
         <!--======================================================================================== -->
         <!-- Modules Dependencies -->
         <!--======================================================================================== -->
@@ -24,6 +28,7 @@
             <artifactId>security</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+
     </dependencies>
 </project>
 

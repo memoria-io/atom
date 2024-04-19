@@ -21,11 +21,14 @@ public class TestDeps {
     json = new JsonJackson(jacksonJsonMapper(true));
     compactJson = new JsonJackson(jacksonJsonMapper(false));
     // Yaml
-    yaml = new YamlJackson(JacksonUtils.yaml());
+    yaml = new YamlJackson(JacksonUtils.defaultYaml());
   }
 
   private static ObjectMapper jacksonJsonMapper(boolean isPretty) {
-    var jsonOM = (isPretty) ? JacksonUtils.prettyJson() : JacksonUtils.json();
+    var jsonOM = JacksonUtils.defaultJson();
+    if (isPretty) {
+      JacksonUtils.prettyJson(jsonOM);
+    }
     JacksonUtils.addMixInPropertyFormat(jsonOM, Employee.class);
     jsonOM.registerSubtypes(Manager.class, Engineer.class);
     return jsonOM;

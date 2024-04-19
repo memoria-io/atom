@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>atom</artifactId>
-        <version>21.35.0</version>
+        <version>21.37.0</version>
     </parent>
 
     <groupId>io.memoria.atom</groupId>
     <artifactId>xcassandra</artifactId>
-    <version>21.35.0</version>
+    <version>21.37.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
@@ -33,12 +33,6 @@
         <dependency>
             <groupId>com.datastax.oss</groupId>
             <artifactId>java-driver-query-builder</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.helidon.inject</groupId>
-            <artifactId>helidon-inject-api</artifactId>
-            <version>4.0.0</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

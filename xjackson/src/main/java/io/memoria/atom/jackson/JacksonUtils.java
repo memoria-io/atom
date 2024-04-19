@@ -36,7 +36,7 @@ public class JacksonUtils {
   /**
    * Main json ObjectMapper
    */
-  public static ObjectMapper json(Module... modules) {
+  public static ObjectMapper defaultJson(Module... modules) {
     ObjectMapper om = JsonMapper.builder().build();
     setDateFormat(om);
     addJ8Modules(om);
@@ -48,15 +48,18 @@ public class JacksonUtils {
     return om;
   }
 
-  private static SimpleModule getIdModule() {
-    return new SimpleModule().addSerializer(Id.class, new IdSerializer<>(Id.class))
-                             .addDeserializer(Id.class, new IdDeserializer<>(Id.class, Id::of));
+  public static void prettyJson(ObjectMapper om) {
+    Separators separators = Separators.createDefaultInstance().withObjectFieldValueSpacing(NONE);
+    var printer = new DefaultPrettyPrinter(separators);
+    printer.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+    om.enable(SerializationFeature.INDENT_OUTPUT);
+    om.setDefaultPrettyPrinter(printer);
   }
 
   /**
    * Main Yaml ObjectMapper
    */
-  public static ObjectMapper yaml(Module... modules) {
+  public static ObjectMapper defaultYaml(Module... modules) {
     var yfb = new YAMLFactoryBuilder(YAMLFactory.builder().build());
     yfb.configure(YAMLGenerator.Feature.INDENT_ARRAYS_WITH_INDICATOR, true);
     var om = new ObjectMapper(yfb.build());
@@ -111,20 +114,6 @@ public class JacksonUtils {
     om.registerModule(new ParameterNamesModule()).registerModule(new Jdk8Module()).registerModule(new JavaTimeModule());
   }
 
-  public static ObjectMapper prettyJson() {
-    ObjectMapper json = json();
-    prettyJson(json);
-    return json;
-  }
-
-  public static void prettyJson(ObjectMapper om) {
-    Separators separators = Separators.createDefaultInstance().withObjectFieldValueSpacing(NONE);
-    var printer = new DefaultPrettyPrinter(separators);
-    printer.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-    om.enable(SerializationFeature.INDENT_OUTPUT);
-    om.setDefaultPrettyPrinter(printer);
-  }
-
   public static <T extends Id> SimpleModule subIdValueObjectsModule(Class<T> tClass, Function<String, T> fromString) {
     var atomModule = new SimpleModule();
     atomModule.addDeserializer(tClass, new IdDeserializer<>(tClass, fromString));
@@ -147,5 +136,10 @@ public class JacksonUtils {
     atomModule.addDeserializer(tClass, new GenericValueObjectDeserializer<>(tClass, fromString));
     atomModule.addSerializer(tClass, new GenericValueObjectSerializer<>(tClass, toString));
     return atomModule;
+  }
+
+  private static SimpleModule getIdModule() {
+    return new SimpleModule().addSerializer(Id.class, new IdSerializer<>(Id.class))
+                             .addDeserializer(Id.class, new IdDeserializer<>(Id.class, Id::of));
   }
 }

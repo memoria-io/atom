@@ -50,7 +50,7 @@ class GenericObjectTransformerTest {
 
   private static ObjectMapper createMapper() {
     var subIdModule = JacksonUtils.genericValueObjectsModule(SomeId.class, SomeId::new, SomeId::myValue);
-    var om = JacksonUtils.json(subIdModule);
+    var om = JacksonUtils.defaultJson(subIdModule);
     JacksonUtils.prettyJson(om);
     JacksonUtils.addMixInPropertyFormat(om, Person.class);
     return om;
