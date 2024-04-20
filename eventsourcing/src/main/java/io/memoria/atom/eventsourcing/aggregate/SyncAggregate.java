@@ -18,8 +18,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-class DefaultAggregate implements Aggregate {
-  private static final Logger log = LoggerFactory.getLogger(DefaultAggregate.class.getName());
+class SyncAggregate implements Aggregate {
+  private static final Logger log = LoggerFactory.getLogger(SyncAggregate.class.getName());
 
   private final StateId stateId;
   // Rules
@@ -32,7 +32,7 @@ class DefaultAggregate implements Aggregate {
   private final Set<CommandId> processedCommands;
   private final Set<EventId> sagaSources;
 
-  public DefaultAggregate(StateId stateId, Decider decider, Evolver evolver, EventRepo eventRepo) {
+  public SyncAggregate(StateId stateId, Decider decider, Evolver evolver, EventRepo eventRepo) {
     this.stateId = stateId;
     // Rules
     this.decider = decider;
@@ -51,7 +51,7 @@ class DefaultAggregate implements Aggregate {
   }
 
   @Override
-  public Optional<Event> handle(Command command) throws CommandException {
+  public synchronized Optional<Event> handle(Command command) throws CommandException {
     initialize();
     // Validations should be after initialization
     if (isDuplicate(command)) {
