@@ -1,6 +1,6 @@
 package io.memoria.atom.eventsourcing.aggregate;
 
-import io.memoria.atom.eventsourcing.aggregate.store.Store;
+import io.memoria.atom.eventsourcing.aggregate.store.AggregateStore;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
@@ -19,12 +19,12 @@ import static io.memoria.atom.eventsourcing.aggregate.Utils.cachedActorStore;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AggregatesTest {
-  private final Aggregates aggregates = Aggregates.create(Store.mapStore(), new DomainAggregateFactory());
+  private final Aggregates aggregates = Aggregates.create(AggregateStore.mapStore(), new DomainAggregateFactory());
   private final StateId stateId = StateId.of(0);
 
   @ParameterizedTest
   @MethodSource("stores")
-  void defaultSystem(Store store) throws CommandException {
+  void defaultSystem(AggregateStore aggregateStore) throws CommandException {
     // Given
     var meta = new CommandMeta(CommandId.of(UUID.randomUUID()), stateId);
     // When
@@ -34,7 +34,7 @@ public class AggregatesTest {
   }
 
   public static Stream<Arguments> stores() {
-    return Stream.of(Arguments.of(Named.of("Concurrent map store", Store.mapStore())),
+    return Stream.of(Arguments.of(Named.of("Concurrent map store", AggregateStore.mapStore())),
                      Arguments.of(Named.of("Cache store", cachedActorStore("aggregateCache"))));
   }
 }

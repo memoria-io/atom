@@ -9,15 +9,15 @@ import java.util.stream.Stream;
 
 import static io.memoria.atom.eventsourcing.aggregate.Utils.cachedActorStore;
 
-class StoreTest {
+class AggregateStoreTest {
   @ParameterizedTest
   @MethodSource("stores")
-  void get(Store store) {
+  void get(AggregateStore aggregateStore) {
 
   }
 
   public static Stream<Arguments> stores() {
-    return Stream.of(Arguments.of(Named.of("Concurrent map store", Store.mapStore())),
+    return Stream.of(Arguments.of(Named.of("Concurrent map store", AggregateStore.mapStore())),
                      Arguments.of(Named.of("Cache store", cachedActorStore("storesCache"))));
   }
 }

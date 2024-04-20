@@ -3,34 +3,36 @@ package io.memoria.atom.eventsourcing.aggregate.store;
 import io.memoria.atom.eventsourcing.aggregate.Aggregate;
 import io.memoria.atom.eventsourcing.state.StateId;
 
+import javax.cache.Cache;
+import javax.cache.Cache.Entry;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.StreamSupport;
 
-class MemStore implements Store {
-  private final Map<StateId, Aggregate> map;
+class CachedAggregateStore implements AggregateStore {
+  private final Cache<StateId, Aggregate> cache;
 
-  public MemStore(Map<StateId, Aggregate> map) {
-    this.map = map;
+  public CachedAggregateStore(Cache<StateId, Aggregate> cache) {
+    this.cache = cache;
   }
 
   @Override
   public void computeIfAbsent(StateId stateId, Function<StateId, Aggregate> actorFn) {
-    map.computeIfAbsent(stateId, actorFn);
+    cache.putIfAbsent(stateId, actorFn.apply(stateId));
   }
 
   @Override
   public Aggregate get(StateId stateId) {
-    return map.get(stateId);
+    return cache.get(stateId);
   }
 
   @Override
   public void remove(StateId stateId) {
-    map.remove(stateId);
+    cache.remove(stateId);
   }
 
   @Override
   public Iterator<Aggregate> iterator() {
-    return map.values().iterator();
+    return StreamSupport.stream(cache.spliterator(), false).map(Entry::getValue).iterator();
   }
 }

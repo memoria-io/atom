@@ -8,22 +8,22 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public interface Store extends Iterable<Aggregate> {
+public interface AggregateStore extends Iterable<Aggregate> {
   void computeIfAbsent(StateId stateId, Function<StateId, Aggregate> actorFn);
 
   Aggregate get(StateId stateId);
 
   void remove(StateId stateId);
 
-  static Store mapStore() {
-    return new MemStore(new ConcurrentHashMap<>());
+  static AggregateStore mapStore() {
+    return new MemAggregateStore(new ConcurrentHashMap<>());
   }
 
-  static Store mapStore(Map<StateId, Aggregate> map) {
-    return new MemStore(map);
+  static AggregateStore mapStore(Map<StateId, Aggregate> map) {
+    return new MemAggregateStore(map);
   }
 
-  static Store cacheStore(Cache<StateId, Aggregate> cache) {
-    return new CachedStore(cache);
+  static AggregateStore cacheStore(Cache<StateId, Aggregate> cache) {
+    return new CachedAggregateStore(cache);
   }
 }
