@@ -15,6 +15,20 @@
     <name>${project.groupId}.${project.artifactId}</name>
     <description>Web module</description>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- ===============================================================   -->
+            <!-- Observability Dependencies -->
+            <!-- ===============================================================   -->
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-bom</artifactId>
+                <version>1.12.5</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>io.micrometer</groupId>
