@@ -1,4 +1,4 @@
-package io.memoria.atom.web.security;
+package io.memoria.atom.security;
 
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
