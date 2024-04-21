@@ -1,4 +1,4 @@
-package io.memoria.atom.web.security;
+package io.memoria.atom.security;
 
 import io.memoria.atom.core.security.Hasher;
 import io.memoria.atom.core.security.Verifier;
