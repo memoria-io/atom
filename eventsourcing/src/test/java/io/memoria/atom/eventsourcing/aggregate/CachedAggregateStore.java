@@ -1,6 +1,6 @@
-package io.memoria.atom.eventsourcing.aggregate.store;
+package io.memoria.atom.eventsourcing.aggregate;
 
-import io.memoria.atom.eventsourcing.aggregate.Aggregate;
+import io.memoria.atom.eventsourcing.aggregate.store.AggregateStore;
 import io.memoria.atom.eventsourcing.state.StateId;
 
 import javax.cache.Cache;

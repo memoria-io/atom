@@ -8,5 +8,4 @@ module io.memoria.atom.eventsourcing {
   exports io.memoria.atom.eventsourcing.state.exceptions;
   requires io.memoria.atom.core;
   requires org.slf4j;
-  requires cache.api;
 }
