@@ -2,9 +2,9 @@ package io.memoria.atom.eventsourcing.saga;
 
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.command.CommandId;
-import io.memoria.atom.eventsourcing.data.ChangeState;
-import io.memoria.atom.eventsourcing.data.SomeSaga;
-import io.memoria.atom.eventsourcing.data.StateCreated;
+import io.memoria.atom.eventsourcing.usecase.simple.ChangeState;
+import io.memoria.atom.eventsourcing.usecase.simple.SimpleSaga;
+import io.memoria.atom.eventsourcing.usecase.simple.StateCreated;
 import io.memoria.atom.eventsourcing.event.EventId;
 import io.memoria.atom.eventsourcing.event.EventMeta;
 import io.memoria.atom.eventsourcing.state.StateId;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SagaTest {
-  private final Saga saga = new SomeSaga(() -> Id.of(0), () -> 0L);
+  private final Saga saga = new SimpleSaga(() -> Id.of(0), () -> 0L);
 
   @Test
   @SuppressWarnings("OptionalGetWithoutIsPresent")
