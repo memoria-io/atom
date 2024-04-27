@@ -14,6 +14,6 @@ public class Utils {
                                                                .setStoreByValue(false);
     //.setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.ONE_MINUTE));
     var cache = Caching.getCachingProvider().getCacheManager().createCache(cacheName, config);
-    return AggregateStore.cacheStore(cache);
+    return new CachedAggregateStore(cache);
   }
 }

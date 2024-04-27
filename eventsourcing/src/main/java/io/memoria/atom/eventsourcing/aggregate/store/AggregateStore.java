@@ -3,7 +3,6 @@ package io.memoria.atom.eventsourcing.aggregate.store;
 import io.memoria.atom.eventsourcing.aggregate.Aggregate;
 import io.memoria.atom.eventsourcing.state.StateId;
 
-import javax.cache.Cache;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -21,9 +20,5 @@ public interface AggregateStore extends Iterable<Aggregate> {
 
   static AggregateStore mapStore(Map<StateId, Aggregate> map) {
     return new MemAggregateStore(map);
-  }
-
-  static AggregateStore cacheStore(Cache<StateId, Aggregate> cache) {
-    return new CachedAggregateStore(cache);
   }
 }

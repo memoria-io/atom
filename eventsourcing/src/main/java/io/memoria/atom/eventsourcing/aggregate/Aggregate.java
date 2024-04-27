@@ -14,6 +14,6 @@ public interface Aggregate {
   Optional<Event> handle(Command command) throws CommandException;
 
   static Aggregate create(StateId stateId, Decider decider, Evolver evolver, EventRepo eventRepo) {
-    return new DefaultAggregate(stateId, decider, evolver, eventRepo);
+    return new SyncAggregate(stateId, decider, evolver, eventRepo);
   }
 }

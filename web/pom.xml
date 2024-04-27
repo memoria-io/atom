@@ -6,29 +6,34 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>atom</artifactId>
-        <version>21.38.0</version>
+        <version>21.39.0</version>
     </parent>
     <groupId>io.memoria.atom</groupId>
     <artifactId>web</artifactId>
-    <version>21.38.0</version>
+    <version>21.39.0</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
     <description>Web module</description>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- ===============================================================   -->
+            <!-- Observability Dependencies -->
+            <!-- ===============================================================   -->
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-bom</artifactId>
+                <version>1.12.5</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
-        <!--======================================================================================== -->
-        <!-- Modules Dependencies -->
-        <!--======================================================================================== -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>security</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-
     </dependencies>
 </project>
 
