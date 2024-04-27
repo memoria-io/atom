@@ -2,8 +2,6 @@ package io.memoria.atom.jackson;
 
 import io.memoria.atom.core.file.ResourceFile;
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.jackson.cases.company.Engineer;
-import io.memoria.atom.jackson.cases.company.Manager;
 
 import java.io.IOException;
 import java.time.LocalDate;

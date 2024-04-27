@@ -18,12 +18,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import io.memoria.atom.core.domain.ValueObject;
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.jackson.adapters.GenericValueObjectTransformer.GenericValueObjectDeserializer;
-import io.memoria.atom.jackson.adapters.GenericValueObjectTransformer.GenericValueObjectSerializer;
-import io.memoria.atom.jackson.adapters.IdTransformer.IdDeserializer;
-import io.memoria.atom.jackson.adapters.IdTransformer.IdSerializer;
-import io.memoria.atom.jackson.adapters.ValueObjectTransformer.ValueObjectDeserializer;
-import io.memoria.atom.jackson.adapters.ValueObjectTransformer.ValueObjectSerializer;
+import io.memoria.atom.jackson.transformer.generic.GenericValueObjectTransformer.GenericValueObjectDeserializer;
+import io.memoria.atom.jackson.transformer.generic.GenericValueObjectTransformer.GenericValueObjectSerializer;
+import io.memoria.atom.jackson.transformer.id.IdTransformer.IdDeserializer;
+import io.memoria.atom.jackson.transformer.id.IdTransformer.IdSerializer;
+import io.memoria.atom.jackson.transformer.value.ValueObjectTransformer.ValueObjectDeserializer;
+import io.memoria.atom.jackson.transformer.value.ValueObjectTransformer.ValueObjectSerializer;
 
 import java.text.SimpleDateFormat;
 import java.util.function.Function;

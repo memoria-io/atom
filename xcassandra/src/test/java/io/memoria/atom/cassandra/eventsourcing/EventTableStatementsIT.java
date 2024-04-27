@@ -19,7 +19,7 @@ import java.util.stream.StreamSupport;
 @TestMethodOrder(value = OrderAnnotation.class)
 class EventTableStatementsIT {
   private static final String KEYSPACE = "eventsourcing";
-  private static final String TABLE = "events" + System.currentTimeMillis();
+  private static final String TABLE = STR."events\{System.currentTimeMillis()}";
   private static final String PARTITION_KEY = "aggId";
   private static final CqlSession session = Infra.cqlSession();
   private static final int COUNT = 100;
