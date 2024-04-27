@@ -1,3 +1,5 @@
 package io.memoria.atom.cassandra.exceptions;
 
-public record RowInfo(String keyspace, String table, String partitionKey, long clusterKey) {}
+import java.io.Serializable;
+
+public record RowInfo(String keyspace, String table, String partitionKey, long clusterKey) implements Serializable {}
