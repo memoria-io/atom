@@ -5,12 +5,12 @@ import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
 import io.memoria.atom.eventsourcing.command.exceptions.MismatchingCommandState;
-import io.memoria.atom.eventsourcing.data.ChangeState;
-import io.memoria.atom.eventsourcing.data.CreateState;
-import io.memoria.atom.eventsourcing.data.SomeDecider;
-import io.memoria.atom.eventsourcing.data.SomeState;
-import io.memoria.atom.eventsourcing.data.StateChanged;
-import io.memoria.atom.eventsourcing.data.StateCreated;
+import io.memoria.atom.eventsourcing.usecase.simple.ChangeState;
+import io.memoria.atom.eventsourcing.usecase.simple.CreateState;
+import io.memoria.atom.eventsourcing.usecase.simple.SimpleDecider;
+import io.memoria.atom.eventsourcing.usecase.simple.SimpleState;
+import io.memoria.atom.eventsourcing.usecase.simple.StateChanged;
+import io.memoria.atom.eventsourcing.usecase.simple.StateCreated;
 import io.memoria.atom.eventsourcing.state.StateId;
 import io.memoria.atom.eventsourcing.state.StateMeta;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DeciderTest {
-  private final Decider decider = new SomeDecider(() -> Id.of(0), () -> 0L);
+  private final Decider decider = new SimpleDecider(() -> Id.of(0), () -> 0L);
 
   @Test
   void decideCreation() throws CommandException {
@@ -37,7 +37,7 @@ class DeciderTest {
   @Test
   void decideEvolution() throws CommandException {
     // Given
-    var someState = new SomeState(new StateMeta(StateId.of(0)));
+    var someState = new SimpleState(new StateMeta(StateId.of(0)));
     var changeState = new ChangeState(new CommandMeta(CommandId.of(0), StateId.of(0)));
 
     // When
@@ -51,7 +51,7 @@ class DeciderTest {
   @Test
   void decideEvolutionFail() {
     // Given
-    var someState = new SomeState(new StateMeta(StateId.of("stateId")));
+    var someState = new SimpleState(new StateMeta(StateId.of("stateId")));
     var changeState = new ChangeState(new CommandMeta(CommandId.of(0), StateId.of("differentStateId")));
 
     // then

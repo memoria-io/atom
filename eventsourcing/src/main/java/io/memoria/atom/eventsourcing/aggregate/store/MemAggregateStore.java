@@ -15,8 +15,8 @@ class MemAggregateStore implements AggregateStore {
   }
 
   @Override
-  public void computeIfAbsent(StateId stateId, Function<StateId, Aggregate> actorFn) {
-    map.computeIfAbsent(stateId, actorFn);
+  public void computeIfAbsent(StateId stateId, Function<StateId, Aggregate> lazyActorFn) {
+    map.computeIfAbsent(stateId, lazyActorFn);
   }
 
   @Override
@@ -27,6 +27,11 @@ class MemAggregateStore implements AggregateStore {
   @Override
   public void remove(StateId stateId) {
     map.remove(stateId);
+  }
+
+  @Override
+  public void clear() {
+    map.clear();
   }
 
   @Override

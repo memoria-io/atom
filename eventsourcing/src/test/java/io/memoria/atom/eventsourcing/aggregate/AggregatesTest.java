@@ -4,9 +4,9 @@ import io.memoria.atom.eventsourcing.aggregate.store.AggregateStore;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
-import io.memoria.atom.eventsourcing.data.CreateState;
-import io.memoria.atom.eventsourcing.data.StateCreated;
 import io.memoria.atom.eventsourcing.state.StateId;
+import io.memoria.atom.eventsourcing.usecase.simple.CreateState;
+import io.memoria.atom.eventsourcing.usecase.simple.StateCreated;
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -15,7 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static io.memoria.atom.eventsourcing.aggregate.Utils.cachedActorStore;
+import static io.memoria.atom.eventsourcing.Utils.cachedAggregateStore;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AggregatesTest {
@@ -35,6 +35,6 @@ public class AggregatesTest {
 
   public static Stream<Arguments> stores() {
     return Stream.of(Arguments.of(Named.of("Concurrent map store", AggregateStore.mapStore())),
-                     Arguments.of(Named.of("Cache store", cachedActorStore("aggregateCache"))));
+                     Arguments.of(Named.of("Cache store", cachedAggregateStore("aggregateCache", 100, 2000))));
   }
 }
