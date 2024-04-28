@@ -3,8 +3,8 @@ package io.memoria.atom.cassandra;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.type.DataTypes;
 import com.datastax.oss.driver.api.querybuilder.SchemaBuilder;
-import io.memoria.atom.cassandra.eventsourcing.EventTableStatements;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import java.util.Objects;
 
 @TestMethodOrder(value = OrderAnnotation.class)
-class CassandraUtilsIT {
+class XCassandraIT {
   private static final String KEYSPACE = "some_space";
   private static final CqlSession session = Infra.cqlSession();
 
@@ -32,7 +32,7 @@ class CassandraUtilsIT {
   @Order(0)
   void createKeyspace() {
     // Given
-    var st = CassandraUtils.createKeyspace(KEYSPACE, 1);
+    var st = XCassandra.createKeyspace(KEYSPACE, 1);
 
     // Then
     Assertions.assertThatNoException().isThrownBy(() -> session.execute(st).wasApplied());
@@ -45,13 +45,13 @@ class CassandraUtilsIT {
     String tableName = "SOME_TABLE";
     var creationSt = SchemaBuilder.createTable(KEYSPACE, tableName)
                                   .ifNotExists()
-                                  .withPartitionKey("PARTITION_KEY_COL", EventTableStatements.PARTITION_KEY_COL_TYPE)
+                                  .withPartitionKey("PARTITION_KEY_COL", DataTypes.TEXT)
                                   .build();
     // Then
     Assertions.assertThatNoException().isThrownBy(() -> session.execute(creationSt).wasApplied());
 
     // And
-    var truncateSt = CassandraUtils.truncate(KEYSPACE, tableName);
+    var truncateSt = XCassandra.truncate(KEYSPACE, tableName);
     Assertions.assertThatNoException().isThrownBy(() -> session.execute(truncateSt).wasApplied());
   }
 }

@@ -7,16 +7,16 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class JsonJacksonTest {
+class JacksonJsonTest {
   @Test
-  void serializeEngineer() throws TextException {
+  void serializeEngineer() {
     var yamlEngineer = TestDeps.json.serialize(Resources.BOB_ENGINEER);
     assert Resources.BOB_ENGINEER_JSON != null;
     assertEquals(Resources.BOB_ENGINEER_JSON, yamlEngineer);
   }
 
   @Test
-  void serializeManager() throws TextException {
+  void serializeManager() {
     var yamlEngineer = TestDeps.json.serialize(Resources.ANNIKA_MANAGER);
     assert Resources.ANNIKA_MANAGER_JSON != null;
     assertEquals(Resources.ANNIKA_MANAGER_JSON, yamlEngineer);

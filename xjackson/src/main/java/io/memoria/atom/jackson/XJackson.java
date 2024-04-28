@@ -18,6 +18,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import io.memoria.atom.core.domain.ValueObject;
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.core.text.TextTransformer;
 import io.memoria.atom.jackson.transformer.generic.GenericValueObjectTransformer.GenericValueObjectDeserializer;
 import io.memoria.atom.jackson.transformer.generic.GenericValueObjectTransformer.GenericValueObjectSerializer;
 import io.memoria.atom.jackson.transformer.id.IdTransformer.IdDeserializer;
@@ -30,13 +31,21 @@ import java.util.function.Function;
 
 import static com.fasterxml.jackson.core.util.Separators.Spacing.NONE;
 
-public class JacksonUtils {
-  private JacksonUtils() {}
+public class XJackson {
+  private XJackson() {}
+
+  public static TextTransformer jsonTransformer(ObjectMapper objectMapper) {
+    return new JacksonTextTransformer(objectMapper);
+  }
+
+  public static TextTransformer yamlTransformer(ObjectMapper objectMapper) {
+    return new JacksonTextTransformer(objectMapper);
+  }
 
   /**
-   * Main json ObjectMapper
+   * Default json ObjectMapper
    */
-  public static ObjectMapper defaultJson(Module... modules) {
+  public static ObjectMapper jsonObjectMapper(Module... modules) {
     ObjectMapper om = JsonMapper.builder().build();
     setDateFormat(om);
     addJ8Modules(om);
@@ -48,18 +57,10 @@ public class JacksonUtils {
     return om;
   }
 
-  public static void prettyJson(ObjectMapper om) {
-    Separators separators = Separators.createDefaultInstance().withObjectFieldValueSpacing(NONE);
-    var printer = new DefaultPrettyPrinter(separators);
-    printer.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-    om.enable(SerializationFeature.INDENT_OUTPUT);
-    om.setDefaultPrettyPrinter(printer);
-  }
-
   /**
-   * Main Yaml ObjectMapper
+   * Default Yaml ObjectMapper
    */
-  public static ObjectMapper defaultYaml(Module... modules) {
+  public static ObjectMapper yamlObjectMapper(Module... modules) {
     var yfb = new YAMLFactoryBuilder(YAMLFactory.builder().build());
     yfb.configure(YAMLGenerator.Feature.INDENT_ARRAYS_WITH_INDICATOR, true);
     var om = new ObjectMapper(yfb.build());
@@ -71,6 +72,14 @@ public class JacksonUtils {
     }
     om.configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false);
     return om;
+  }
+
+  public static void pretty(ObjectMapper om) {
+    Separators separators = Separators.createDefaultInstance().withObjectFieldValueSpacing(NONE);
+    var printer = new DefaultPrettyPrinter(separators);
+    printer.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+    om.enable(SerializationFeature.INDENT_OUTPUT);
+    om.setDefaultPrettyPrinter(printer);
   }
 
   /**

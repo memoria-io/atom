@@ -4,10 +4,10 @@ import io.memoria.atom.core.text.TextException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class YamlJacksonTest {
+class JacksonYamlTest {
 
   @Test
-  void serializeEngineer() throws TextException {
+  void serializeEngineer() {
     // When
     var yamlEngineer = TestDeps.yaml.serialize(Resources.BOB_ENGINEER);
 
@@ -16,7 +16,7 @@ class YamlJacksonTest {
   }
 
   @Test
-  void serializeManager() throws TextException {
+  void serializeManager() {
     // When
     var yamlEngineer = TestDeps.yaml.serialize(Resources.ANNIKA_MANAGER);
 

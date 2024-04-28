@@ -1,12 +1,12 @@
 package io.memoria.atom.eventsourcing.usecase.banking;
 
-import io.memoria.atom.eventsourcing.usecase.banking.event.DebitRejected;
 import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
 import io.memoria.atom.eventsourcing.state.StateMeta;
 import io.memoria.atom.eventsourcing.usecase.banking.command.Debit;
 import io.memoria.atom.eventsourcing.usecase.banking.event.AccountEvent;
+import io.memoria.atom.eventsourcing.usecase.banking.event.DebitRejected;
 import io.memoria.atom.eventsourcing.usecase.banking.event.Debited;
 import io.memoria.atom.eventsourcing.usecase.banking.state.OpenAccount;
 import org.junit.jupiter.params.ParameterizedTest;

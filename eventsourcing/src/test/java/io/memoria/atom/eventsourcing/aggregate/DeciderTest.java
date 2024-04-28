@@ -5,14 +5,14 @@ import io.memoria.atom.eventsourcing.command.CommandId;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
 import io.memoria.atom.eventsourcing.command.exceptions.MismatchingCommandState;
+import io.memoria.atom.eventsourcing.state.StateId;
+import io.memoria.atom.eventsourcing.state.StateMeta;
 import io.memoria.atom.eventsourcing.usecase.simple.ChangeState;
 import io.memoria.atom.eventsourcing.usecase.simple.CreateState;
 import io.memoria.atom.eventsourcing.usecase.simple.SimpleDecider;
 import io.memoria.atom.eventsourcing.usecase.simple.SimpleState;
 import io.memoria.atom.eventsourcing.usecase.simple.StateChanged;
 import io.memoria.atom.eventsourcing.usecase.simple.StateCreated;
-import io.memoria.atom.eventsourcing.state.StateId;
-import io.memoria.atom.eventsourcing.state.StateMeta;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

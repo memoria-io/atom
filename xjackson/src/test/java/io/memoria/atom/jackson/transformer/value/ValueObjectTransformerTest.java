@@ -2,14 +2,14 @@ package io.memoria.atom.jackson.transformer.value;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.memoria.atom.core.text.TextException;
-import io.memoria.atom.jackson.JacksonUtils;
-import io.memoria.atom.jackson.JsonJackson;
+import io.memoria.atom.core.text.TextTransformer;
+import io.memoria.atom.jackson.XJackson;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ValueObjectTransformerTest {
-  private static final JsonJackson json = new JsonJackson(createMapper());
+  private static final TextTransformer json = XJackson.jsonTransformer(createMapper());
 
   @Test
   void valueObjectDirectMapping() throws TextException {
@@ -47,10 +47,10 @@ class ValueObjectTransformerTest {
   }
 
   private static ObjectMapper createMapper() {
-    var subIdModule = JacksonUtils.valueObjectsModule(SomeId.class, SomeId::new);
-    var om = JacksonUtils.defaultJson(subIdModule);
-    JacksonUtils.prettyJson(om);
-    JacksonUtils.addMixInPropertyFormat(om, Person.class);
+    var subIdModule = XJackson.valueObjectsModule(SomeId.class, SomeId::new);
+    var om = XJackson.jsonObjectMapper(subIdModule);
+    XJackson.pretty(om);
+    XJackson.addMixInPropertyFormat(om, Person.class);
     return om;
   }
 }

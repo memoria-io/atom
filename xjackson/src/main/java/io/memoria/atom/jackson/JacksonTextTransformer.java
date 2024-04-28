@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.memoria.atom.core.text.TextException;
 import io.memoria.atom.core.text.TextRuntimeException;
-import io.memoria.atom.core.text.Yaml;
+import io.memoria.atom.core.text.TextTransformer;
 
-public record YamlJackson(ObjectMapper mapper) implements Yaml {
+record JacksonTextTransformer(ObjectMapper mapper) implements TextTransformer {
 
   @Override
   public <T> String serialize(T t) {

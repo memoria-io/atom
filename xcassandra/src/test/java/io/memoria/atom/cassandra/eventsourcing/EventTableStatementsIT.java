@@ -3,8 +3,8 @@ package io.memoria.atom.cassandra.eventsourcing;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
-import io.memoria.atom.cassandra.CassandraUtils;
 import io.memoria.atom.cassandra.Infra;
+import io.memoria.atom.cassandra.XCassandra;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -33,7 +33,7 @@ class EventTableStatementsIT {
     assert version != null && !version.isEmpty();
 
     // Create namespace
-    var st = CassandraUtils.createKeyspace(KEYSPACE, 1);
+    var st = XCassandra.createKeyspace(KEYSPACE, 1);
     var keyspaceCreated = session.execute(st).wasApplied();
     assert keyspaceCreated;
 

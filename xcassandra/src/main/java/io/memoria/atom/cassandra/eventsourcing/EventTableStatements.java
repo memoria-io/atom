@@ -12,7 +12,7 @@ import java.time.ZoneOffset;
 
 import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
 
-public class EventTableStatements {
+class EventTableStatements {
   // partition key (e.g stateId)
   public static final String PARTITION_KEY_COL = "partition_key_col";
   public static final DataType PARTITION_KEY_COL_TYPE = DataTypes.TEXT;

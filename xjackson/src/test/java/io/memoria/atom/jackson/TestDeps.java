@@ -2,31 +2,30 @@ package io.memoria.atom.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.memoria.atom.core.file.ConfigFileOps;
-import io.memoria.atom.core.text.Json;
-import io.memoria.atom.core.text.Yaml;
+import io.memoria.atom.core.text.TextTransformer;
 
 public class TestDeps {
   public static final ConfigFileOps CONFIG_FILE_OPS;
-  public static final Json json;
-  public static final Json compactJson;
-  public static final Yaml yaml;
+  public static final TextTransformer json;
+  public static final TextTransformer compactJson;
+  public static final TextTransformer yaml;
 
   static {
     // File utils
     CONFIG_FILE_OPS = new ConfigFileOps("include:", false);
     // Json
-    json = new JsonJackson(jacksonJsonMapper(true));
-    compactJson = new JsonJackson(jacksonJsonMapper(false));
+    json = XJackson.jsonTransformer(jacksonJsonMapper(true));
+    compactJson = XJackson.jsonTransformer(jacksonJsonMapper(false));
     // Yaml
-    yaml = new YamlJackson(JacksonUtils.defaultYaml());
+    yaml = XJackson.yamlTransformer(XJackson.yamlObjectMapper());
   }
 
   private static ObjectMapper jacksonJsonMapper(boolean isPretty) {
-    var jsonOM = JacksonUtils.defaultJson();
+    var jsonOM = XJackson.jsonObjectMapper();
     if (isPretty) {
-      JacksonUtils.prettyJson(jsonOM);
+      XJackson.pretty(jsonOM);
     }
-    JacksonUtils.addMixInPropertyFormat(jsonOM, Employee.class);
+    XJackson.addMixInPropertyFormat(jsonOM, Employee.class);
     jsonOM.registerSubtypes(Manager.class, Engineer.class);
     return jsonOM;
   }
