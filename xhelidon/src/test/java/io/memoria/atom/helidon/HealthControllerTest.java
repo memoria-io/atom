@@ -30,7 +30,7 @@ class HealthControllerTest {
                       .port(port)
                       .routing(routing -> routing.register("/health", healthController))
                       .build();
-    client = Http1Client.builder().baseUri(URI.create("http://" + host + ":" + port)).build();
+    client = Http1Client.builder().baseUri(URI.create(STR."http://\{host}:\{port}")).build();
   }
 
   @BeforeAll
