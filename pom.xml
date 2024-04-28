@@ -12,7 +12,7 @@
     <!--suppress MavenRedundantGroupId -->
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>21.41.0</version>
+    <version>21.42.0</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
@@ -32,9 +32,6 @@
     </modules>
 
     <properties>
-        <jsonwebtoken.version>0.12.3</jsonwebtoken.version>
-        <cassandra.version>4.17.0</cassandra.version>
-        <jsonwebtoken.version>0.12.5</jsonwebtoken.version>
         <sonar.coverage.exclusions>
             **/Main.java,
             **/exceptions/*.java,
@@ -67,48 +64,8 @@
             </snapshots>
         </repository>
     </repositories>
-    <dependencyManagement>
-        <dependencies>
-            <!--======================================================================================== -->
-            <!-- Caching Dependencies -->
-            <!--======================================================================================== -->
-            <dependency>
-                <groupId>org.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>3.10.8</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.glassfish.jaxb</groupId>
-                        <artifactId>jaxb-runtime</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <!-- ===============================================================   -->
-            <!-- Adapters Dependencies -->
-            <!-- ===============================================================   -->
-            <dependency>
-                <groupId>com.datastax.oss</groupId>
-                <artifactId>java-driver-core</artifactId>
-                <version>${cassandra.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>com.datastax.oss</groupId>
-                <artifactId>java-driver-query-builder</artifactId>
-                <version>${cassandra.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-    <dependencies>
-        <!--======================================================================================== -->
-        <!-- Core Dependencies -->
-        <!--======================================================================================== -->
 
+    <dependencies>
         <!--======================================================================================== -->
         <!-- Logging Dependencies -->
         <!--======================================================================================== -->
