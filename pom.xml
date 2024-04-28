@@ -29,7 +29,6 @@
         <module>web</module>
         <module>xjackson</module>
         <module>xcassandra</module>
-        <module>xhelidon</module>
     </modules>
 
     <properties>
