@@ -1,7 +1,7 @@
 package io.memoria.atom.cassandra.eventsourcing;
 
 import com.datastax.oss.driver.api.core.CqlSession;
-import io.memoria.atom.cassandra.CassandraUtils;
+import io.memoria.atom.cassandra.XCassandra;
 import io.memoria.atom.cassandra.Infra;
 import io.memoria.atom.core.text.SerializableTransformer;
 import io.memoria.atom.eventsourcing.event.Event;
@@ -31,7 +31,7 @@ class CassandraEventRepoIT {
 
   @BeforeAll
   static void beforeAll() {
-    assert session.execute(CassandraUtils.createKeyspace(KEYSPACE, 1)).wasApplied();
+    assert session.execute(XCassandra.createKeyspace(KEYSPACE, 1)).wasApplied();
     assert session.execute(EventTableStatements.createTable(KEYSPACE, TABLE)).wasApplied();
   }
 

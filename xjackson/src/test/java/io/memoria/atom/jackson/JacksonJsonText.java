@@ -7,7 +7,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class JsonJacksonTest {
+class JacksonJsonText {
   @Test
   void serializeEngineer() throws TextException {
     var yamlEngineer = TestDeps.json.serialize(Resources.BOB_ENGINEER);

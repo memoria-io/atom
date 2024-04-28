@@ -3,14 +3,13 @@ package io.memoria.atom.jackson.transformer.id;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.core.text.TextException;
-import io.memoria.atom.jackson.JacksonUtils;
-import io.memoria.atom.jackson.JsonJackson;
+import io.memoria.atom.core.text.TextTransformer;
+import io.memoria.atom.jackson.XJackson;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 class IdTransformerTest {
-  private static final JsonJackson json = new JsonJackson(createMapper());
+  private static final TextTransformer json = XJackson.jsonTransformer(createMapper());
 
   @Test
   void idSubTypesDirectMapping() throws TextException {
@@ -23,8 +22,8 @@ class IdTransformerTest {
     var desResult = json.deserialize(jsonStr, SomeId.class);
 
     // Then
-    assertThat(serResult).isEqualTo(jsonStr);
-    assertThat(desResult).isEqualTo(obj);
+    Assertions.assertThat(serResult).isEqualTo(jsonStr);
+    Assertions.assertThat(desResult).isEqualTo(obj);
   }
 
   @Test
@@ -45,16 +44,15 @@ class IdTransformerTest {
     var desResult = json.deserialize(jsonStr, Person.class);
 
     // Then
-    assertThat(serResult).isEqualTo(jsonStr);
-    assertThat(desResult).isEqualTo(obj);
+    Assertions.assertThat(serResult).isEqualTo(jsonStr);
+    Assertions.assertThat(desResult).isEqualTo(obj);
   }
 
   private static ObjectMapper createMapper() {
-    var om = JacksonUtils.defaultJson();
+    var om = XJackson.jsonObjectMapper();
     om.registerSubtypes(SomeId.class, AnotherId.class);
-    JacksonUtils.prettyJson(om);
-    JacksonUtils.addMixInPropertyFormat(om, Person.class);
+    XJackson.pretty(om);
+    XJackson.addMixInPropertyFormat(om, Person.class);
     return om;
   }
-
 }

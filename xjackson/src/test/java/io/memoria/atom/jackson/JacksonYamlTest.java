@@ -4,7 +4,7 @@ import io.memoria.atom.core.text.TextException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class YamlJacksonTest {
+class JacksonYamlTest {
 
   @Test
   void serializeEngineer() throws TextException {
