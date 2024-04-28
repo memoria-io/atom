@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class JacksonYamlTest {
 
   @Test
-  void serializeEngineer() throws TextException {
+  void serializeEngineer() {
     // When
     var yamlEngineer = TestDeps.yaml.serialize(Resources.BOB_ENGINEER);
 
@@ -16,7 +16,7 @@ class JacksonYamlTest {
   }
 
   @Test
-  void serializeManager() throws TextException {
+  void serializeManager() {
     // When
     var yamlEngineer = TestDeps.yaml.serialize(Resources.ANNIKA_MANAGER);
 
