@@ -1,15 +1,15 @@
 package io.memoria.atom.eventsourcing.aggregate;
 
 import io.memoria.atom.eventsourcing.command.CommandId;
-import io.memoria.atom.eventsourcing.usecase.simple.SimpleEvolver;
-import io.memoria.atom.eventsourcing.usecase.simple.SimpleState;
-import io.memoria.atom.eventsourcing.usecase.simple.StateChanged;
-import io.memoria.atom.eventsourcing.usecase.simple.StateCreated;
 import io.memoria.atom.eventsourcing.event.EventId;
 import io.memoria.atom.eventsourcing.event.EventMeta;
 import io.memoria.atom.eventsourcing.event.exceptions.InvalidEvent;
 import io.memoria.atom.eventsourcing.state.StateId;
 import io.memoria.atom.eventsourcing.state.StateMeta;
+import io.memoria.atom.eventsourcing.usecase.simple.SimpleEvolver;
+import io.memoria.atom.eventsourcing.usecase.simple.SimpleState;
+import io.memoria.atom.eventsourcing.usecase.simple.StateChanged;
+import io.memoria.atom.eventsourcing.usecase.simple.StateCreated;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

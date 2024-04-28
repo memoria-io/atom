@@ -1,6 +1,5 @@
 package io.memoria.atom.eventsourcing.usecase.banking;
 
-import io.memoria.atom.eventsourcing.usecase.banking.event.DebitRejected;
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.eventsourcing.aggregate.Decider;
 import io.memoria.atom.eventsourcing.command.Command;
@@ -26,6 +25,7 @@ import io.memoria.atom.eventsourcing.usecase.banking.event.ClosureRejected;
 import io.memoria.atom.eventsourcing.usecase.banking.event.CreditRejected;
 import io.memoria.atom.eventsourcing.usecase.banking.event.Credited;
 import io.memoria.atom.eventsourcing.usecase.banking.event.DebitConfirmed;
+import io.memoria.atom.eventsourcing.usecase.banking.event.DebitRejected;
 import io.memoria.atom.eventsourcing.usecase.banking.event.Debited;
 import io.memoria.atom.eventsourcing.usecase.banking.event.NameChanged;
 import io.memoria.atom.eventsourcing.usecase.banking.state.Account;

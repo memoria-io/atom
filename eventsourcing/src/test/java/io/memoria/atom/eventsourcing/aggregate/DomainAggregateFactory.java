@@ -1,10 +1,10 @@
 package io.memoria.atom.eventsourcing.aggregate;
 
 import io.memoria.atom.core.id.Id;
-import io.memoria.atom.eventsourcing.usecase.simple.SimpleDecider;
-import io.memoria.atom.eventsourcing.usecase.simple.SimpleEvolver;
 import io.memoria.atom.eventsourcing.event.repo.EventRepo;
 import io.memoria.atom.eventsourcing.state.StateId;
+import io.memoria.atom.eventsourcing.usecase.simple.SimpleDecider;
+import io.memoria.atom.eventsourcing.usecase.simple.SimpleEvolver;
 
 import java.util.UUID;
 

@@ -1,8 +1,8 @@
 package io.memoria.atom.cassandra.eventsourcing;
 
 import com.datastax.oss.driver.api.core.CqlSession;
-import io.memoria.atom.cassandra.XCassandra;
 import io.memoria.atom.cassandra.Infra;
+import io.memoria.atom.cassandra.XCassandra;
 import io.memoria.atom.core.text.SerializableTransformer;
 import io.memoria.atom.eventsourcing.event.Event;
 import io.memoria.atom.eventsourcing.state.StateId;
