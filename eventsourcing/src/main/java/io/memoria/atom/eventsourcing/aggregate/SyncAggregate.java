@@ -66,7 +66,8 @@ class SyncAggregate implements Aggregate {
       event = decider.decide(stateRef.get(), command);
     }
     eventRepo.append(event);
-    log.debug("Event[%s] appended".formatted(event.meta()));
+    String msg = "Event[%s] appended".formatted(event.meta());
+    log.debug(msg);
     command.meta().sagaSource().ifPresent(sagaSources::add);
     return Optional.of(event);
   }
@@ -90,7 +91,8 @@ class SyncAggregate implements Aggregate {
       newState = evolver.evolve(currentState, event);
     }
     stateRef.set(newState);
-    log.debug("New State [%s]".formatted(newState.meta()));
+    String msg = "New State [%s]".formatted(newState.meta());
+    log.debug(msg);
     processedCommands.add(event.meta().commandId());
   }
 
