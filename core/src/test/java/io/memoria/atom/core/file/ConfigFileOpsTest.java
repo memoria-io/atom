@@ -35,14 +35,14 @@ class ConfigFileOpsTest {
   @Test
   void readSystemEnv() throws IOException {
     // When
-    var file = configOps.read(TEST_DIR + "systemEnv.yaml");
+    var file = configOps.read(STR."\{TEST_DIR}systemEnv.yaml");
     // Then
     var lines = file.split("\n");
     Assertions.assertThat(lines[0]).isNotEqualTo("javaHomePath: /hello/java");
     Assertions.assertThat(lines[1]).isEqualTo("otherValue: defaultValue");
     Assertions.assertThat(lines[2]).isEqualTo("routeValue: /defaultValue/{paramName}/someOther");
     Assertions.assertThat(lines[3]).isEqualTo("routeValueWithSpace: /defaultValue/{paramName}/someOther");
-    Assertions.assertThat(lines[4]).startsWith("javaVersionSystemProperty: 21");
+    Assertions.assertThat(lines[4]).startsWith("javaVersionSystemProperty: 22");
     Assertions.assertThat(lines[5]).isEqualTo("mySysProp: 2000");
   }
 
