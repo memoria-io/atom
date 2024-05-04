@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>atom</artifactId>
-        <version>21.43.0</version>
+        <version>21.44.0</version>
     </parent>
 
     <groupId>io.memoria.atom</groupId>
     <artifactId>eventsourcing</artifactId>
-    <version>21.43.0</version>
+    <version>21.44.0</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}.${project.artifactId}</name>
@@ -48,6 +48,11 @@
         <!--======================================================================================== -->
         <!-- Caching Dependencies -->
         <!--======================================================================================== -->
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+            <version>1.1.1</version>
+        </dependency>
         <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
