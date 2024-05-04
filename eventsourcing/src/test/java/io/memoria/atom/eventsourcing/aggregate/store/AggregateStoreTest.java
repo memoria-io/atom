@@ -15,8 +15,6 @@ import java.time.Duration;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static io.memoria.atom.eventsourcing.Utils.cachedAggregateStore;
-
 class AggregateStoreTest {
   public static final int STATES_SIZE = 100;
 
@@ -33,7 +31,7 @@ class AggregateStoreTest {
   @Test
   void cachedInvalidationShouldWork() {
     // Given
-    var aggregateStore = cachedAggregateStore("storesCache", 100, 200);
+    var aggregateStore = Utils.cachedAggregateStore("storesCache", 200);
 
     // When
     addAggregates(aggregateStore);
@@ -52,6 +50,6 @@ class AggregateStoreTest {
 
   public static Stream<Arguments> stores() {
     return Stream.of(Arguments.of(Named.of("Concurrent map store", AggregateStore.mapStore())),
-                     Arguments.of(Named.of("Cache store", cachedAggregateStore("CacheStore", STATES_SIZE, 1000))));
+                     Arguments.of(Named.of("Cache store", Utils.cachedAggregateStore("CacheStore", 1000))));
   }
 }

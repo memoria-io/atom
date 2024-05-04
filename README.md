@@ -26,7 +26,7 @@
 
 Atom is an SDK to accelerate development, and it's a constant learning effort.
 
-The currently used JDK is `Java 20` and the motivation is to use the latest available JDK.
+The currently used JDK is `Java 22` and the motivation is to use the latest available JDK.
 
 ## Documentation
 
@@ -78,7 +78,7 @@ Then import in your pom dependencies
 <dependency>
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>21.20.0</version>
+    <version>22.0.0</version>
 </dependency>
 ```
 
@@ -97,6 +97,10 @@ Format Example: `JDK_Version.major.mino`
 
 ## Release notes
 
+* `22.0.0`
+  * Sync Aggregates
+  * Merging with Active/Reactive libs
+  * Removing Unnecessary modules (etcd)
 * `21.20.0`
     * Removed reliance on vavr
 * `21.1.0`

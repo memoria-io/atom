@@ -35,6 +35,6 @@ public class AggregatesTest {
 
   public static Stream<Arguments> stores() {
     return Stream.of(Arguments.of(Named.of("Concurrent map store", AggregateStore.mapStore())),
-                     Arguments.of(Named.of("Cache store", cachedAggregateStore("aggregateCache", 100, 2000))));
+                     Arguments.of(Named.of("Cache store", cachedAggregateStore("aggregateCache", 2000))));
   }
 }

@@ -8,21 +8,14 @@ import io.memoria.atom.eventsourcing.event.repo.EventRepo;
 import io.memoria.atom.eventsourcing.state.StateId;
 import io.memoria.atom.eventsourcing.usecase.simple.SimpleDecider;
 import io.memoria.atom.eventsourcing.usecase.simple.SimpleEvolver;
-import org.ehcache.CacheManager;
-import org.ehcache.config.builders.CacheConfigurationBuilder;
-import org.ehcache.config.builders.CacheManagerBuilder;
-import org.ehcache.config.builders.ExpiryPolicyBuilder;
-import org.ehcache.config.builders.ResourcePoolsBuilder;
 
-import java.time.Duration;
+import javax.cache.Caching;
+import javax.cache.configuration.MutableConfiguration;
+import javax.cache.expiry.CreatedExpiryPolicy;
+import javax.cache.expiry.Duration;
+import java.util.concurrent.TimeUnit;
 
 public class Utils {
-  public static final CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build();
-
-  static {
-    cacheManager.init();
-  }
-
   private Utils() {}
 
   public static Decider simpleDecider() {
@@ -33,12 +26,13 @@ public class Utils {
     return Aggregate.create(stateId, Utils.simpleDecider(), new SimpleEvolver(), EventRepo.inMemory());
   }
 
-  public static AggregateStore cachedAggregateStore(String cacheName, int heapSize, int timeToLiveMillis) {
-    var heap = ResourcePoolsBuilder.heap(heapSize).build();
-    var expiry = ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofMillis(timeToLiveMillis));
-    var configBuilder = CacheConfigurationBuilder.newCacheConfigurationBuilder(StateId.class, Aggregate.class, heap)
-                                                 .withExpiry(expiry);
-    var cache = cacheManager.createCache(cacheName, configBuilder);
-    return new CachedAggregateStore(cache);
+  public static AggregateStore cachedAggregateStore(String cacheName, int timeToLiveMillis) {
+    Duration duration = new Duration(TimeUnit.MILLISECONDS, timeToLiveMillis);
+    var policyFactory = CreatedExpiryPolicy.factoryOf(duration);
+    var config = new MutableConfiguration<StateId, Aggregate>();
+    config.setTypes(StateId.class, Aggregate.class).setStoreByValue(false).setExpiryPolicyFactory(policyFactory);
+
+    var cache = Caching.getCachingProvider().getCacheManager().createCache(cacheName, config);
+    return AggregateStore.cachedStore(cache);
   }
 }

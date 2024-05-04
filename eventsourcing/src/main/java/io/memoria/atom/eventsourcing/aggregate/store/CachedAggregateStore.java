@@ -1,11 +1,10 @@
-package io.memoria.atom.eventsourcing;
+package io.memoria.atom.eventsourcing.aggregate.store;
 
 import io.memoria.atom.eventsourcing.aggregate.Aggregate;
-import io.memoria.atom.eventsourcing.aggregate.store.AggregateStore;
 import io.memoria.atom.eventsourcing.state.StateId;
-import org.ehcache.Cache;
-import org.ehcache.Cache.Entry;
 
+import javax.cache.Cache;
+import javax.cache.Cache.Entry;
 import java.util.Iterator;
 import java.util.function.Function;
 import java.util.stream.StreamSupport;
