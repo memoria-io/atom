@@ -98,9 +98,9 @@ Format Example: `JDK_Version.major.mino`
 ## Release notes
 
 * `22.0.0`
-  * Sync Aggregates
-  * Merging with Active/Reactive libs
-  * Removing Unnecessary modules (etcd)
+    * Sync Aggregates
+    * Merging with Active/Reactive libs
+    * Removing Unnecessary modules (etcd)
 * `21.20.0`
     * Removed reliance on vavr
 * `21.1.0`
