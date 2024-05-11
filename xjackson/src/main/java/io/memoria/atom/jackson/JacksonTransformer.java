@@ -6,7 +6,7 @@ import io.memoria.atom.core.text.TextException;
 import io.memoria.atom.core.text.TextRuntimeException;
 import io.memoria.atom.core.text.TextTransformer;
 
-record JacksonTextTransformer(ObjectMapper mapper) implements TextTransformer {
+record JacksonTransformer(ObjectMapper mapper) implements TextTransformer {
 
   @Override
   public <T> String serialize(T t) {
