@@ -1,15 +1,14 @@
 package io.memoria.atom.jackson.transformer.id;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.memoria.atom.core.id.Id;
 import io.memoria.atom.core.text.TextException;
 import io.memoria.atom.core.text.TextTransformer;
-import io.memoria.atom.jackson.XJackson;
+import io.memoria.atom.jackson.JacksonTransformerBuilder;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class IdTransformerTest {
-  private static final TextTransformer json = XJackson.jsonTransformer(createMapper());
+  private static final TextTransformer json = create();
 
   @Test
   void idSubTypesDirectMapping() throws TextException {
@@ -48,11 +47,12 @@ class IdTransformerTest {
     Assertions.assertThat(desResult).isEqualTo(obj);
   }
 
-  private static ObjectMapper createMapper() {
-    var om = XJackson.jsonObjectMapper();
-    om.registerSubtypes(SomeId.class, AnotherId.class);
-    XJackson.pretty(om);
-    XJackson.addMixInPropertyFormat(om, Person.class);
-    return om;
+  private static TextTransformer create() {
+    return JacksonTransformerBuilder.json()
+                                    .withDefaults()
+                                    .withPrettyFormat()
+                                    .withSubtypes(SomeId.class, AnotherId.class)
+                                    .withMixInPropertyFormat(Person.class)
+                                    .asTextTransformer();
   }
 }

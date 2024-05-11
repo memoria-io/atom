@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 
-import static io.memoria.atom.jackson.TestDeps.json;
+import static io.memoria.atom.jackson.Tests.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**

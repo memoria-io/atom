@@ -9,7 +9,7 @@ class JacksonYamlTest {
   @Test
   void serializeEngineer() {
     // When
-    var yamlEngineer = TestDeps.yaml.serialize(Resources.BOB_ENGINEER);
+    var yamlEngineer = Tests.yaml.serialize(Resources.BOB_ENGINEER);
 
     // Then
     Assertions.assertThat(yamlEngineer).isEqualTo(Resources.BOB_ENGINEER_YAML);
@@ -18,7 +18,7 @@ class JacksonYamlTest {
   @Test
   void serializeManager() {
     // When
-    var yamlEngineer = TestDeps.yaml.serialize(Resources.ANNIKA_MANAGER);
+    var yamlEngineer = Tests.yaml.serialize(Resources.ANNIKA_MANAGER);
 
     // Then
     Assertions.assertThat(yamlEngineer).isEqualTo(Resources.ANNIKA_MANAGER_YAML);
@@ -27,7 +27,7 @@ class JacksonYamlTest {
   @Test
   void toEngineer() throws TextException {
     // When
-    var engineer = TestDeps.yaml.deserialize(Resources.BOB_ENGINEER_YAML, Engineer.class);
+    var engineer = Tests.yaml.deserialize(Resources.BOB_ENGINEER_YAML, Engineer.class);
 
     // Then
     Assertions.assertThat(engineer).isEqualTo(Resources.BOB_ENGINEER);
@@ -36,7 +36,7 @@ class JacksonYamlTest {
   @Test
   void toManager() throws TextException {
     // When
-    var manager = TestDeps.yaml.deserialize(Resources.ANNIKA_MANAGER_YAML, Manager.class);
+    var manager = Tests.yaml.deserialize(Resources.ANNIKA_MANAGER_YAML, Manager.class);
     // Then
     Assertions.assertThat(manager).isEqualTo(Resources.ANNIKA_MANAGER);
   }
