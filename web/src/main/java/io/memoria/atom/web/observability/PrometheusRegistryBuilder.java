@@ -17,13 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PrometheusRegistryBuilder {
+  public static final String APPLICATION_NAME_TAG = "APPLICATION_NAME";
+  public static final String APPLICATION_VERSION_TAG = "APPLICATION_VERSION";
+
   private final PrometheusMeterRegistry registry;
   private final List<Tag> tagList;
 
-  public PrometheusRegistryBuilder(String appName, String version) {
+  public PrometheusRegistryBuilder(String applicationName, String applicationVersion) {
     this.tagList = new ArrayList<>();
-    this.tagList.add(Tag.of("APPLICATION_NAME", appName));
-    this.tagList.add(Tag.of("APPLICATION_VERSION", version));
+    this.tagList.add(Tag.of(APPLICATION_NAME_TAG, applicationName));
+    this.tagList.add(Tag.of(APPLICATION_VERSION_TAG, applicationVersion));
     registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
   }
 
