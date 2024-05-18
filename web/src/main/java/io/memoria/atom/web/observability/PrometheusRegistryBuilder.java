@@ -20,8 +20,8 @@ public class PrometheusRegistryBuilder {
   public static final String APPLICATION_NAME_TAG = "APPLICATION_NAME";
   public static final String APPLICATION_VERSION_TAG = "APPLICATION_VERSION";
 
-  private final PrometheusMeterRegistry registry;
   private final List<Tag> tagList;
+  private final PrometheusMeterRegistry registry;
 
   public PrometheusRegistryBuilder() {
     this(PrometheusConfig.DEFAULT);
