@@ -23,16 +23,28 @@ public class PrometheusRegistryBuilder {
   private final PrometheusMeterRegistry registry;
   private final List<Tag> tagList;
 
-  public PrometheusRegistryBuilder(String applicationName, String applicationVersion) {
+  public PrometheusRegistryBuilder() {
+    this(PrometheusConfig.DEFAULT);
+  }
+
+  public PrometheusRegistryBuilder(PrometheusConfig prometheusConfig) {
     this.tagList = new ArrayList<>();
-    this.tagList.add(Tag.of(APPLICATION_NAME_TAG, applicationName));
-    this.tagList.add(Tag.of(APPLICATION_VERSION_TAG, applicationVersion));
-    registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+    registry = new PrometheusMeterRegistry(prometheusConfig);
   }
 
   public PrometheusMeterRegistry build() {
     registry.config().commonTags(tagList);
     return registry;
+  }
+
+  public PrometheusRegistryBuilder withAppNameTag(String applicationName) {
+    this.tagList.add(Tag.of(APPLICATION_NAME_TAG, applicationName));
+    return this;
+  }
+
+  public PrometheusRegistryBuilder withAppVersionTag(String applicationVersion) {
+    this.tagList.add(Tag.of(APPLICATION_VERSION_TAG, applicationVersion));
+    return this;
   }
 
   public PrometheusRegistryBuilder withTag(Tag tag) {
