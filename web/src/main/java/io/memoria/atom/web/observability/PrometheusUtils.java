@@ -14,35 +14,20 @@ import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-public class PrometheusConfiguration {
-  private final List<Tag> tagList;
-  private final PrometheusMeterRegistry registry;
+public class PrometheusUtils {
+  private PrometheusUtils() {}
 
-  public PrometheusConfiguration(String appName, String version) {
-    this(appName, version, new ArrayList<>());
-  }
-
-  public PrometheusConfiguration(String appName, String version, List<Tag> tagList) {
-    this.tagList = tagList;
+  public static PrometheusMeterRegistry createRegistry(String appName, String version, List<Tag> tagList) {
     tagList.add(Tag.of("APPLICATION_NAME", appName));
     tagList.add(Tag.of("APPLICATION_VERSION", version));
-    this.registry = createRegistry(tagList);
-  }
-
-  public PrometheusMeterRegistry getRegistry() {
+    PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+    registry.config().commonTags(tagList);
     return registry;
   }
 
-  public List<Tag> getTags() {
-    return tagList;
-  }
-
-  private static PrometheusMeterRegistry createRegistry(List<Tag> tagList) {
-    PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-    registry.config().commonTags(tagList);
+  public static void includeDefaultMetrics(PrometheusMeterRegistry registry) {
     includeLog4j2Metrics(registry);
     includeThreadMetrics(registry);
     includeGCMetrics(registry);
@@ -50,15 +35,14 @@ public class PrometheusConfiguration {
     includeDiskSpaceMetrics(registry);
     includeProcessorMetrics(registry);
     includeUptimeMetrics(registry);
-    return registry;
   }
 
   @SuppressWarnings("resource")
-  private static void includeLog4j2Metrics(MeterRegistry registry) {
+  public static void includeLog4j2Metrics(MeterRegistry registry) {
     new Log4j2Metrics().bindTo(registry);
   }
 
-  private static void includeThreadMetrics(MeterRegistry registry) {
+  public static void includeThreadMetrics(MeterRegistry registry) {
     new ClassLoaderMetrics().bindTo(registry);
     new JvmThreadMetrics().bindTo(registry);
   }
@@ -66,25 +50,25 @@ public class PrometheusConfiguration {
   @SuppressWarnings({"java:S2095", "resource"})
   // Do not change JvmGcMetrics to try-with-resources as the JvmGcMetrics will not be available after (auto-)closing.
   // See https://github.com/micrometer-metrics/micrometer/issues/1492
-  private static void includeGCMetrics(MeterRegistry registry) {
+  public static void includeGCMetrics(MeterRegistry registry) {
     JvmGcMetrics jvmGcMetrics = new JvmGcMetrics();
     jvmGcMetrics.bindTo(registry);
     Runtime.getRuntime().addShutdownHook(new Thread(jvmGcMetrics::close));
   }
 
-  private static void includeMemoryMetrics(MeterRegistry registry) {
+  public static void includeMemoryMetrics(MeterRegistry registry) {
     new JvmMemoryMetrics().bindTo(registry);
   }
 
-  private static void includeDiskSpaceMetrics(MeterRegistry registry) {
+  public static void includeDiskSpaceMetrics(MeterRegistry registry) {
     new DiskSpaceMetrics(new File("/")).bindTo(registry);
   }
 
-  private static void includeProcessorMetrics(MeterRegistry registry) {
+  public static void includeProcessorMetrics(MeterRegistry registry) {
     new ProcessorMetrics().bindTo(registry);
   }
 
-  private static void includeUptimeMetrics(MeterRegistry registry) {
+  public static void includeUptimeMetrics(MeterRegistry registry) {
     new UptimeMetrics().bindTo(registry);
   }
 }
