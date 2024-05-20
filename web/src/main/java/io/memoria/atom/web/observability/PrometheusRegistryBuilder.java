@@ -1,7 +1,7 @@
 package io.memoria.atom.web.observability;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
@@ -18,19 +18,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PrometheusRegistryBuilder {
-  private final PrometheusMeterRegistry registry;
-  private final List<Tag> tagList;
+  public static final String APPLICATION_NAME_TAG = "APPLICATION_NAME";
+  public static final String APPLICATION_VERSION_TAG = "APPLICATION_VERSION";
 
-  public PrometheusRegistryBuilder(String appName, String version) {
+  private final List<Tag> tagList;
+  private final List<MeterBinder> meters;
+  private final PrometheusMeterRegistry registry;
+
+  public PrometheusRegistryBuilder() {
+    this(PrometheusConfig.DEFAULT);
+  }
+
+  public PrometheusRegistryBuilder(PrometheusConfig prometheusConfig) {
     this.tagList = new ArrayList<>();
-    this.tagList.add(Tag.of("APPLICATION_NAME", appName));
-    this.tagList.add(Tag.of("APPLICATION_VERSION", version));
-    registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+    this.meters = new ArrayList<>();
+    this.registry = new PrometheusMeterRegistry(prometheusConfig);
   }
 
   public PrometheusMeterRegistry build() {
     registry.config().commonTags(tagList);
+    this.meters.forEach(m -> m.bindTo(registry));
     return registry;
+  }
+
+  public PrometheusRegistryBuilder withAppNameTag(String applicationName) {
+    this.tagList.add(Tag.of(APPLICATION_NAME_TAG, applicationName));
+    return this;
+  }
+
+  public PrometheusRegistryBuilder withAppVersionTag(String applicationVersion) {
+    this.tagList.add(Tag.of(APPLICATION_VERSION_TAG, applicationVersion));
+    return this;
   }
 
   public PrometheusRegistryBuilder withTag(Tag tag) {
@@ -43,54 +61,53 @@ public class PrometheusRegistryBuilder {
     return this;
   }
 
-  public PrometheusRegistryBuilder withDefaultMetrics(PrometheusMeterRegistry registry) {
-    return withLog4j2Metrics(registry).withThreadMetrics(registry)
-                                      .withGCMetrics(registry)
-                                      .withMemoryMetrics(registry)
-                                      .withDiskSpaceMetrics(registry)
-                                      .withProcessorMetrics(registry)
-                                      .withUptimeMetrics(registry);
+  public PrometheusRegistryBuilder withDefaultMetrics() {
+    return withLog4j2Metrics().withThreadMetrics()
+                              .withGCMetrics()
+                              .withMemoryMetrics()
+                              .withDiskSpaceMetrics()
+                              .withProcessorMetrics()
+                              .withUptimeMetrics();
   }
 
-  @SuppressWarnings("resource")
-  public PrometheusRegistryBuilder withLog4j2Metrics(MeterRegistry registry) {
-    new Log4j2Metrics().bindTo(registry);
+  public PrometheusRegistryBuilder withLog4j2Metrics() {
+    this.meters.add(new Log4j2Metrics());
     return this;
   }
 
-  public PrometheusRegistryBuilder withThreadMetrics(MeterRegistry registry) {
-    new ClassLoaderMetrics().bindTo(registry);
-    new JvmThreadMetrics().bindTo(registry);
+  public PrometheusRegistryBuilder withThreadMetrics() {
+    this.meters.add(new ClassLoaderMetrics());
+    this.meters.add(new JvmThreadMetrics());
     return this;
   }
 
-  @SuppressWarnings({"java:S2095", "resource"})
+  @SuppressWarnings({"java:S2095"})
   // Do not change JvmGcMetrics to try-with-resources as the JvmGcMetrics will not be available after (auto-)closing.
   // See https://github.com/micrometer-metrics/micrometer/issues/1492
-  public PrometheusRegistryBuilder withGCMetrics(MeterRegistry registry) {
+  public PrometheusRegistryBuilder withGCMetrics() {
     JvmGcMetrics jvmGcMetrics = new JvmGcMetrics();
-    jvmGcMetrics.bindTo(registry);
+    this.meters.add(jvmGcMetrics);
     Runtime.getRuntime().addShutdownHook(new Thread(jvmGcMetrics::close));
     return this;
   }
 
-  public PrometheusRegistryBuilder withMemoryMetrics(MeterRegistry registry) {
-    new JvmMemoryMetrics().bindTo(registry);
+  public PrometheusRegistryBuilder withMemoryMetrics() {
+    this.meters.add(new JvmMemoryMetrics());
     return this;
   }
 
-  public PrometheusRegistryBuilder withDiskSpaceMetrics(MeterRegistry registry) {
-    new DiskSpaceMetrics(new File("/")).bindTo(registry);
+  public PrometheusRegistryBuilder withDiskSpaceMetrics() {
+    this.meters.add(new DiskSpaceMetrics(new File("/")));
     return this;
   }
 
-  public PrometheusRegistryBuilder withProcessorMetrics(MeterRegistry registry) {
-    new ProcessorMetrics().bindTo(registry);
+  public PrometheusRegistryBuilder withProcessorMetrics() {
+    this.meters.add(new ProcessorMetrics());
     return this;
   }
 
-  public PrometheusRegistryBuilder withUptimeMetrics(MeterRegistry registry) {
-    new UptimeMetrics().bindTo(registry);
+  public PrometheusRegistryBuilder withUptimeMetrics() {
+    this.meters.add(new UptimeMetrics());
     return this;
   }
 }
