@@ -32,9 +32,8 @@ class SecretEncryptionTest {
 
   @Test
   void encryptAndDecrypt() throws GeneralSecurityException {
-    var secret = "xh6T0iZcA1UsghjUWarnpHz6D_4ZPKNxp7kJsj_cfDLCTUppjSiieelIgZr4-g3P";
+    var secret = "some_secret";
     var encSecret = SECRET_ENCRYPTION.encrypt(secret);
-    System.out.println(encSecret);
     var decSecret = SECRET_ENCRYPTION.decrypt(encSecret);
     Assertions.assertThat(decSecret).isEqualTo(secret);
   }
