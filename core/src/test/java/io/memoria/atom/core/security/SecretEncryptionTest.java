@@ -22,8 +22,6 @@ class SecretEncryptionTest {
       var lines = file.split("\n");
       encryptionKey = lines[0].replace("encKey:", "").trim();
       salt = lines[1].replace("encSalt:", "").trim();
-      System.out.println(encryptionKey);
-      System.out.println(salt);
       SECRET_ENCRYPTION = new SecretEncryption(encryptionKey, salt);
     } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | IOException e) {
       throw new RuntimeException(e);
@@ -34,6 +32,7 @@ class SecretEncryptionTest {
   void encryptAndDecrypt() throws GeneralSecurityException {
     var secret = "some_secret";
     var encSecret = SECRET_ENCRYPTION.encrypt(secret);
+    //    System.out.println(encSecret);
     var decSecret = SECRET_ENCRYPTION.decrypt(encSecret);
     Assertions.assertThat(decSecret).isEqualTo(secret);
   }
