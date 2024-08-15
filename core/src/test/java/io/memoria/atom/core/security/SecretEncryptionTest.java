@@ -1,6 +1,6 @@
 package io.memoria.atom.core.security;
 
-import io.memoria.atom.core.file.ConfigFileOps;
+import io.memoria.atom.core.file.ConfigFile;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,17 +11,15 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 class SecretEncryptionTest {
-  private static final ConfigFileOps configOps = new ConfigFileOps("#include:", true);
   private static final String encryptionKey;
   private static final String salt;
   private static final SecretEncryption SECRET_ENCRYPTION;
 
   static {
     try {
-      var file = configOps.read("file/security/systemEnv.yaml");
-      var lines = file.split("\n");
-      encryptionKey = lines[0].replace("encKey:", "").trim();
-      salt = lines[1].replace("encSalt:", "").trim();
+      var lines = new ConfigFile("file/security/systemEnv.yaml").readLines().toList();
+      encryptionKey = lines.getFirst().replace("encKey:", "").trim();
+      salt = lines.get(1).replace("encSalt:", "").trim();
       SECRET_ENCRYPTION = new SecretEncryption(encryptionKey, salt);
     } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeySpecException | IOException e) {
       throw new RuntimeException(e);

@@ -1,6 +1,6 @@
 name: bob
 age: 20
-secondName: alice
+mysecret: IAM_A_SECRET_VALUE
 
 address: 15 bakerstreet
 
