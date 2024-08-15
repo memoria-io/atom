@@ -25,7 +25,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Docker compose
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Sleeping
         run: sleep 45
