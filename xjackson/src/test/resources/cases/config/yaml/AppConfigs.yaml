@@ -1,6 +1,6 @@
 projectName: bank
 nodeControllerPath: /nodes
-include: SubConfigs.yaml
+#include: SubConfigs.yaml
 
 stringValue: hello world
 integerValue: 10

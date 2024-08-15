@@ -1,10 +1,14 @@
 package io.memoria.atom.core.file;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.nio.file.StandardOpenOption.CREATE;
@@ -80,5 +84,17 @@ public class FileOps {
       }
     }
     Files.deleteIfExists(path);
+  }
+
+  public static String readResource(String path) throws IOException {
+    try (var inputStream = Objects.requireNonNull(ClassLoader.getSystemResourceAsStream(path))) {
+      var reader = new BufferedReader(new InputStreamReader(inputStream));
+      return reader.lines().collect(Collectors.joining(System.lineSeparator()));
+    }
+  }
+
+  public static Stream<String> readResourceLines(String path) throws IOException {
+    var inputStream = Objects.requireNonNull(ClassLoader.getSystemResourceAsStream(path));
+    return new BufferedReader(new InputStreamReader(inputStream)).lines();
   }
 }
