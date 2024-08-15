@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ConfigFileOps {
   public static final BinaryOperator<String> JOIN_LINES = (a, b) -> a + System.lineSeparator() + b;
@@ -59,11 +60,13 @@ public class ConfigFileOps {
 
   List<String> expand(String path, String line) throws IOException {
     if (line == null) {
+      Stream<String> stream;
       if (path.startsWith("/")) {
-        return expandFile(path);
+        stream = Files.lines(Path.of(path));
       } else {
-        return expandResource(path);
+        stream = ResourceFile.of(path).readLines().stream();
       }
+      return expandPath(path, stream);
     }
     if (nestingPrefix != null && line.trim().startsWith(nestingPrefix)) {
       var subFilePath = line.substring(nestingPrefix.length()).trim();
@@ -74,22 +77,13 @@ public class ConfigFileOps {
     }
   }
 
-  private List<String> expandFile(String path) throws IOException {
+  private List<String> expandPath(String path, Stream<String> lines) throws IOException {
     var result = new ArrayList<String>();
-    try (var stream = Files.lines(Path.of(path))) {
-      for (String l : stream.toList()) {
-        var expanded = expand(path, l).stream().map(this::resolveLineExpression).toList();
+    try (var stream = lines) {
+      for (String line : stream.toList()) {
+        var expanded = expand(path, line).stream().map(this::resolveLineExpression).toList();
         result.addAll(expanded);
       }
-    }
-    return result;
-  }
-
-  private List<String> expandResource(String path) throws IOException {
-    var result = new ArrayList<String>();
-    for (String l : ResourceFile.of(path).readLines()) {
-      var expanded = expand(path, l).stream().map(this::resolveLineExpression).toList();
-      result.addAll(expanded);
     }
     return result;
   }
