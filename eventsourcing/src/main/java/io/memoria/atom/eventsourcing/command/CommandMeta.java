@@ -67,7 +67,8 @@ public class CommandMeta implements Partitioned, Serializable {
 
   @Override
   public String toString() {
-    return STR."CommandMeta[commandId=\{commandId}, stateId=\{stateId}, timestamp=\{timestamp}, sagaSource=\{sagaSource}\{']'}";
+    String msg = "CommandMeta{commandId=%s, stateId=%s, timestamp=%d, sagaSource=%s}";
+    return msg.formatted(commandId, stateId, timestamp, sagaSource);
   }
 }
 

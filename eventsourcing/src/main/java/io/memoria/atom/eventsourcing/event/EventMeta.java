@@ -87,7 +87,8 @@ public class EventMeta implements Partitioned, Versioned, Serializable {
 
   @Override
   public String toString() {
-    return STR."EventMeta[eventId=\{eventId}, version=\{version}, stateId=\{stateId}, commandId=\{commandId}, timestamp=\{timestamp}, sagaSource=\{sagaSource}\{']'}";
+    String msg = "EventMeta{eventId=%s, version=%d, stateId=%s, commandId=%s, timestamp=%d, sagaSource=%s}";
+    return msg.formatted(eventId, version, stateId, commandId, timestamp, sagaSource);
   }
 }
 
