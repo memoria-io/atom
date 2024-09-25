@@ -43,7 +43,7 @@ public class SecretEncryption {
     IvParameterSpec ivParameterSpec = parameters.getParameterSpec(IvParameterSpec.class);
     byte[] cryptoText = cipher.doFinal(password.getBytes(StandardCharsets.UTF_8));
     byte[] iv = ivParameterSpec.getIV();
-    return STR."\{base64Encode(iv)}:\{base64Encode(cryptoText)}";
+    return "%s:%s".formatted(base64Encode(iv), base64Encode(cryptoText));
   }
 
   public String decrypt(String encryptedPassword) throws GeneralSecurityException {

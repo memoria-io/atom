@@ -19,7 +19,7 @@ import java.util.stream.IntStream;
 @TestMethodOrder(OrderAnnotation.class)
 class CassandraEventRepoIT {
   private static final String KEYSPACE = "event_sourcing";
-  private static final String TABLE = STR."events2\{System.currentTimeMillis()}";
+  private static final String TABLE = "events2%d".formatted(System.currentTimeMillis());
   private static final StateId STATE_ID = StateId.of("aggId");
   private static final CqlSession session = Infra.cqlSession();
   private static final CassandraEventRepo repo = new CassandraEventRepo(session,

@@ -10,7 +10,7 @@ public class Infra {
   private Infra() {}
 
   public static CqlSession cqlSession() {
-    return session("datacenter1", "localhost", 9042).build();
+    return session("datacenter1", "127.0.0.1", 9042).build();
   }
 
   public static CqlSessionBuilder session(String datacenter, String ip, int port) {

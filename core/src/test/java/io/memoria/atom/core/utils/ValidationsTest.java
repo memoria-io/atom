@@ -61,7 +61,7 @@ public class ValidationsTest {
                      "just”not”right@example.com",
                      "much.”more unusual”@example.com",
                      "very.unusual.”@”.unusual.com@example.com",
-                     STR."n\{longValidEmail()}",
+                     "n%s".formatted(longValidEmail()),
                      "very.”(),:;<>[]”.VERY.”very@\\\\ \"very”.unusual@strange.example.com",
                      "this\\ is\"really\"not\\allowed@example.com").map(Arguments::of);
   }
@@ -69,6 +69,6 @@ public class ValidationsTest {
   private static String longValidEmail() {
     var name = IntStream.range(0, 64).mapToObj(i -> "n").collect(Collectors.joining());
     var domain = IntStream.range(0, 250).mapToObj(i -> "d").collect(Collectors.joining());
-    return STR."\{name}@\{domain}.com";
+    return "%s@%s.com".formatted(name, domain);
   }
 }
