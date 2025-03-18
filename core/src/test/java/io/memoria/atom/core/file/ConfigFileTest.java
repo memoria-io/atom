@@ -35,7 +35,7 @@ class ConfigFileTest {
     Assertions.assertThat(lines.get(1)).isEqualTo("otherValue: defaultValue");
     Assertions.assertThat(lines.get(2)).isEqualTo("routeValue: /defaultValue/{paramName}/someOther");
     Assertions.assertThat(lines.get(3)).isEqualTo("routeValueWithSpace: /defaultValue/{paramName}/someOther");
-    Assertions.assertThat(lines.get(4)).startsWith("javaVersionSystemProperty: 23");
+    Assertions.assertThat(lines.get(4)).startsWith("javaVersionSystemProperty: 24");
     Assertions.assertThat(lines.get(5)).isEqualTo("mySysProp: 2000");
   }
 }
