@@ -10,8 +10,8 @@ import io.micrometer.core.instrument.binder.logging.Log4j2Metrics;
 import io.micrometer.core.instrument.binder.system.DiskSpaceMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import io.micrometer.core.instrument.binder.system.UptimeMetrics;
-import io.micrometer.prometheus.PrometheusConfig;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
+import io.micrometer.prometheusmetrics.PrometheusConfig;
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 
 import java.io.File;
 import java.util.ArrayList;
