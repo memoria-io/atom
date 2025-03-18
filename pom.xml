@@ -51,6 +51,7 @@
             <url>https://maven.pkg.github.com/memoria-io/atom</url>
         </repository>
     </distributionManagement>
+
     <repositories>
         <repository>
             <id>github</id>
