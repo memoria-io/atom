@@ -97,6 +97,9 @@ Format Example: `JDK_Version.major.mino`
 
 ## Release notes
 
+* `24.0.0`
+    * JDK upgrade
+    * Rebase on latest JBOM
 * `22.0.0`
     * Sync Aggregates
     * Merging with Active/Reactive libs
