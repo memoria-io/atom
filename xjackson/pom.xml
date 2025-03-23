@@ -8,6 +8,7 @@
         <artifactId>atom</artifactId>
         <version>24.3.0</version>
     </parent>
+
     <groupId>io.memoria.atom</groupId>
     <artifactId>xjackson</artifactId>
     <version>24.3.0</version>
@@ -17,17 +18,13 @@
 
 
     <dependencies>
-        <!--======================================================================================== -->
         <!-- Modules Dependencies -->
-        <!--======================================================================================== -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <!--======================================================================================== -->
         <!-- Json/Yaml Dependencies -->
-        <!--======================================================================================== -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>

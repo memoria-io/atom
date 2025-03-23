@@ -13,7 +13,6 @@
     <artifactId>eventsourcing</artifactId>
     <version>24.3.0</version>
     <packaging>jar</packaging>
-
     <name>${project.groupId}.${project.artifactId}</name>
     <description>eventsourcing Module</description>
 
