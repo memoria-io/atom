@@ -22,7 +22,8 @@
 ## Introduction
 
 **Disclaimer:**
-> `atom` is on edge, it's a work in progress and a pragmatic learning effort, so feel free to create issues or PRs.
+> `atom` is a work in progress utilities not meant for production usage yet, it's a pragmatic learning effort,
+> please feel free to create issues or PRs.
 
 Atom is an SDK to accelerate development, and it's a constant learning effort.
 
@@ -97,6 +98,8 @@ Format Example: `JDK_Version.major.mino`
 
 ## Release notes
 
+* `24.3.0`
+    * Removed web module
 * `24.0.0`
     * JDK upgrade
     * Rebase on latest JBOM
