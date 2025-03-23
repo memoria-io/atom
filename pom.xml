@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0  http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>jbom</artifactId>
-        <version>24.1.0</version>
+        <version>24.1.1</version>
     </parent>
 
     <!--suppress MavenRedundantGroupId -->
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>24.3.0</version>
+    <version>24.3.1</version>
     <packaging>pom</packaging>
 
+    <!-- Metadata -->
     <name>${project.groupId}.${project.artifactId}</name>
     <description>Java utilities</description>
     <url>https://memoria.io</url>
@@ -39,112 +41,25 @@
         </sonar.coverage.exclusions>
     </properties>
 
-    <distributionManagement>
-        <site>
-            <id>${project.artifactId}-site</id>
-            <url>ftp://memoria.io/</url>
-        </site>
-        <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/memoria-io/atom</url>
-        </repository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/memoria-io/*</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <dependencyManagement>
-        <dependencies>
-            <!--======================================================================================== -->
-            <!-- Logging Dependencies -->
-            <!--======================================================================================== -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-bom</artifactId>
-                <version>2.0.16</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!--======================================================================================== -->
-            <!-- Json Dependencies -->
-            <!--======================================================================================== -->
-            <dependency>
-                <groupId>com.fasterxml.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <version>2.18.3</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- ===============================================================   -->
-            <!-- DBs Dependencies -->
-            <!-- ===============================================================   -->
-            <dependency>
-                <groupId>com.datastax.oss</groupId>
-                <artifactId>java-driver-bom</artifactId>
-                <version>4.17.0</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!--======================================================================================== -->
-            <!-- Testing Dependencies -->
-            <!--======================================================================================== -->
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>5.12.1</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>3.10.8</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.glassfish.jaxb</groupId>
-                        <artifactId>jaxb-runtime</artifactId>
-                    </exclusion>
-                </exclusions>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
+    <!-- ============================================================================= -->
+    <!--  Default Dependencies -->
+    <!-- ============================================================================= -->
     <dependencies>
-        <!--======================================================================================== -->
-        <!-- Core Dependencies -->
-        <!--======================================================================================== -->
+        <!-- Core -->
         <dependency>
             <groupId>com.github.f4b6a3</groupId>
             <artifactId>uuid-creator</artifactId>
             <version>6.0.0</version>
         </dependency>
-        <!--======================================================================================== -->
-        <!-- Logging Dependencies -->
-        <!--======================================================================================== -->
+
+        <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!--======================================================================================== -->
-        <!-- Testing Dependencies -->
-        <!--======================================================================================== -->
+
+        <!-- Testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -168,4 +83,91 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <!-- ============================================================================= -->
+    <!--   Dependency Management -->
+    <!-- ============================================================================= -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- Logging BOM -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-bom</artifactId>
+                <version>2.0.16</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Json BOM -->
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>2.18.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- DB Driver BOM -->
+            <dependency>
+                <groupId>com.datastax.oss</groupId>
+                <artifactId>java-driver-bom</artifactId>
+                <version>4.17.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Testing BOM -->
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.12.1</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+            <!-- Direct dependency for test -->
+            <dependency>
+                <groupId>org.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>3.10.8</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.glassfish.jaxb</groupId>
+                        <artifactId>jaxb-runtime</artifactId>
+                    </exclusion>
+                </exclusions>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- ============================================================================= -->
+    <!--   Other Configurations -->
+    <!-- ============================================================================= -->
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/memoria-io/*</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <site>
+            <id>${project.artifactId}-site</id>
+            <url>ftp://memoria.io/</url>
+        </site>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/memoria-io/atom</url>
+        </repository>
+    </distributionManagement>
+
 </project>
