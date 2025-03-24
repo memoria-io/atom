@@ -92,6 +92,7 @@ Format Example: `JDK_Version.major.mino`
 ## TODOs
 
 * [x] Increase test coverage to >85%
+* [ ] Event-sourcing refactoring
 * [ ] Performance and benchmarks project "atom-performance"
 * [ ] JVM Profiling
 * [ ] More structured releasing once library is stable
