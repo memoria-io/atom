@@ -1,7 +1,6 @@
 module io.memoria.atom.eventsourcing {
   requires io.memoria.atom.core;
   requires org.slf4j;
-  requires cache.api;
   exports io.memoria.atom.eventsourcing.aggregate;
   exports io.memoria.atom.eventsourcing.aggregate.store;
   exports io.memoria.atom.eventsourcing.command;
