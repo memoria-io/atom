@@ -9,6 +9,7 @@ import io.memoria.atom.eventsourcing.state.StateId;
 import io.memoria.atom.eventsourcing.usecase.simple.SimpleDecider;
 import io.memoria.atom.eventsourcing.usecase.simple.SimpleEvolver;
 
+import javax.cache.Cache;
 import javax.cache.Caching;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.CreatedExpiryPolicy;
@@ -33,6 +34,9 @@ public class Utils {
     config.setTypes(StateId.class, Aggregate.class).setStoreByValue(false).setExpiryPolicyFactory(policyFactory);
 
     var cache = Caching.getCachingProvider().getCacheManager().createCache(cacheName, config);
-    return AggregateStore.cachedStore(cache);
+    return cachedStore(cache);
+  }
+  static AggregateStore cachedStore(Cache<StateId, Aggregate> cache) {
+    return new CachedAggregateStore(cache);
   }
 }

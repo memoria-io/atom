@@ -99,6 +99,9 @@ Format Example: `JDK_Version.major.mino`
 
 ## Release notes
 
+* `24.4.0`
+    * Modular library Using Modules (module-info.java)
+    * Handle non-modular dependencies
 * `24.3.0`
     * Removed web module
 * `24.0.0`
