@@ -1,7 +1,7 @@
 package io.memoria.atom.jackson;
 
 import io.memoria.atom.core.file.FileOps;
-import io.memoria.atom.core.id.Id;
+import io.memoria.atom.core.id.Ids;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -33,8 +33,8 @@ public class Resources {
       ANNIKA_MANAGER_YAML = FileOps.readResource("cases/company/yaml/Manager.yaml");
 
       // Objects
-      BOB_ENGINEER = new Engineer(Id.of(0), "bob", LocalDate.of(2000, 1, 1), List.of("fix issue 1", "Fix issue 2"));
-      ALEX_ENGINEER = new Engineer(Id.of(1), "alex", LocalDate.of(2000, 1, 1), List.of("fix issue 3", "Fix issue 4"));
+      BOB_ENGINEER = new Engineer(Ids.of(0), "bob", LocalDate.of(2000, 1, 1), List.of("fix issue 1", "Fix issue 2"));
+      ALEX_ENGINEER = new Engineer(Ids.of(1), "alex", LocalDate.of(2000, 1, 1), List.of("fix issue 3", "Fix issue 4"));
       ANNIKA_MANAGER = new Manager("Annika", List.of(BOB_ENGINEER, ALEX_ENGINEER));
     } catch (IOException e) {
       throw new RuntimeException(e);

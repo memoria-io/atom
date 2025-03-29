@@ -1,7 +1,7 @@
 package io.memoria.atom.eventsourcing.usecase.banking;
 
-import io.memoria.atom.eventsourcing.command.CommandId;
-import io.memoria.atom.eventsourcing.event.EventId;
+import io.memoria.atom.eventsourcing.command.CommandIds;
+import io.memoria.atom.eventsourcing.event.EventIds;
 import io.memoria.atom.eventsourcing.event.EventMeta;
 import io.memoria.atom.eventsourcing.state.StateId;
 import io.memoria.atom.eventsourcing.usecase.banking.command.Credit;
@@ -18,9 +18,9 @@ class AccountSagaTest {
     StateId debitedAccount = TestData.aliceId;
     StateId creditedAcc = TestData.bobId;
 
-    var sagaEventId = EventId.of("SomeSagaEventId");
-    var commandId = CommandId.of(randomUUID());
-    var eventId = EventId.of(randomUUID());
+    var sagaEventId = EventIds.of("SomeSagaEventId");
+    var commandId = CommandIds.of(randomUUID());
+    var eventId = EventIds.of(randomUUID());
     var eventMetaWithSaga = new EventMeta(eventId, 1, debitedAccount, commandId, 0, sagaEventId);
 
     var debited = new Debited(eventMetaWithSaga, creditedAcc, 300);

@@ -1,6 +1,6 @@
 package io.memoria.atom.eventsourcing.usecase.banking;
 
-import io.memoria.atom.eventsourcing.command.CommandId;
+import io.memoria.atom.eventsourcing.command.CommandIds;
 import io.memoria.atom.eventsourcing.command.CommandMeta;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
 import io.memoria.atom.eventsourcing.state.StateMeta;
@@ -23,7 +23,7 @@ class AccountDeciderTest {
     // Given
     int balance = 500;
     var openAccount = new OpenAccount(new StateMeta(TestData.aliceId), TestData.alice, balance);
-    var debit = new Debit(new CommandMeta(CommandId.of(randomUUID()), TestData.aliceId), TestData.bobId, debitAmount);
+    var debit = new Debit(new CommandMeta(CommandIds.of(randomUUID()), TestData.aliceId), TestData.bobId, debitAmount);
 
     // When
     var event = TestData.decider.decide(openAccount, debit);

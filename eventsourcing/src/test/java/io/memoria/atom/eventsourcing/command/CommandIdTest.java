@@ -2,6 +2,7 @@ package io.memoria.atom.eventsourcing.command;
 
 import com.github.f4b6a3.uuid.UuidCreator;
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.core.id.Ids;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ class CommandIdTest {
 
   @Test
   void happyPath() {
-    var id = Id.of(UuidCreator.getTimeOrderedEpoch());
+    var id = Ids.of(UuidCreator.getTimeOrderedEpoch());
     Assertions.assertThat(id.value()).isNotEmpty();
   }
 
@@ -29,8 +30,8 @@ class CommandIdTest {
     var uuidStr = uuid.toString();
 
     // When
-    var id1 = CommandId.of(uuid);
-    var id2 = CommandId.of(uuidStr);
+    var id1 = CommandIds.of(uuid);
+    var id2 = CommandIds.of(uuidStr);
 
     // Then
     Assertions.assertThat(id1).isEqualTo(id2).hasToString(uuidStr);
@@ -40,15 +41,15 @@ class CommandIdTest {
   void validation() {
     String str = null;
     //noinspection ConstantValue
-    Assertions.assertThatNullPointerException().isThrownBy(() -> CommandId.of(str));
-    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> CommandId.of(-1L));
-    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> CommandId.of(""));
+    Assertions.assertThatNullPointerException().isThrownBy(() -> CommandIds.of(str));
+    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> CommandIds.of(-1L));
+    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> CommandIds.of(""));
   }
 
   @Test
   void uuidOrdering() {
     TreeMap<Id, Integer> map = new TreeMap<>();
-    IntStream.range(0, 1000).forEach(i -> map.put(CommandId.of(UuidCreator.getTimeOrderedEpoch()), i));
+    IntStream.range(0, 1000).forEach(i -> map.put(CommandIds.of(UuidCreator.getTimeOrderedEpoch()), i));
     var atomic = new AtomicInteger(0);
     map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
   }
@@ -56,7 +57,7 @@ class CommandIdTest {
   @Test
   void seqIdOrdering() {
     TreeMap<Id, Integer> map = new TreeMap<>();
-    IntStream.range(0, 1000).forEach(i -> map.put(CommandId.of(i), i));
+    IntStream.range(0, 1000).forEach(i -> map.put(CommandIds.of(i), i));
     var atomic = new AtomicInteger(0);
     map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
   }

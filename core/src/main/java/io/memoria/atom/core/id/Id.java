@@ -29,18 +29,6 @@ public class Id implements Serializable, Comparable<Id> {
     this.value = id.value;
   }
 
-  public static Id of(String value) {
-    return new Id(value);
-  }
-
-  public static Id of(long value) {
-    return new Id(value);
-  }
-
-  public static Id of(UUID uuid) {
-    return new Id(uuid);
-  }
-
   public String value() {
     return value;
   }

@@ -1,10 +1,10 @@
 package io.memoria.atom.eventsourcing.aggregate;
 
-import io.memoria.atom.eventsourcing.command.CommandId;
-import io.memoria.atom.eventsourcing.event.EventId;
+import io.memoria.atom.eventsourcing.command.CommandIds;
+import io.memoria.atom.eventsourcing.event.EventIds;
 import io.memoria.atom.eventsourcing.event.EventMeta;
 import io.memoria.atom.eventsourcing.event.exceptions.InvalidEvent;
-import io.memoria.atom.eventsourcing.state.StateId;
+import io.memoria.atom.eventsourcing.state.StateIds;
 import io.memoria.atom.eventsourcing.state.StateMeta;
 import io.memoria.atom.eventsourcing.usecase.simple.SimpleEvolver;
 import io.memoria.atom.eventsourcing.usecase.simple.SimpleState;
@@ -21,7 +21,7 @@ class EvolverTest {
   @Test
   void evolveCreation() {
     // Given
-    var stateCreated = new StateCreated(new EventMeta(EventId.of(0), 0, StateId.of(0), CommandId.of(0)));
+    var stateCreated = new StateCreated(new EventMeta(EventIds.of(0), 0, StateIds.of(0), CommandIds.of(0)));
 
     // When
     var event = evolver.evolve(stateCreated);
@@ -34,8 +34,8 @@ class EvolverTest {
   @Test
   void evolveEvolution() {
     // Given
-    var someState = new SimpleState(new StateMeta(StateId.of(0)));
-    var stateChanged = new StateChanged(new EventMeta(EventId.of(0), 1, StateId.of(0), CommandId.of(0)));
+    var someState = new SimpleState(new StateMeta(StateIds.of(0)));
+    var stateChanged = new StateChanged(new EventMeta(EventIds.of(0), 1, StateIds.of(0), CommandIds.of(0)));
 
     // When
     var event = evolver.evolve(someState, stateChanged);
@@ -48,8 +48,8 @@ class EvolverTest {
   @Test
   void evolveEvolutionFail() {
     // Given
-    var someState = new SimpleState(new StateMeta(StateId.of(0)));
-    var stateChanged = new StateChanged(new EventMeta(EventId.of(0), 10, StateId.of(0), CommandId.of(0)));
+    var someState = new SimpleState(new StateMeta(StateIds.of(0)));
+    var stateChanged = new StateChanged(new EventMeta(EventIds.of(0), 10, StateIds.of(0), CommandIds.of(0)));
 
     // When
     assertThatThrownBy(() -> evolver.evolve(someState, stateChanged)).isInstanceOf(InvalidEvent.class);

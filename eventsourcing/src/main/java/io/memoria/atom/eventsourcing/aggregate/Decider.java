@@ -5,7 +5,7 @@ import io.memoria.atom.eventsourcing.command.Command;
 import io.memoria.atom.eventsourcing.command.exceptions.CommandException;
 import io.memoria.atom.eventsourcing.command.exceptions.MismatchingCommandState;
 import io.memoria.atom.eventsourcing.event.Event;
-import io.memoria.atom.eventsourcing.event.EventId;
+import io.memoria.atom.eventsourcing.event.EventIds;
 import io.memoria.atom.eventsourcing.event.EventMeta;
 import io.memoria.atom.eventsourcing.state.State;
 
@@ -42,7 +42,7 @@ public interface Decider {
   }
 
   default EventMeta eventMeta(Command cmd) {
-    return new EventMeta(EventId.of(idSupplier().get()),
+    return new EventMeta(EventIds.of(idSupplier().get()),
                          0,
                          cmd.meta().stateId(),
                          cmd.meta().commandId(),
@@ -52,7 +52,7 @@ public interface Decider {
 
   default EventMeta eventMeta(State state, Command cmd) {
     if (state.meta().stateId().equals(cmd.meta().stateId())) {
-      return new EventMeta(EventId.of(idSupplier().get()),
+      return new EventMeta(EventIds.of(idSupplier().get()),
                            state.meta().version() + 1,
                            state.meta().stateId(),
                            cmd.meta().commandId(),

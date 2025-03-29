@@ -1,6 +1,7 @@
 package io.memoria.atom.core.domain;
 
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.core.id.Ids;
 import io.memoria.atom.core.math.MathOps;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,7 +29,7 @@ public class PartitionedTest {
   @MethodSource("totalPartitions")
   void uuidShardsShouldBeNormal(int totalPartitions) {
     // Given
-    var shards = createShards(_ -> Id.of(UUID.randomUUID()));
+    var shards = createShards(_ -> Ids.of(UUID.randomUUID()));
     var partitionSizeList = partitionSizeList(shards, totalPartitions).stream().map(Long::doubleValue).toList();
     int maxOutliers = getMaxOutliers(totalPartitions);
 
@@ -43,7 +44,7 @@ public class PartitionedTest {
   @MethodSource("totalPartitions")
   void longShardsShouldBeNormal(int totalPartitions) {
     // Given
-    var shards = createShards(Id::of);
+    var shards = createShards(Ids::of);
     var partitionSizeList = partitionSizeList(shards, totalPartitions).stream().map(Long::doubleValue).toList();
 
     // When

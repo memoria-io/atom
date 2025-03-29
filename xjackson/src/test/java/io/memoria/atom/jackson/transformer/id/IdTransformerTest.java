@@ -1,6 +1,6 @@
 package io.memoria.atom.jackson.transformer.id;
 
-import io.memoria.atom.core.id.Id;
+import io.memoria.atom.core.id.Ids;
 import io.memoria.atom.core.text.TextException;
 import io.memoria.atom.core.text.TextTransformer;
 import io.memoria.atom.jackson.JacksonTransformerBuilder;
@@ -14,7 +14,7 @@ class IdTransformerTest {
   void idSubTypesDirectMapping() throws TextException {
     // Given
     var jsonStr = "\"some_id\"";
-    var obj = SomeId.of(Id.of("some_id"));
+    var obj = SomeId.of(Ids.of("some_id"));
 
     // When
     var serResult = json.serialize(obj);
@@ -36,7 +36,7 @@ class IdTransformerTest {
               "anotherId":"another_id",
               "name":"jack"
             }""";
-    var obj = new Person(Id.of(0), new SomeId("some_id"), new AnotherId("another_id"), "jack");
+    var obj = new Person(Ids.of(0), new SomeId("some_id"), new AnotherId("another_id"), "jack");
 
     // When
     var serResult = json.serialize(obj);

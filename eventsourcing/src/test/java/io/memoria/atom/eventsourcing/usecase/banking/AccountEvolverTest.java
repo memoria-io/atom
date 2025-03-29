@@ -1,7 +1,7 @@
 package io.memoria.atom.eventsourcing.usecase.banking;
 
-import io.memoria.atom.eventsourcing.command.CommandId;
-import io.memoria.atom.eventsourcing.event.EventId;
+import io.memoria.atom.eventsourcing.command.CommandIds;
+import io.memoria.atom.eventsourcing.event.EventIds;
 import io.memoria.atom.eventsourcing.event.EventMeta;
 import io.memoria.atom.eventsourcing.state.StateMeta;
 import io.memoria.atom.eventsourcing.usecase.banking.event.Debited;
@@ -20,7 +20,7 @@ class AccountEvolverTest {
   void evolve() {
     // Given
     var openAccount = new OpenAccount(new StateMeta(aliceId), alice, 500);
-    var debited = new Debited(new EventMeta(EventId.of(randomUUID()), 1, aliceId, CommandId.of(randomUUID())),
+    var debited = new Debited(new EventMeta(EventIds.of(randomUUID()), 1, aliceId, CommandIds.of(randomUUID())),
                               bobId,
                               300);
 

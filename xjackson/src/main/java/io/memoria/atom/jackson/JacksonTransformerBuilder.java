@@ -18,6 +18,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import io.memoria.atom.core.domain.ValueObject;
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.core.id.Ids;
 import io.memoria.atom.core.text.TextTransformer;
 import io.memoria.atom.jackson.transformer.generic.GenericValueObjectTransformer.GenericValueObjectDeserializer;
 import io.memoria.atom.jackson.transformer.generic.GenericValueObjectTransformer.GenericValueObjectSerializer;
@@ -81,7 +82,7 @@ public record JacksonTransformerBuilder(ObjectMapper objectMapper) {
 
   public JacksonTransformerBuilder withIdModule() {
     var module = new SimpleModule().addSerializer(Id.class, new IdSerializer<>(Id.class))
-                                   .addDeserializer(Id.class, new IdDeserializer<>(Id.class, Id::of));
+                                   .addDeserializer(Id.class, new IdDeserializer<>(Id.class, Ids::of));
     objectMapper.registerModule(module);
     return this;
   }

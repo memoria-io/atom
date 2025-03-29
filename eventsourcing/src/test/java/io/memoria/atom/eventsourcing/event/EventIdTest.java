@@ -2,6 +2,7 @@ package io.memoria.atom.eventsourcing.event;
 
 import com.github.f4b6a3.uuid.UuidCreator;
 import io.memoria.atom.core.id.Id;
+import io.memoria.atom.core.id.Ids;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ class EventIdTest {
 
   @Test
   void happyPath() {
-    var id = Id.of(UuidCreator.getTimeOrderedEpoch());
+    var id = Ids.of(UuidCreator.getTimeOrderedEpoch());
     Assertions.assertThat(id.value()).isNotEmpty();
   }
 
@@ -29,8 +30,8 @@ class EventIdTest {
     var uuidStr = uuid.toString();
 
     // When
-    var id1 = EventId.of(uuid);
-    var id2 = EventId.of(uuidStr);
+    var id1 = EventIds.of(uuid);
+    var id2 = EventIds.of(uuidStr);
 
     // Then
     Assertions.assertThat(id1).isEqualTo(id2).hasToString(uuidStr);
@@ -40,15 +41,15 @@ class EventIdTest {
   void validation() {
     String str = null;
     //noinspection ConstantValue
-    Assertions.assertThatNullPointerException().isThrownBy(() -> EventId.of(str));
-    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> EventId.of(-1L));
-    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> EventId.of(""));
+    Assertions.assertThatNullPointerException().isThrownBy(() -> EventIds.of(str));
+    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> EventIds.of(-1L));
+    Assertions.assertThatIllegalArgumentException().isThrownBy(() -> EventIds.of(""));
   }
 
   @Test
   void uuidOrdering() {
     TreeMap<Id, Integer> map = new TreeMap<>();
-    IntStream.range(0, 1000).forEach(i -> map.put(EventId.of(UuidCreator.getTimeOrderedEpoch()), i));
+    IntStream.range(0, 1000).forEach(i -> map.put(EventIds.of(UuidCreator.getTimeOrderedEpoch()), i));
     var atomic = new AtomicInteger(0);
     map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
   }
@@ -56,7 +57,7 @@ class EventIdTest {
   @Test
   void seqIdOrdering() {
     TreeMap<Id, Integer> map = new TreeMap<>();
-    IntStream.range(0, 1000).forEach(i -> map.put(EventId.of(i), i));
+    IntStream.range(0, 1000).forEach(i -> map.put(EventIds.of(i), i));
     var atomic = new AtomicInteger(0);
     map.forEach((k, v) -> Assertions.assertThat(v).isEqualTo(atomic.getAndIncrement()));
   }
