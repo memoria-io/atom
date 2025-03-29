@@ -2,6 +2,7 @@ package io.memoria.atom.eventsourcing.aggregate.store;
 
 import io.memoria.atom.eventsourcing.Utils;
 import io.memoria.atom.eventsourcing.state.StateId;
+import io.memoria.atom.eventsourcing.state.StateIds;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
@@ -37,7 +38,7 @@ class AggregateStoreTest {
     addAggregates(aggregateStore);
 
     // Then
-    Awaitility.await().atMost(Duration.ofMillis(250)).until(() -> aggregateStore.get(StateId.of(0)) == null);
+    Awaitility.await().atMost(Duration.ofMillis(250)).until(() -> aggregateStore.get(StateIds.of(0)) == null);
   }
 
   private static void addAggregates(AggregateStore aggregateStore) {
@@ -45,7 +46,7 @@ class AggregateStoreTest {
   }
 
   private static Stream<StateId> stateIdStream() {
-    return IntStream.range(0, STATES_SIZE).mapToObj(StateId::of);
+    return IntStream.range(0, STATES_SIZE).mapToObj(StateIds::of);
   }
 
   public static Stream<Arguments> stores() {

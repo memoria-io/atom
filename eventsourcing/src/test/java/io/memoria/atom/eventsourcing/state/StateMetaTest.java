@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class StateMetaTest {
-  private final StateId stateId = StateId.of(0);
+  private final StateId stateId = StateIds.of(0);
 
   @Test
   void init() {

@@ -1,6 +1,6 @@
 package io.memoria.atom.eventsourcing;
 
-import io.memoria.atom.core.id.Id;
+import io.memoria.atom.core.id.Ids;
 import io.memoria.atom.eventsourcing.aggregate.Aggregate;
 import io.memoria.atom.eventsourcing.aggregate.Decider;
 import io.memoria.atom.eventsourcing.aggregate.store.AggregateStore;
@@ -20,7 +20,7 @@ public class Utils {
   private Utils() {}
 
   public static Decider simpleDecider() {
-    return new SimpleDecider(() -> Id.of(0), () -> 0L);
+    return new SimpleDecider(() -> Ids.of(0), () -> 0L);
   }
 
   public static Aggregate simpleAggregate(StateId stateId) {
@@ -36,6 +36,7 @@ public class Utils {
     var cache = Caching.getCachingProvider().getCacheManager().createCache(cacheName, config);
     return cachedStore(cache);
   }
+
   static AggregateStore cachedStore(Cache<StateId, Aggregate> cache) {
     return new CachedAggregateStore(cache);
   }
