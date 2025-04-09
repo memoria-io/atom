@@ -106,15 +106,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- DB Driver BOM -->
-            <dependency>
-                <groupId>org.apache.cassandra</groupId>
-                <artifactId>java-driver-bom</artifactId>
-                <version>4.19.0</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <!-- Testing BOM -->
             <dependency>
                 <groupId>org.junit</groupId>
