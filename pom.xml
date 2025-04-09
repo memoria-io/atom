@@ -13,7 +13,7 @@
     <!--suppress MavenRedundantGroupId -->
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>24.5.0</version>
+    <version>24.6.0</version>
     <packaging>pom</packaging>
 
     <!-- Metadata -->
@@ -122,20 +122,6 @@
                 <version>5.12.1</version>
                 <scope>import</scope>
                 <type>pom</type>
-            </dependency>
-
-            <!-- Direct dependency for test -->
-            <dependency>
-                <groupId>org.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>3.10.8</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.glassfish.jaxb</groupId>
-                        <artifactId>jaxb-runtime</artifactId>
-                    </exclusion>
-                </exclusions>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
