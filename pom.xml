@@ -7,13 +7,13 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>jbom</artifactId>
-        <version>24.2.0</version>
+        <version>24.3.0</version>
     </parent>
 
     <!--suppress MavenRedundantGroupId -->
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>24.5.0</version>
+    <version>24.6.0</version>
     <packaging>pom</packaging>
 
     <!-- Metadata -->
@@ -106,15 +106,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- DB Driver BOM -->
-            <dependency>
-                <groupId>org.apache.cassandra</groupId>
-                <artifactId>java-driver-bom</artifactId>
-                <version>4.19.0</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <!-- Testing BOM -->
             <dependency>
                 <groupId>org.junit</groupId>
@@ -122,20 +113,6 @@
                 <version>5.12.1</version>
                 <scope>import</scope>
                 <type>pom</type>
-            </dependency>
-
-            <!-- Direct dependency for test -->
-            <dependency>
-                <groupId>org.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>3.10.8</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.glassfish.jaxb</groupId>
-                        <artifactId>jaxb-runtime</artifactId>
-                    </exclusion>
-                </exclusions>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
