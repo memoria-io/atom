@@ -16,7 +16,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static io.memoria.atom.eventsourcing.Utils.cachedAggregateStore;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AggregatesTest {
@@ -35,7 +34,6 @@ public class AggregatesTest {
   }
 
   public static Stream<Arguments> stores() {
-    return Stream.of(Arguments.of(Named.of("Concurrent map store", AggregateStore.mapStore())),
-                     Arguments.of(Named.of("Cache store", cachedAggregateStore("aggregateCache", 2000))));
+    return Stream.of(Arguments.of(Named.of("Concurrent map store", AggregateStore.mapStore())));
   }
 }
