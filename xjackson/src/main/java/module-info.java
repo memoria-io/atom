@@ -5,5 +5,5 @@ module io.memoria.atom.xjackson {
   requires com.fasterxml.jackson.module.paramnames;
   requires io.memoria.atom.core;
   requires com.fasterxml.jackson.databind;
-
+  exports io.memoria.atom.jackson;
 }

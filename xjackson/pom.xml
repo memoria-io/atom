@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.memoria</groupId>
         <artifactId>atom</artifactId>
-        <version>24.7.0</version>
+        <version>24.7.1</version>
     </parent>
 
     <groupId>io.memoria.atom</groupId>
     <artifactId>xjackson</artifactId>
-    <version>24.7.0</version>
+    <version>24.7.1</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
     <description>text Module</description>
