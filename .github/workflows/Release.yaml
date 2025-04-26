@@ -36,7 +36,7 @@ jobs:
       - name: Publish package
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn --batch-mode deploy
+        run: mvn --batch-mode -Ppublish deploy
 
       - name: Get Maven project version
         env:

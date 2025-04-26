@@ -1,0 +1,38 @@
+[
+  {
+    "$type":"Engineer",
+    "id":"0",
+    "name":"bob",
+    "birthday":"2000-01-01",
+    "tasks":[
+      "fix issue 1",
+      "Fix issue 2"
+    ]
+  },
+  {
+    "$type":"Manager",
+    "name":"Annika",
+    "team":[
+      {
+        "$type":"Engineer",
+        "id":"0",
+        "name":"bob",
+        "birthday":"2000-01-01",
+        "tasks":[
+          "fix issue 1",
+          "Fix issue 2"
+        ]
+      },
+      {
+        "$type":"Engineer",
+        "id":"1",
+        "name":"alex",
+        "birthday":"2000-01-01",
+        "tasks":[
+          "fix issue 3",
+          "Fix issue 4"
+        ]
+      }
+    ]
+  }
+]
