@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactoryBuilder;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
@@ -28,19 +28,29 @@ import io.memoria.atom.jackson.transformer.value.ValueObjectTransformer.ValueObj
 import io.memoria.atom.jackson.transformer.value.ValueObjectTransformer.ValueObjectSerializer;
 
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static com.fasterxml.jackson.core.util.Separators.Spacing.NONE;
 
-public record JacksonTransformerBuilder(ObjectMapper objectMapper) {
+@SuppressWarnings("ClassCanBeRecord")
+public final class JacksonTransformerBuilder {
+  private final ObjectMapper objectMapper;
+
+  public JacksonTransformerBuilder(ObjectMapper objectMapper) {
+    Objects.requireNonNull(objectMapper);
+    this.objectMapper = objectMapper;
+  }
 
   public static JacksonTransformerBuilder json() {
-    return new JacksonTransformerBuilder(JsonMapper.builder().build());
+    ObjectMapper jsonObjMapper = JsonMapper.builder().build();
+    return new JacksonTransformerBuilder(jsonObjMapper);
   }
 
   public static JacksonTransformerBuilder yaml() {
-    var yfb = new YAMLFactoryBuilder(YAMLFactory.builder().build());
-    yfb.configure(YAMLGenerator.Feature.INDENT_ARRAYS_WITH_INDICATOR, true);
+    YAMLFactory yamlObjMapper = YAMLFactory.builder().build();
+    var yfb = new YAMLFactoryBuilder(yamlObjMapper);
+    yfb.configure(Feature.INDENT_ARRAYS_WITH_INDICATOR, true);
     return new JacksonTransformerBuilder(new ObjectMapper(yfb.build()));
   }
 
@@ -157,5 +167,9 @@ public record JacksonTransformerBuilder(ObjectMapper objectMapper) {
   public JacksonTransformerBuilder withSubtypes(Class<?>... subtypes) {
     objectMapper.registerSubtypes(subtypes);
     return this;
+  }
+
+  public ObjectMapper objectMapper() {
+    return objectMapper;
   }
 }
