@@ -29,11 +29,10 @@ Atom is an SDK to accelerate development, and it's a constant learning effort.
 
 The currently used JDK is `24` and the motivation is to use the latest available JDK.
 
-## Documentation
 
-Can be found under the [.docs](/.docs) directory
+## Architecture
 
-## Modules
+* [Documentation directory](/.docs)
 
 ![](.docs/atom.jpg)
 
@@ -50,7 +49,7 @@ Can be found under the [.docs](/.docs) directory
     * The `text` module is utilities and standardization of text serialization/deserialization, it relies on jackson
       libraries.
 
-## Usage
+## User Guide
 
 First make sure you can fetch repositories under such memoria organisation from github
 
@@ -83,13 +82,13 @@ Then import in your pom dependencies
 </dependency>
 ```
 
-## Versioning
+### Versioning
 
 The versioning is similar to semantic but with a shift where the first segment being the jdk version.
 
 Format Example: `JDK_Version.major.mino`
 
-## TODOs
+## Developer Guide
 
 * [x] Increase test coverage to >85%
 * [ ] Event-sourcing refactoring
@@ -97,7 +96,7 @@ Format Example: `JDK_Version.major.mino`
 * [ ] JVM Profiling
 * [ ] More structured releasing once library is stable
 
-## Release notes
+### Release notes
 
 * `24.4.0`
     * Modular library Using Modules (module-info.java)
@@ -117,12 +116,3 @@ Format Example: `JDK_Version.major.mino`
     * Moving Event-sourcing and testsuite modules to reactive
 * `20.11.0`
     * Moving reactive modules to separate repository [memoria-io/reactive](https://github.com/memoria-io/reactive)
-
-## Contribution
-
-You can just do pull requests, and I will check them asap.
-
-## Related Articles
-
-* [Error handling using Reactor and VAVR](https://marmoush.com/2019/11/12/Error-Handling.html)
-* [Why I stopped using getters and setters](https://marmoush.com/2019/12/13/stopped-using-getters-and-setters.html)
