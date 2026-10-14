@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.marmoush</groupId>
         <artifactId>java-bom</artifactId>
-        <version>26.0.3</version>
+        <version>26.0.5</version>
     </parent>
 
     <!--suppress MavenRedundantGroupId -->
@@ -28,7 +28,7 @@
     <modules>
         <module>core</module>
         <module>eventsourcing</module>
-        <module>xjackson</module>
+        <module>jackson</module>
     </modules>
 
     <properties>
@@ -99,9 +99,9 @@
 
             <!-- Json BOM -->
             <dependency>
-                <groupId>com.fasterxml.jackson</groupId>
+                <groupId>tools.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
-                <version>2.22.3</version>
+                <version>3.2.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

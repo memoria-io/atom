@@ -1,14 +1,14 @@
 package com.marmoush.javakit.jackson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.marmoush.javakit.core.text.TextException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,7 +46,7 @@ class JacksonRecordTest {
   }
 
   @Test
-  void testSerializeJsonIgnoreRecord() throws JsonProcessingException {
+  void testSerializeJsonIgnoreRecord() throws JacksonException {
     JsonIgnoreRecord record = new JsonIgnoreRecord(123, "Bob");
 
     String json = jsonMapper.writeValueAsString(record);
@@ -55,7 +55,7 @@ class JacksonRecordTest {
   }
 
   @Test
-  void testSerializeRecordOfRecord() throws JsonProcessingException {
+  void testSerializeRecordOfRecord() throws JacksonException {
     RecordOfRecord record = new RecordOfRecord(new SimpleRecord(123, "Bob"));
 
     String json = jsonMapper.writeValueAsString(record);
@@ -64,7 +64,7 @@ class JacksonRecordTest {
   }
 
   @Test
-  void testSerializeSimpleRecord() throws JsonProcessingException {
+  void testSerializeSimpleRecord() throws JacksonException {
     SimpleRecord record = new SimpleRecord(123, "Bob");
 
     String json = jsonMapper.writeValueAsString(record);

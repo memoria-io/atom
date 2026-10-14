@@ -1,13 +1,13 @@
 package com.marmoush.javakit.jackson.transformer.generic;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.databind.ser.std.StdSerializer;
 
-import java.io.IOException;
 import java.util.function.Function;
 
 public final class GenericValueObjectTransformer {
@@ -24,11 +24,9 @@ public final class GenericValueObjectTransformer {
     }
 
     @Override
-    public B deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
-      var value = p.readValueAs(String.class);
-      return constructor.apply(value);
+    public B deserialize(JsonParser p, DeserializationContext context) throws JacksonException {
+      return constructor.apply(p.getString());
     }
-
   }
 
   public static class GenericValueObjectSerializer<A, B extends A> extends StdSerializer<B> {
@@ -41,7 +39,7 @@ public final class GenericValueObjectTransformer {
     }
 
     @Override
-    public void serialize(B value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(B value, JsonGenerator gen, SerializationContext context) throws JacksonException {
       gen.writeString(valueExtractor.apply(value));
     }
   }

@@ -1,14 +1,14 @@
 package com.marmoush.javakit.jackson.transformer.value;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.marmoush.javakit.core.domain.ValueObject;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.deser.std.StdDeserializer;
+import tools.jackson.databind.ser.std.StdSerializer;
 
-import java.io.IOException;
 import java.util.function.Function;
 
 public final class ValueObjectTransformer {
@@ -25,9 +25,8 @@ public final class ValueObjectTransformer {
     }
 
     @Override
-    public T deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
-      var value = p.readValueAs(String.class);
-      return constructor.apply(value);
+    public T deserialize(JsonParser p, DeserializationContext ctxt) throws JacksonException {
+      return constructor.apply(p.getString());
     }
   }
 
@@ -38,9 +37,8 @@ public final class ValueObjectTransformer {
     }
 
     @Override
-    public void serialize(T t, JsonGenerator gen, SerializerProvider provider) throws IOException {
-      gen.writeString(t.value().toString());
+    public void serialize(T value, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
+      gen.writeString(value.value().toString());
     }
   }
 }
-

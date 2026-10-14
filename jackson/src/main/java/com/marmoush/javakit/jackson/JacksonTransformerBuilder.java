@@ -2,20 +2,6 @@ package com.marmoush.javakit.jackson;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.core.util.Separators;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactoryBuilder;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.marmoush.javakit.core.domain.ValueObject;
 import com.marmoush.javakit.core.id.Id;
 import com.marmoush.javakit.core.id.Ids;
@@ -26,108 +12,97 @@ import com.marmoush.javakit.jackson.transformer.id.IdTransformer.IdDeserializer;
 import com.marmoush.javakit.jackson.transformer.id.IdTransformer.IdSerializer;
 import com.marmoush.javakit.jackson.transformer.value.ValueObjectTransformer.ValueObjectDeserializer;
 import com.marmoush.javakit.jackson.transformer.value.ValueObjectTransformer.ValueObjectSerializer;
+import tools.jackson.core.util.DefaultIndenter;
+import tools.jackson.core.util.DefaultPrettyPrinter;
+import tools.jackson.core.util.Separators;
+import tools.jackson.databind.JacksonModule;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.cfg.DateTimeFeature;
+import tools.jackson.databind.cfg.MapperBuilder;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.function.Function;
 
-import static com.fasterxml.jackson.core.util.Separators.Spacing.NONE;
+import static tools.jackson.core.util.Separators.Spacing.NONE;
+import static tools.jackson.dataformat.yaml.YAMLWriteFeature.INDENT_ARRAYS_WITH_INDICATOR;
 
-@SuppressWarnings("ClassCanBeRecord")
 public final class JacksonTransformerBuilder {
-  private final ObjectMapper objectMapper;
+  private final MapperBuilder<?, ?> builder;
 
-  public JacksonTransformerBuilder(ObjectMapper objectMapper) {
-    Objects.requireNonNull(objectMapper);
-    this.objectMapper = objectMapper;
+  public JacksonTransformerBuilder(MapperBuilder<?, ?> builder) {
+    this.builder = Objects.requireNonNull(builder);
   }
 
   public static JacksonTransformerBuilder json() {
-    ObjectMapper jsonObjMapper = JsonMapper.builder().build();
-    return new JacksonTransformerBuilder(jsonObjMapper);
+    return new JacksonTransformerBuilder(JsonMapper.builder());
   }
 
   public static JacksonTransformerBuilder yaml() {
-    YAMLFactory yamlObjMapper = YAMLFactory.builder().build();
-    var yfb = new YAMLFactoryBuilder(yamlObjMapper);
-    yfb.configure(Feature.INDENT_ARRAYS_WITH_INDICATOR, true);
-    return new JacksonTransformerBuilder(new ObjectMapper(yfb.build()));
+    return new JacksonTransformerBuilder(YAMLMapper.builder().enable(INDENT_ARRAYS_WITH_INDICATOR));
   }
 
   public TextTransformer asTextTransformer() {
-    return new JacksonTransformer(objectMapper);
+    return new JacksonTransformer(builder.build());
   }
 
-  /**
-   * @return JacksonObjectMapper with basic settings
-   * withDefaultDateFormat().withDurationAsTimestamp().withJ8Modules().withIdModule()
-   */
+  /** Basic settings: withDefaultDateFormat().withDurationAsTimestamp().withIdModule() */
   public JacksonTransformerBuilder withDefaults() {
-    return withDefaultDateFormat().withDurationAsTimestamp().withJ8Modules().withIdModule();
+    return withDefaultDateFormat().withDurationAsTimestamp().withIdModule();
   }
 
   public JacksonTransformerBuilder withPrettyFormat() {
-    Separators separators = Separators.createDefaultInstance().withObjectFieldValueSpacing(NONE);
+    Separators separators = Separators.createDefaultInstance().withObjectNameValueSpacing(NONE);
     var printer = new DefaultPrettyPrinter(separators);
     printer.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-    objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-    objectMapper.setDefaultPrettyPrinter(printer);
+    builder.enable(SerializationFeature.INDENT_OUTPUT);
+    builder.defaultPrettyPrinter(printer);
     return this;
   }
 
   public JacksonTransformerBuilder withDefaultDateFormat() {
-    objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd" + "'T'" + "HH:mm:ss"));
+    builder.defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
     return this;
   }
 
   public JacksonTransformerBuilder withDurationAsTimestamp() {
-    objectMapper.configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false);
-    return this;
-  }
-
-  public JacksonTransformerBuilder withJ8Modules() {
-    withModules(new ParameterNamesModule(), new Jdk8Module(), new JavaTimeModule());
+    builder.disable(DateTimeFeature.WRITE_DURATIONS_AS_TIMESTAMPS);
     return this;
   }
 
   public JacksonTransformerBuilder withIdModule() {
     var module = new SimpleModule().addSerializer(Id.class, new IdSerializer<>(Id.class))
                                    .addDeserializer(Id.class, new IdDeserializer<>(Id.class, Ids::of));
-    objectMapper.registerModule(module);
+    builder.addModule(module);
     return this;
   }
 
   /**
-   * Maps inheriting classes simple names written with format "As.PROPERTY" and property name is "@type" to this
-   * baseClass argument
-   * <p>
-   * note for this to work properly subclasses have to be in separate files from their baseClass otherwise Jvm will
-   * return "BaseClass$ChildClass" kind of naming
+   * Maps inheriting classes' simple names, written as "As.PROPERTY" with property name "$type", to this baseClass
+   * argument.
    *
-   * @param baseClass base classes
+   * <p>Subclasses must be in separate files from their baseClass, otherwise the JVM returns
+   * "BaseClass$ChildClass" style names.
    */
   public JacksonTransformerBuilder withMixInPropertyFormat(Class<?>... baseClass) {
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "$type")
     class WrapperObjectByClassName {}
     for (Class<?> cls : baseClass) {
-      objectMapper.addMixIn(cls, WrapperObjectByClassName.class);
+      builder.addMixIn(cls, WrapperObjectByClassName.class);
     }
     return this;
   }
 
-  /**
-   * Maps inheriting classes simple names written with format "As.WRAPPER_OBJECT" to this baseClass argument
-   * <p>
-   * note for this to work properly subclasses have to be in separate files from their baseClass otherwise Jvm will
-   * return "BaseClass$ChildClass" kind of naming
-   *
-   * @param baseClass base classes
-   */
+  /** Same as above but written as "As.WRAPPER_OBJECT". */
   public JacksonTransformerBuilder withMixInWrapperObjectFormat(Class<?>... baseClass) {
     @JsonTypeInfo(include = As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
     class WrapperObjectByClassName {}
     for (Class<?> cls : baseClass) {
-      objectMapper.addMixIn(cls, WrapperObjectByClassName.class);
+      builder.addMixIn(cls, WrapperObjectByClassName.class);
     }
     return this;
   }
@@ -136,16 +111,14 @@ public final class JacksonTransformerBuilder {
                                                                               Function<String, T> fromString) {
     var module = new SimpleModule().addDeserializer(tClass, new IdDeserializer<>(tClass, fromString))
                                    .addSerializer(tClass, new IdSerializer<>(tClass));
-    withModules(module);
-    return this;
+    return withModules(module);
   }
 
   public <E, T extends ValueObject<E>> JacksonTransformerBuilder withValueObjectsModule(Class<T> tClass,
                                                                                         Function<String, T> fromString) {
     var module = new SimpleModule().addDeserializer(tClass, new ValueObjectDeserializer<>(tClass, fromString))
                                    .addSerializer(tClass, new ValueObjectSerializer<>(tClass));
-    withModules(module);
-    return this;
+    return withModules(module);
   }
 
   public <A, B extends A> JacksonTransformerBuilder withGenericValueObjectsModule(Class<B> tClass,
@@ -153,23 +126,23 @@ public final class JacksonTransformerBuilder {
                                                                                   Function<B, String> toString) {
     var module = new SimpleModule().addDeserializer(tClass, new GenericValueObjectDeserializer<>(tClass, fromString))
                                    .addSerializer(tClass, new GenericValueObjectSerializer<>(tClass, toString));
-    withModules(module);
-    return this;
+    return withModules(module);
   }
 
-  public JacksonTransformerBuilder withModules(Module... modules) {
-    for (Module module : modules) {
-      objectMapper.registerModule(module);
+  public JacksonTransformerBuilder withModules(JacksonModule... modules) {
+    for (JacksonModule module : modules) {
+      builder.addModule(module);
     }
     return this;
   }
 
   public JacksonTransformerBuilder withSubtypes(Class<?>... subtypes) {
-    objectMapper.registerSubtypes(subtypes);
+    builder.registerSubtypes(subtypes);
     return this;
   }
 
+  /** Builds a new immutable mapper from the current configuration on every call. */
   public ObjectMapper objectMapper() {
-    return objectMapper;
+    return builder.build();
   }
 }
