@@ -73,7 +73,7 @@ Then import in your pom dependencies
 
 <dependency>
     <groupId>com.marmoush</groupId>
-    <artifactId>atom</artifactId>
+    <artifactId>java-kit</artifactId>
     <version>26.0.0</version>
 </dependency>
 ```
