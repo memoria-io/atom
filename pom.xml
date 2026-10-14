@@ -13,7 +13,7 @@
     <!--suppress MavenRedundantGroupId -->
     <groupId>com.marmoush</groupId>
     <artifactId>java-kit</artifactId>
-    <version>26.0.1</version>
+    <version>26.0.2</version>
     <packaging>pom</packaging>
 
     <!-- Metadata -->
