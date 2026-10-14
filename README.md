@@ -1,19 +1,19 @@
 # atom
 
-[![Release](https://github.com/memoria-io/atom/workflows/Release/badge.svg)](https://github.com/memoria-io/atom/actions?query=workflow%3ARelease)
-[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/memoria-io/atom?label=Version&logo=github)](https://github.com/orgs/memoria-io/packages?repo_name=atom)
+[![Release](https://github.com/ismailmarmoush/java-kit/workflows/Release/badge.svg)](https://github.com/ismailmarmoush/java-kit/actions?query=workflow%3ARelease)
+[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/ismailmarmoush/java-kit?label=Version&logo=github)](https://github.com/ismailmarmoush?tab=packages&repo_name=java-kit)
 
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=bugs)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=coverage)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=bugs)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
 
 > هذا العلم والعمل وقف للّه تعالي اسأل اللّه ان يرزقنا الاخلاص فالقول والعمل
 >
@@ -58,17 +58,9 @@ First make sure you can fetch repositories under such memoria organisation from 
 <repositories>
     <repository>
         <id>github</id>
-        <name>GitHub Packages</name>
-        <url>https://maven.pkg.github.com/memoria-io/*</url>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
+        <url>https://maven.pkg.github.com/ismailmarmoush/java-kit</url>
     </repository>
 </repositories>
-
 ```
 
 Then import in your pom dependencies
@@ -78,7 +70,7 @@ Then import in your pom dependencies
 <dependency>
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>24.0.0</version>
+    <version>26.0.0</version>
 </dependency>
 ```
 
@@ -91,6 +83,7 @@ Format Example: `JDK_Version.major.mino`
 ## Developer Guide
 
 * [x] Increase test coverage to >85%
+* [ ] Publish to maven instead of Github
 * [ ] Event-sourcing refactoring
 * [ ] Performance and benchmarks project "atom-performance"
 * [ ] JVM Profiling
