@@ -55,10 +55,3 @@ jobs:
 
       - name: Publish package
         run: mvn -B -Ppublish deploy -DskipTests # tests already ran in verify
-
-      - name: Create tag
-        if: ${{ !endsWith(env.VERSION, '-SNAPSHOT') }}
-        run: >
-          gh api "repos/$GITHUB_REPOSITORY/git/refs"
-          -f ref="refs/tags/$VERSION"
-          -f sha="$GITHUB_SHA"
