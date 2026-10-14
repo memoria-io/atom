@@ -72,7 +72,7 @@ Then import in your pom dependencies
 ```xml
 
 <dependency>
-    <groupId>io.memoria</groupId>
+    <groupId>com.marmoush</groupId>
     <artifactId>atom</artifactId>
     <version>26.0.0</version>
 </dependency>
