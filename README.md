@@ -1,19 +1,23 @@
 # atom
 
-[![Release](https://github.com/memoria-io/atom/workflows/Release/badge.svg)](https://github.com/memoria-io/atom/actions?query=workflow%3ARelease)
-[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/memoria-io/atom?label=Version&logo=github)](https://github.com/orgs/memoria-io/packages?repo_name=atom)
+> [!WARNING]
+> This repo is under construction and major refactoring at the moment
 
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=bugs)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=coverage)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=memoria-io_atom&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=memoria-io_atom)
+
+[![Release](https://github.com/ismailmarmoush/java-kit/workflows/Release/badge.svg)](https://github.com/ismailmarmoush/java-kit/actions?query=workflow%3ARelease)
+[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/ismailmarmoush/java-kit?label=Version&logo=github)](https://github.com/ismailmarmoush?tab=packages&repo_name=java-kit)
+
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=bugs)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ismailmarmoush_java-kit&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ismailmarmoush_java-kit)
 
 > هذا العلم والعمل وقف للّه تعالي اسأل اللّه ان يرزقنا الاخلاص فالقول والعمل
 >
@@ -29,11 +33,10 @@ Atom is an SDK to accelerate development, and it's a constant learning effort.
 
 The currently used JDK is `24` and the motivation is to use the latest available JDK.
 
-## Documentation
 
-Can be found under the [.docs](/.docs) directory
+## Architecture
 
-## Modules
+* [Documentation directory](/.docs)
 
 ![](.docs/atom.jpg)
 
@@ -50,7 +53,7 @@ Can be found under the [.docs](/.docs) directory
     * The `text` module is utilities and standardization of text serialization/deserialization, it relies on jackson
       libraries.
 
-## Usage
+## User Guide
 
 First make sure you can fetch repositories under such memoria organisation from github
 
@@ -59,17 +62,9 @@ First make sure you can fetch repositories under such memoria organisation from 
 <repositories>
     <repository>
         <id>github</id>
-        <name>GitHub Packages</name>
-        <url>https://maven.pkg.github.com/memoria-io/*</url>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
+        <url>https://maven.pkg.github.com/ismailmarmoush/java-kit</url>
     </repository>
 </repositories>
-
 ```
 
 Then import in your pom dependencies
@@ -79,25 +74,26 @@ Then import in your pom dependencies
 <dependency>
     <groupId>io.memoria</groupId>
     <artifactId>atom</artifactId>
-    <version>24.0.0</version>
+    <version>26.0.0</version>
 </dependency>
 ```
 
-## Versioning
+### Versioning
 
 The versioning is similar to semantic but with a shift where the first segment being the jdk version.
 
 Format Example: `JDK_Version.major.mino`
 
-## TODOs
+## Developer Guide
 
 * [x] Increase test coverage to >85%
+* [ ] Publish to maven instead of Github
 * [ ] Event-sourcing refactoring
 * [ ] Performance and benchmarks project "atom-performance"
 * [ ] JVM Profiling
 * [ ] More structured releasing once library is stable
 
-## Release notes
+### Release notes
 
 * `24.4.0`
     * Modular library Using Modules (module-info.java)
@@ -117,12 +113,3 @@ Format Example: `JDK_Version.major.mino`
     * Moving Event-sourcing and testsuite modules to reactive
 * `20.11.0`
     * Moving reactive modules to separate repository [memoria-io/reactive](https://github.com/memoria-io/reactive)
-
-## Contribution
-
-You can just do pull requests, and I will check them asap.
-
-## Related Articles
-
-* [Error handling using Reactor and VAVR](https://marmoush.com/2019/11/12/Error-Handling.html)
-* [Why I stopped using getters and setters](https://marmoush.com/2019/12/13/stopped-using-getters-and-setters.html)
