@@ -170,7 +170,7 @@ class FileOpsTest {
       for (int i = 0; i < count; i++) {
         var p = FileOps.write(path.resolve(i + ".json"), "hi" + i);
         Awaitility.await().atMost(Duration.ofMillis(200)).until(() -> Files.exists(p));
-        log.info("Written" + p);
+        log.debug("Written{}", p);
       }
     } catch (IOException e) {
       throw new RuntimeException(e);

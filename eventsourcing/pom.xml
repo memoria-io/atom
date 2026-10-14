@@ -11,10 +11,9 @@
 
     <groupId>com.marmoush.java-kit</groupId>
     <artifactId>eventsourcing</artifactId>
-    <version>26.0.2</version>
     <packaging>jar</packaging>
     <name>${project.groupId}.${project.artifactId}</name>
-    <description>eventsourcing Module</description>
+    <description>Event-Sourcing Module</description>
 
     <dependencies>
         <!--======================================================================================== -->
