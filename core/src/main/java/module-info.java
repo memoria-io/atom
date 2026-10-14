@@ -1,10 +1,10 @@
 module io.memoria.atom.core {
-  exports io.memoria.atom.core.domain;
-  exports io.memoria.atom.core.file;
-  exports io.memoria.atom.core.id;
-  exports io.memoria.atom.core.math;
-  exports io.memoria.atom.core.security;
-  exports io.memoria.atom.core.stream;
-  exports io.memoria.atom.core.text;
-  exports io.memoria.atom.core.utils;
+  exports com.marmoush.javakit.core.domain;
+  exports com.marmoush.javakit.core.file;
+  exports com.marmoush.javakit.core.id;
+  exports com.marmoush.javakit.core.math;
+  exports com.marmoush.javakit.core.security;
+  exports com.marmoush.javakit.core.stream;
+  exports com.marmoush.javakit.core.text;
+  exports com.marmoush.javakit.core.utils;
 }

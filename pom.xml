@@ -11,8 +11,8 @@
     </parent>
 
     <!--suppress MavenRedundantGroupId -->
-    <groupId>io.memoria</groupId>
-    <artifactId>atom</artifactId>
+    <groupId>com.marmoush</groupId>
+    <artifactId>java-kit</artifactId>
     <version>26.0.1</version>
     <packaging>pom</packaging>
 

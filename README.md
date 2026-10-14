@@ -72,8 +72,8 @@ Then import in your pom dependencies
 ```xml
 
 <dependency>
-    <groupId>io.memoria</groupId>
-    <artifactId>atom</artifactId>
+    <groupId>com.marmoush</groupId>
+    <artifactId>java-kit</artifactId>
     <version>26.0.0</version>
 </dependency>
 ```
