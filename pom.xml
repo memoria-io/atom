@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.marmoush</groupId>
         <artifactId>java-bom</artifactId>
-        <version>26.0.2</version>
+        <version>26.0.3</version>
     </parent>
 
     <!--suppress MavenRedundantGroupId -->
@@ -122,18 +122,43 @@
     <!-- ============================================================================= -->
     <repositories>
         <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/ismailmarmoush/java-bom</url>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <url>https://repo.maven.apache.org/maven2</url>
         </repository>
     </repositories>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <distributionManagement>
         <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/ismailmarmoush/java-kit</url>
+            <id>central</id>
+            <url>https://central.sonatype.com/api/v1/publisher</url>
         </repository>
     </distributionManagement>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Ismail Marmoush</name>
+            <url>https://marmoush.com</url>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:https://github.com/ismailmarmoush/java-kit.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/ismailmarmoush/java-kit.git</developerConnection>
+        <url>https://github.com/ismailmarmoush/java-kit</url>
+    </scm>
 
     <profiles>
         <profile>

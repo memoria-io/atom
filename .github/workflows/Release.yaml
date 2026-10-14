@@ -31,11 +31,13 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: "26"
-          cache: maven # replaces the manual actions/cache step
-          server-id: github
-          server-username-env-var: GITHUB_ACTOR
-          server-password-env-var: GITHUB_TOKEN
+          java-version: '26'
+          cache: maven
+          server-id: central
+          server-username-env-var: CENTRAL_USERNAME
+          server-password-env-var: CENTRAL_PASSWORD
+          gpg-passphrase-env-var: MAVEN_GPG_PASSPHRASE
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
 
       - name: Verify and analyze
         env:
@@ -47,11 +49,10 @@ jobs:
           -Dsonar.organization=ismailmarmoush
           -Dsonar.projectKey=ismailmarmoush_java-kit
 
-      - name: Read project version
-        run: |
-          VERSION=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)
-          echo "Version: $VERSION"
-          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
-
-      - name: Publish package
-        run: mvn -B -Ppublish deploy -DskipTests # tests already ran in verify
+      - name: Publish
+        run: mvn --batch-mode -Pcentral deploy -DskipTests
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          
