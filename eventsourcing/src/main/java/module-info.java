@@ -1,5 +1,5 @@
-module io.memoria.atom.eventsourcing {
-  requires io.memoria.atom.core;
+module com.marmoush.javakit.eventsourcing {
+  requires com.marmoush.javakit.core;
   requires org.slf4j;
   exports com.marmoush.javakit.eventsourcing.aggregate;
   exports com.marmoush.javakit.eventsourcing.aggregate.store;

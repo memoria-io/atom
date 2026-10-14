@@ -1,4 +1,4 @@
-# atom
+# java-kit
 
 > [!WARNING]
 > This repo is under construction and major refactoring at the moment
@@ -33,7 +33,6 @@ Atom is an SDK to accelerate development, and it's a constant learning effort.
 
 The currently used JDK is `24` and the motivation is to use the latest available JDK.
 
-
 ## Architecture
 
 * [Documentation directory](/.docs)
@@ -55,7 +54,9 @@ The currently used JDK is `24` and the motivation is to use the latest available
 
 ## User Guide
 
-First make sure you can fetch repositories under such memoria organisation from github
+First make sure you can fetch repositories under from github
+
+* TODO publishing maven central
 
 ```xml
 
@@ -111,5 +112,3 @@ Format Example: `JDK_Version.major.mino`
     * Removed reliance on vavr
 * `21.1.0`
     * Moving Event-sourcing and testsuite modules to reactive
-* `20.11.0`
-    * Moving reactive modules to separate repository [memoria-io/reactive](https://github.com/memoria-io/reactive)

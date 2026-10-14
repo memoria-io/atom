@@ -19,10 +19,10 @@
     <!-- Metadata -->
     <name>${project.groupId}.${project.artifactId}</name>
     <description>Java utilities</description>
-    <url>https://memoria.io</url>
+    <url>https://marmoush.com</url>
     <organization>
-        <name>memoria.io</name>
-        <url>https://memoria.io</url>
+        <name>marmoush.com</name>
+        <url>https://marmoush.com</url>
     </organization>
 
     <modules>

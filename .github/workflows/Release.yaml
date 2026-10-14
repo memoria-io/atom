@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - 'README.md'
 
 # Never run two releases at once, and never cancel one halfway through a deploy.
 concurrency:

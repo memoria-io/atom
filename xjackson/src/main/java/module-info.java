@@ -1,10 +1,10 @@
-module io.memoria.atom.xjackson {
+module com.marmoush.javakit.xjackson {
   requires com.fasterxml.jackson.databind;
   requires com.fasterxml.jackson.dataformat.yaml;
   requires com.fasterxml.jackson.datatype.jdk8;
   requires com.fasterxml.jackson.datatype.jsr310;
   requires com.fasterxml.jackson.module.paramnames;
-  requires io.memoria.atom.core;
+  requires com.marmoush.javakit.core;
 
   exports com.marmoush.javakit.jackson;
   exports com.marmoush.javakit.jackson.transformer.id to com.fasterxml.jackson.databind;

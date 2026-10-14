@@ -1,4 +1,4 @@
-module io.memoria.atom.core {
+module com.marmoush.javakit.core {
   exports com.marmoush.javakit.core.domain;
   exports com.marmoush.javakit.core.file;
   exports com.marmoush.javakit.core.id;
