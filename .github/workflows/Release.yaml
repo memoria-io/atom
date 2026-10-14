@@ -50,7 +50,7 @@ jobs:
           -Dsonar.projectKey=ismailmarmoush_java-kit
 
       - name: Publish
-        run: mvn --batch-mode -Pcentral deploy -DskipTests
+        run: mvn --batch-mode -Pcentral,publish deploy -DskipTests
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
