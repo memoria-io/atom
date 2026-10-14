@@ -1,10 +1,10 @@
 module io.memoria.atom.core {
-  exports io.memoria.atom.core.domain;
-  exports io.memoria.atom.core.file;
-  exports io.memoria.atom.core.id;
-  exports io.memoria.atom.core.math;
-  exports io.memoria.atom.core.security;
-  exports io.memoria.atom.core.stream;
-  exports io.memoria.atom.core.text;
-  exports io.memoria.atom.core.utils;
+  exports com.marmoush.atom.core.domain;
+  exports com.marmoush.atom.core.file;
+  exports com.marmoush.atom.core.id;
+  exports com.marmoush.atom.core.math;
+  exports com.marmoush.atom.core.security;
+  exports com.marmoush.atom.core.stream;
+  exports com.marmoush.atom.core.text;
+  exports com.marmoush.atom.core.utils;
 }
