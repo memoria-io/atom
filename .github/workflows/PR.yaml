@@ -25,7 +25,7 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: "26"
+          java-version: "27"
           cache: maven
           server-id: github
           server-username-env-var: GITHUB_ACTOR

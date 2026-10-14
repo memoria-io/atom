@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.marmoush</groupId>
         <artifactId>java-kit</artifactId>
-        <version>26.0.2</version>
+        <version>27.0.1</version>
     </parent>
 
     <groupId>com.marmoush.java-kit</groupId>
