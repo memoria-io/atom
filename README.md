@@ -1,5 +1,9 @@
 # atom
 
+> [!WARNING]
+> This repo is under construction and major refactoring at the moment
+
+
 [![Release](https://github.com/ismailmarmoush/java-kit/workflows/Release/badge.svg)](https://github.com/ismailmarmoush/java-kit/actions?query=workflow%3ARelease)
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/ismailmarmoush/java-kit?label=Version&logo=github)](https://github.com/ismailmarmoush?tab=packages&repo_name=java-kit)
 
